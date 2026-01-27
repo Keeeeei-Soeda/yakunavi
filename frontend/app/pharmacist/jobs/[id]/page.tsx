@@ -64,7 +64,7 @@ export default function JobDetailPage() {
         if (response.data.nearestStation) {
           setApplicationForm(prev => ({
             ...prev,
-            nearestStation: response.data.nearestStation,
+            nearestStation: response.data.nearestStation || '',
           }));
         }
       }
