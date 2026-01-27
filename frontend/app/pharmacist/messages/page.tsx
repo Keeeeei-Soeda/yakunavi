@@ -209,7 +209,7 @@ export default function MessagesPage() {
   // メッセージタイプに応じた表示
   const renderMessage = (message: any) => {
     const isPharmacist = message.senderType === 'pharmacist';
-    
+
     if (message.messageType === 'date_proposal') {
       const proposedDates = message.structuredData?.proposedDates || [];
       return (
@@ -261,18 +261,16 @@ export default function MessagesPage() {
       return (
         <div className={`max-w-md ${isPharmacist ? 'ml-auto' : ''}`}>
           <div
-            className={`px-4 py-3 rounded-lg ${
-              message.senderType === 'pharmacist'
+            className={`px-4 py-3 rounded-lg ${message.senderType === 'pharmacist'
                 ? 'bg-green-600 text-white'
                 : 'bg-gray-100 text-gray-900'
-            }`}
+              }`}
           >
             <p>{message.messageContent}</p>
           </div>
           <p
-            className={`text-xs mt-1 ${
-              message.senderType === 'pharmacist' ? 'text-gray-500' : 'text-gray-500'
-            }`}
+            className={`text-xs mt-1 ${message.senderType === 'pharmacist' ? 'text-gray-500' : 'text-gray-500'
+              }`}
           >
             {format(new Date(message.createdAt), 'MM/dd HH:mm', { locale: ja })}
           </p>
@@ -314,11 +312,10 @@ export default function MessagesPage() {
                   <button
                     key={conversation.applicationId}
                     onClick={() => setSelectedConversation(conversation.applicationId)}
-                    className={`w-full p-4 border-b border-gray-200 text-left hover:bg-gray-50 transition-colors ${
-                      selectedConversation === conversation.applicationId
+                    className={`w-full p-4 border-b border-gray-200 text-left hover:bg-gray-50 transition-colors ${selectedConversation === conversation.applicationId
                         ? 'bg-green-50'
                         : ''
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
@@ -337,10 +334,10 @@ export default function MessagesPage() {
                         <p className="text-xs text-gray-400 mt-1">
                           {conversation.lastMessage?.timestamp
                             ? format(
-                                new Date(conversation.lastMessage.timestamp),
-                                'MM/dd HH:mm',
-                                { locale: ja }
-                              )
+                              new Date(conversation.lastMessage.timestamp),
+                              'MM/dd HH:mm',
+                              { locale: ja }
+                            )
                             : ''}
                         </p>
                       </div>
@@ -369,11 +366,20 @@ export default function MessagesPage() {
                 {contract && contract.status === 'pending_approval' && (
                   <button
                     onClick={() => setShowOfferModal(true)}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm"
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium animate-pulse"
                   >
                     <FileText size={16} />
                     正式オファーを確認
                   </button>
+                )}
+                {contract && contract.status === 'pending_payment' && (
+                  <Link
+                    href={`/pharmacist/contracts/${contract.id}`}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
+                  >
+                    <FileText size={16} />
+                    契約を確認
+                  </Link>
                 )}
                 {isContractActive && (
                   <Link
@@ -393,8 +399,8 @@ export default function MessagesPage() {
                       {contract.status === 'pending_payment'
                         ? '契約成立：薬局の手数料支払い待ち'
                         : contract.status === 'active'
-                        ? '契約成立：勤務中'
-                        : '契約成立'}
+                          ? '契約成立：勤務中'
+                          : '契約成立'}
                     </p>
                   </div>
                   {contract.status === 'pending_payment' && (
@@ -421,11 +427,10 @@ export default function MessagesPage() {
                   {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex ${
-                        message.senderType === 'pharmacist'
+                      className={`flex ${message.senderType === 'pharmacist'
                           ? 'justify-end'
                           : 'justify-start'
-                      }`}
+                        }`}
                     >
                       {renderMessage(message)}
                     </div>

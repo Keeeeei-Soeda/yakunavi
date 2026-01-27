@@ -319,7 +319,7 @@ export default function JobDetailPage() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">応募確認</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">応募情報の入力</h3>
 
                 {/* 資格証明書の警告 */}
                 {!hasVerifiedCertificate && (
@@ -341,27 +341,28 @@ export default function JobDetailPage() {
                   </div>
                 )}
 
-                <div className="space-y-6">
-                  {/* 求人情報の確認 */}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">応募先求人</h4>
-                    <p className="font-medium">{job.title}</p>
-                    <p className="text-sm text-gray-600">
-                      日給: ¥{job.dailyWage.toLocaleString()} × {job.desiredWorkDays || 0}日 = ¥{(job.dailyWage * (job.desiredWorkDays || 0)).toLocaleString()}
-                    </p>
-                  </div>
+                {/* 求人情報の確認 */}
+                <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                  <h4 className="font-semibold text-gray-900 mb-2">応募先求人</h4>
+                  <p className="font-medium text-lg">{job.title}</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    日給: ¥{job.dailyWage.toLocaleString()} × {job.desiredWorkDays || 0}日 = ¥{(job.dailyWage * (job.desiredWorkDays || 0)).toLocaleString()}
+                  </p>
+                </div>
 
+                {/* 必須情報入力フォーム */}
+                <div className="space-y-6">
                   {/* 最寄駅（必須） */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
                       最寄駅 <span className="text-red-600">*</span>
                     </label>
                     <input
                       type="text"
                       value={applicationForm.nearestStation}
                       onChange={(e) => setApplicationForm({ ...applicationForm, nearestStation: e.target.value })}
-                      placeholder="例: 新宿駅"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="例：新宿駅、天王寺駅"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-base"
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       通勤経路の確認のため、お住まいの最寄駅を入力してください
@@ -370,48 +371,56 @@ export default function JobDetailPage() {
 
                   {/* 勤務経験のある業態（必須） */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      勤務経験のある業態 <span className="text-red-600">*（最低1つ選択）</span>
+                    <label className="block text-sm font-medium text-gray-900 mb-3">
+                      勤務経験のある業態 <span className="text-red-600">*</span>
+                      <span className="text-sm text-gray-600 ml-2 font-normal">（複数選択可、最低1つ必須）</span>
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       {['調剤薬局', 'ドラッグストア', '病院', '診療所', '製薬会社', '卸売業', 'その他'].map((type) => (
-                        <label key={type} className="flex items-center gap-2 cursor-pointer">
+                        <label
+                          key={type}
+                          className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
+                            applicationForm.workExperienceTypes.includes(type)
+                              ? 'bg-green-50 border-green-500'
+                              : 'bg-white border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
                           <input
                             type="checkbox"
                             checked={applicationForm.workExperienceTypes.includes(type)}
                             onChange={() => toggleWorkExperienceType(type)}
-                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
                           />
-                          <span className="text-sm text-gray-700">{type}</span>
+                          <span className="text-sm font-medium text-gray-900">{type}</span>
                         </label>
                       ))}
                     </div>
                   </div>
 
-                  {/* 自己紹介（任意・推奨） */}
+                  {/* 意気込み・自己PR（任意・推奨） */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      簡単な自己紹介（任意・推奨）
+                    <label className="block text-sm font-medium text-gray-900 mb-2">
+                      意気込み・自己PR <span className="text-gray-500 font-normal">（任意・推奨）</span>
                     </label>
                     <textarea
                       value={applicationForm.coverLetter}
                       onChange={(e) => setApplicationForm({ ...applicationForm, coverLetter: e.target.value })}
-                      placeholder="あなたの強みや、この求人に応募した理由などを簡単に記入してください"
-                      rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="例：&#10;調剤薬局で5年の経験があります。&#10;在宅医療にも対応可能で、患者様とのコミュニケーションを大切にしています。&#10;貴局で経験を活かして貢献したいと考えております。"
+                      rows={6}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-base resize-none"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      自己紹介を記入することで、薬局側により良い印象を与えることができます
+                      💡 具体的な経験やスキル、応募動機を記載すると採用率が上がります（100〜300文字程度推奨）
                     </p>
                   </div>
 
                   {/* 注意事項 */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-blue-900 mb-2">📌 注意事項</h4>
-                    <ul className="text-sm text-blue-800 space-y-1">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-yellow-900 mb-2">⚠️ 注意事項</h4>
+                    <ul className="text-sm text-yellow-800 space-y-1">
                       <li>• 応募後、薬局からメッセージが届く場合があります</li>
-                      <li>• 資格証明書が未確認の場合、選考に影響する可能性があります</li>
-                      <li>• 応募情報は薬局側に開示されます</li>
+                      <li>• やむを得ずキャンセルが必要な場合は、運営（support@yakunavi.jp）までご連絡ください</li>
+                      <li>• 入力内容は薬局側に開示されます</li>
                       <li>• 虚偽の情報を記載した場合、契約が取り消される場合があります</li>
                     </ul>
                   </div>
@@ -422,16 +431,20 @@ export default function JobDetailPage() {
                   <button
                     onClick={() => setShowApplicationDialog(false)}
                     disabled={applying}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:bg-gray-100"
+                    className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:bg-gray-100 font-medium"
                   >
                     キャンセル
                   </button>
                   <button
                     onClick={handleApply}
-                    disabled={applying}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300"
+                    disabled={
+                      applying ||
+                      !applicationForm.nearestStation.trim() ||
+                      applicationForm.workExperienceTypes.length === 0
+                    }
+                    className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed font-medium"
                   >
-                    {applying ? '応募中...' : '応募する'}
+                    {applying ? '応募中...' : 'この内容で応募する'}
                   </button>
                 </div>
               </div>

@@ -235,6 +235,13 @@ export default function ContractDetailPage() {
                   <span className="text-gray-900">¥{contract.platformFee.toLocaleString()}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">（報酬総額の40%）</p>
+                <Link
+                  href={`/pharmacy/invoices/${contract.id}`}
+                  className="mt-2 inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline"
+                >
+                  <FileText size={16} />
+                  請求書を表示
+                </Link>
               </div>
 
               <div>
