@@ -259,7 +259,7 @@ export default function JobDetailPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">希望勤務時間</p>
-                <p className="font-medium">{job.preferredWorkHours || '応相談'}</p>
+                <p className="font-medium">{job.desiredWorkHours || '応相談'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">勤務開始可能期間</p>
