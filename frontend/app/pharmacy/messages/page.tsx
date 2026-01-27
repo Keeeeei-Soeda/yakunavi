@@ -524,25 +524,14 @@ export default function MessagesPage() {
                                             <p className="font-medium">{selectedDate && format(new Date(selectedDate), 'yyyy年MM月dd日（E）', { locale: ja })}</p>
                                         </div>
                                         <div>
-                                            <label className="block text-sm text-gray-600 mb-1">勤務日数 *</label>
-                                            <input
-                                                type="number"
-                                                value={offerData.workDays}
-                                                onChange={(e) => setOfferData({ ...offerData, workDays: Number(e.target.value) })}
-                                                min="15"
-                                                max="90"
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
+                                            <label className="block text-sm text-gray-600 mb-1">勤務日数</label>
+                                            <p className="font-medium">{offerData.workDays}日</p>
+                                            <p className="text-xs text-gray-500 mt-1">※募集要項に基づく</p>
                                         </div>
                                         <div>
-                                            <label className="block text-sm text-gray-600 mb-1">日給 *</label>
-                                            <input
-                                                type="number"
-                                                value={offerData.dailyWage}
-                                                onChange={(e) => setOfferData({ ...offerData, dailyWage: Number(e.target.value) })}
-                                                min="20000"
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
+                                            <label className="block text-sm text-gray-600 mb-1">日給</label>
+                                            <p className="font-medium">¥{offerData.dailyWage.toLocaleString()}</p>
+                                            <p className="text-xs text-gray-500 mt-1">※募集要項に基づく</p>
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">報酬総額（自動計算）</label>
