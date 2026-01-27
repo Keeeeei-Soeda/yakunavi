@@ -376,14 +376,13 @@ export default function JobDetailPage() {
                       <span className="text-sm text-gray-600 ml-2 font-normal">（複数選択可、最低1つ必須）</span>
                     </label>
                     <div className="grid grid-cols-2 gap-3">
-                      {['調剤薬局', 'ドラッグストア', '病院', '診療所', '製薬会社', '卸売業', 'その他'].map((type) => (
+                      {['調剤薬局', 'ドラッグストア', '病院薬剤部', '製薬企業', 'その他'].map((type) => (
                         <label
                           key={type}
-                          className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
-                            applicationForm.workExperienceTypes.includes(type)
+                          className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${applicationForm.workExperienceTypes.includes(type)
                               ? 'bg-green-50 border-green-500'
                               : 'bg-white border-gray-300 hover:bg-gray-50'
-                          }`}
+                            }`}
                         >
                           <input
                             type="checkbox"
