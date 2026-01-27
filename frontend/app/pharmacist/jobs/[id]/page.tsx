@@ -264,8 +264,12 @@ export default function JobDetailPage() {
               <div>
                 <p className="text-sm text-gray-600">勤務開始可能期間</p>
                 <p className="font-medium">
-                  {format(new Date(job.workStartPeriodStart), 'yyyy/MM/dd', { locale: ja })} 〜
-                  {format(new Date(job.workStartPeriodEnd), 'yyyy/MM/dd', { locale: ja })}
+                  {job.workStartPeriodFrom && job.workStartPeriodTo ? (
+                    <>
+                      {format(new Date(job.workStartPeriodFrom), 'yyyy/MM/dd', { locale: ja })} 〜
+                      {format(new Date(job.workStartPeriodTo), 'yyyy/MM/dd', { locale: ja })}
+                    </>
+                  ) : '未設定'}
                 </p>
               </div>
             </div>
@@ -280,29 +284,10 @@ export default function JobDetailPage() {
           )}
 
           {/* 応募条件 */}
-          {(job.requiredExperience || job.requiredQualifications || job.preferredSkills) && (
+          {job.requirements && (
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">応募条件</h3>
-              <div className="space-y-3">
-                {job.requiredExperience && (
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">必須経験</p>
-                    <p className="text-gray-800">{job.requiredExperience}</p>
-                  </div>
-                )}
-                {job.requiredQualifications && (
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">必須資格</p>
-                    <p className="text-gray-800">{job.requiredQualifications}</p>
-                  </div>
-                )}
-                {job.preferredSkills && (
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">歓迎スキル</p>
-                    <p className="text-gray-800">{job.preferredSkills}</p>
-                  </div>
-                )}
-              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">応募条件・その他</h3>
+              <p className="text-gray-800 whitespace-pre-wrap">{job.requirements}</p>
             </div>
           )}
 
@@ -312,11 +297,11 @@ export default function JobDetailPage() {
             <div className="space-y-3">
               <div>
                 <p className="text-sm text-gray-600">薬局名</p>
-                <p className="font-medium">{job.pharmacy?.name}</p>
+                <p className="font-medium">{job.pharmacy?.name || '情報非公開'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">所在地</p>
-                <p className="font-medium">{PREFECTURES.find(p => p.value === job.prefecture)?.label}</p>
+                <p className="font-medium">{job.workLocation || '場所未設定'}</p>
               </div>
             </div>
           </div>
@@ -366,7 +351,7 @@ export default function JobDetailPage() {
                     <h4 className="font-semibold text-gray-900 mb-2">応募先求人</h4>
                     <p className="font-medium">{job.title}</p>
                     <p className="text-sm text-gray-600">
-                      日給: ¥{job.dailyWage.toLocaleString()} × {job.workDays}日 = ¥{(job.dailyWage * job.workDays).toLocaleString()}
+                      日給: ¥{job.dailyWage.toLocaleString()} × {job.desiredWorkDays || 0}日 = ¥{(job.dailyWage * (job.desiredWorkDays || 0)).toLocaleString()}
                     </p>
                   </div>
 
