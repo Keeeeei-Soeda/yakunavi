@@ -16,7 +16,7 @@ export class ContractService {
 
     constructor() {
         this.pdfService = new PDFService();
-        
+
         // uploadsディレクトリが存在しない場合は作成
         const uploadsDir = path.join(process.cwd(), 'uploads', 'invoices');
         if (!fs.existsSync(uploadsDir)) {
@@ -108,7 +108,7 @@ export class ContractService {
         try {
             const invoiceNumber = `INV-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(contract.id).padStart(3, '0')}`;
             const contractNumber = `CNT-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(contract.id).padStart(3, '0')}`;
-            
+
             const pdfStream = this.pdfService.generateInvoice({
                 invoiceNumber,
                 issueDate: new Date(),
@@ -131,8 +131,8 @@ export class ContractService {
             const writeStream = fs.createWriteStream(filePath);
             pdfStream.pipe(writeStream);
 
-            await new Promise((resolve, reject) => {
-                writeStream.on('finish', resolve);
+            await new Promise<void>((resolve, reject) => {
+                writeStream.on('finish', () => resolve());
                 writeStream.on('error', reject);
             });
 
@@ -143,10 +143,9 @@ export class ContractService {
                     pharmacyId: contract.pharmacyId,
                     pharmacistId: contract.pharmacistId,
                     documentType: 'invoice',
-                    title: 'プラットフォーム手数料請求書',
+                    documentTitle: 'プラットフォーム手数料請求書',
                     filePath,
                     fileSize: fs.statSync(filePath).size,
-                    mimeType: 'application/pdf',
                 },
             });
         } catch (pdfError) {
