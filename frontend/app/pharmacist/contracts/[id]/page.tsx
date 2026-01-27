@@ -39,7 +39,7 @@ export default function ContractDetailPage() {
   if (loading) {
     return (
       <ProtectedRoute requiredUserType="pharmacist">
-        <PharmacistLayout>
+        <PharmacistLayout title="契約詳細">
           <div className="flex items-center justify-center h-64">
             <div className="text-gray-500">読み込み中...</div>
           </div>
@@ -51,7 +51,7 @@ export default function ContractDetailPage() {
   if (!contract) {
     return (
       <ProtectedRoute requiredUserType="pharmacist">
-        <PharmacistLayout>
+        <PharmacistLayout title="契約詳細">
           <div className="flex items-center justify-center h-64">
             <div className="text-gray-500">契約が見つかりません</div>
           </div>
@@ -64,7 +64,7 @@ export default function ContractDetailPage() {
 
   return (
     <ProtectedRoute requiredUserType="pharmacist">
-      <PharmacistLayout>
+      <PharmacistLayout title="契約詳細">
         <div className="space-y-6">
           {/* ヘッダー */}
           <div className="flex items-center justify-between">
@@ -75,7 +75,6 @@ export default function ContractDetailPage() {
               >
                 <ArrowLeft size={24} />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">契約詳細</h1>
             </div>
             <Link
               href={`/pharmacist/messages?applicationId=${contract.applicationId}`}
