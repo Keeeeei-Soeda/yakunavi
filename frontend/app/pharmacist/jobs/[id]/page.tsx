@@ -229,7 +229,7 @@ export default function JobDetailPage() {
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <Clock size={20} className="text-orange-600" />
-                <span>{job.preferredWorkHours || '応相談'}</span>
+                <span>{job.desiredWorkHours || '応相談'}</span>
               </div>
             </div>
 
