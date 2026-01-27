@@ -1,0 +1,339 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                          BigInt         @id @default(autoincrement())
+  email                       String         @unique @db.VarChar(255)
+  password                    String
+  userType                    String         @map("user_type") @db.VarChar(20)
+  isActive                    Boolean        @default(true) @map("is_active")
+  emailVerified               Boolean        @default(false) @map("email_verified")
+  verificationToken           String?        @map("verification_token") @db.VarChar(255)
+  verificationTokenExpiresAt  DateTime?      @map("verification_token_expires_at")
+  resetPasswordToken          String?        @map("reset_password_token") @db.VarChar(255)
+  resetPasswordTokenExpiresAt DateTime?      @map("reset_password_token_expires_at")
+  lastLoginAt                 DateTime?      @map("last_login_at")
+  createdAt                   DateTime       @default(now()) @map("created_at")
+  updatedAt                   DateTime       @updatedAt @map("updated_at")
+  notifications               Notification[]
+  pharmacy                    Pharmacy?
+  pharmacist                  Pharmacist?
+
+  @@index([email])
+  @@index([userType], map: "idx_users_user_type")
+  @@index([verificationToken], map: "idx_users_verification_token")
+  @@index([resetPasswordToken], map: "idx_users_reset_password_token")
+  @@map("users")
+}
+
+model Pharmacy {
+  id                      BigInt       @id @default(autoincrement())
+  userId                  BigInt       @unique @map("user_id")
+  pharmacyName            String       @map("pharmacy_name") @db.VarChar(255)
+  representativeLastName  String       @map("representative_last_name") @db.VarChar(100)
+  representativeFirstName String       @map("representative_first_name") @db.VarChar(100)
+  phoneNumber             String?      @map("phone_number") @db.VarChar(20)
+  faxNumber               String?      @map("fax_number") @db.VarChar(20)
+  prefecture              String?      @db.VarChar(50)
+  address                 String?
+  nearestStation          String?      @map("nearest_station") @db.VarChar(255)
+  establishedDate         DateTime?    @map("established_date") @db.Date
+  dailyPrescriptionCount  Int?         @map("daily_prescription_count")
+  staffCount              Int?         @map("staff_count")
+  businessHoursStart      DateTime?    @map("business_hours_start") @db.Time(6)
+  businessHoursEnd        DateTime?    @map("business_hours_end") @db.Time(6)
+  introduction            String?
+  strengths               String?
+  equipmentSystems        String?      @map("equipment_systems")
+  createdAt               DateTime     @default(now()) @map("created_at")
+  updatedAt               DateTime     @updatedAt @map("updated_at")
+  contracts               Contract[]
+  documents               Document[]
+  jobPostings             JobPosting[]
+  payments                Payment[]
+  penalties               Penalty[]
+  user                    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_pharmacies_user_id")
+  @@index([prefecture], map: "idx_pharmacies_prefecture")
+  @@map("pharmacies")
+}
+
+model Pharmacist {
+  id                         BigInt        @id @default(autoincrement())
+  userId                     BigInt        @unique @map("user_id")
+  lastName                   String        @map("last_name") @db.VarChar(100)
+  firstName                  String        @map("first_name") @db.VarChar(100)
+  phoneNumber                String?       @map("phone_number") @db.VarChar(20)
+  address                    String?
+  birthDate                  DateTime?     @map("birth_date") @db.Date
+  age                        Int?
+  nearestStation             String?       @map("nearest_station") @db.VarChar(255)
+  university                 String?       @db.VarChar(255)
+  graduationYear             Int?          @map("graduation_year")
+  licenseNumber              String?       @map("license_number") @db.VarChar(255)
+  licenseYear                Int?          @map("license_year")
+  certifiedPharmacistLicense String?       @map("certified_pharmacist_license") @db.VarChar(255)
+  otherLicenses              String?       @map("other_licenses")
+  workExperienceYears        Int?          @map("work_experience_years")
+  workExperienceMonths       Int?          @map("work_experience_months")
+  workExperienceTypes        String[]      @map("work_experience_types")
+  mainDuties                 String[]      @map("main_duties")
+  specialtyAreas             String[]      @map("specialty_areas")
+  pharmacySystems            String[]      @map("pharmacy_systems")
+  specialNotes               String?       @map("special_notes")
+  selfIntroduction           String?       @map("self_introduction")
+  licenseFileUrl             String?       @map("license_file_url") @db.VarChar(500)
+  registrationFileUrl        String?       @map("registration_file_url") @db.VarChar(500)
+  verificationStatus         String        @default("pending") @map("verification_status") @db.VarChar(20)
+  verifiedAt                 DateTime?     @map("verified_at")
+  createdAt                  DateTime      @default(now()) @map("created_at")
+  updatedAt                  DateTime      @updatedAt @map("updated_at")
+  applications               Application[]
+  certificates               Certificate[]
+  contracts                  Contract[]
+  documents                  Document[]
+  user                       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_pharmacists_user_id")
+  @@index([age], map: "idx_pharmacists_age")
+  @@index([workExperienceYears], map: "idx_pharmacists_work_experience")
+  @@index([verificationStatus], map: "idx_pharmacists_verification_status")
+  @@map("pharmacists")
+}
+
+model JobPosting {
+  id                  BigInt        @id @default(autoincrement())
+  pharmacyId          BigInt        @map("pharmacy_id")
+  title               String        @db.VarChar(255)
+  description         String?
+  workLocation        String        @map("work_location") @db.VarChar(255)
+  desiredWorkDays     Int           @map("desired_work_days")
+  workStartPeriodFrom DateTime      @map("work_start_period_from") @db.Date
+  workStartPeriodTo   DateTime      @map("work_start_period_to") @db.Date
+  recruitmentDeadline DateTime      @map("recruitment_deadline") @db.Date
+  requirements        String?
+  desiredWorkHours    String?       @map("desired_work_hours")
+  dailyWage           Int           @map("daily_wage")
+  totalCompensation   Int           @map("total_compensation")
+  platformFee         Int           @map("platform_fee")
+  status              String        @default("draft") @db.VarChar(20)
+  viewCount           Int           @default(0) @map("view_count")
+  applicationCount    Int           @default(0) @map("application_count")
+  publishedAt         DateTime?     @map("published_at")
+  closedAt            DateTime?     @map("closed_at")
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
+  applications        Application[]
+  contracts           Contract[]
+  pharmacy            Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+
+  @@index([pharmacyId], map: "idx_job_postings_pharmacy_id")
+  @@index([status], map: "idx_job_postings_status")
+  @@index([recruitmentDeadline], map: "idx_job_postings_deadline")
+  @@index([publishedAt], map: "idx_job_postings_published_at")
+  @@index([status, dailyWage], map: "idx_job_postings_search")
+  @@map("job_postings")
+}
+
+model Application {
+  id             BigInt     @id @default(autoincrement())
+  jobPostingId   BigInt     @map("job_posting_id")
+  pharmacistId   BigInt     @map("pharmacist_id")
+  status         String     @default("pending") @db.VarChar(20)
+  coverLetter    String?    @map("cover_letter")
+  nearestStation String?    @map("nearest_station") @db.VarChar(255)
+  appliedAt      DateTime   @default(now()) @map("applied_at")
+  reviewedAt     DateTime?  @map("reviewed_at")
+  offeredAt      DateTime?  @map("offered_at")
+  respondedAt    DateTime?  @map("responded_at")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  jobPosting     JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  pharmacist     Pharmacist @relation(fields: [pharmacistId], references: [id], onDelete: Cascade)
+  contract       Contract?
+  messages       Message[]
+
+  @@unique([jobPostingId, pharmacistId])
+  @@index([jobPostingId], map: "idx_applications_job_posting_id")
+  @@index([pharmacistId], map: "idx_applications_pharmacist_id")
+  @@index([status], map: "idx_applications_status")
+  @@index([appliedAt], map: "idx_applications_applied_at")
+  @@map("applications")
+}
+
+model Message {
+  id             BigInt      @id @default(autoincrement())
+  applicationId  BigInt      @map("application_id")
+  senderType     String      @map("sender_type") @db.VarChar(20)
+  senderId       BigInt      @map("sender_id")
+  messageType    String      @default("text") @map("message_type") @db.VarChar(30)
+  messageContent String?     @map("message_content")
+  structuredData Json?       @map("structured_data")
+  isRead         Boolean     @default(false) @map("is_read")
+  readAt         DateTime?   @map("read_at")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId], map: "idx_messages_application_id")
+  @@index([createdAt], map: "idx_messages_created_at")
+  @@index([isRead], map: "idx_messages_is_read")
+  @@map("messages")
+}
+
+model Contract {
+  id                 BigInt      @id @default(autoincrement())
+  applicationId      BigInt      @unique @map("application_id")
+  pharmacyId         BigInt      @map("pharmacy_id")
+  pharmacistId       BigInt      @map("pharmacist_id")
+  jobPostingId       BigInt      @map("job_posting_id")
+  initialWorkDate    DateTime    @map("initial_work_date") @db.Date
+  workDays           Int         @map("work_days")
+  dailyWage          Int         @map("daily_wage")
+  totalCompensation  Int         @map("total_compensation")
+  platformFee        Int         @map("platform_fee")
+  workHours          String?     @map("work_hours") @db.VarChar(255)
+  status             String      @default("pending_approval") @db.VarChar(30)
+  contractStartDate  DateTime?   @map("contract_start_date") @db.Date
+  contractEndDate    DateTime?   @map("contract_end_date") @db.Date
+  paymentDeadline    DateTime    @map("payment_deadline") @db.Date
+  approvedAt         DateTime?   @map("approved_at")
+  paymentConfirmedAt DateTime?   @map("payment_confirmed_at")
+  completedAt        DateTime?   @map("completed_at")
+  cancelledAt        DateTime?   @map("cancelled_at")
+  cancellationReason String?     @map("cancellation_reason")
+  createdAt          DateTime    @default(now()) @map("created_at")
+  updatedAt          DateTime    @updatedAt @map("updated_at")
+  application        Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  jobPosting         JobPosting  @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  pharmacist         Pharmacist  @relation(fields: [pharmacistId], references: [id], onDelete: Cascade)
+  pharmacy           Pharmacy    @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  documents          Document[]
+  payment            Payment?
+
+  @@index([applicationId], map: "idx_contracts_application_id")
+  @@index([pharmacyId], map: "idx_contracts_pharmacy_id")
+  @@index([pharmacistId], map: "idx_contracts_pharmacist_id")
+  @@index([status], map: "idx_contracts_status")
+  @@index([paymentDeadline], map: "idx_contracts_payment_deadline")
+  @@index([initialWorkDate], map: "idx_contracts_initial_work_date")
+  @@map("contracts")
+}
+
+model Payment {
+  id               BigInt    @id @default(autoincrement())
+  contractId       BigInt    @unique @map("contract_id")
+  pharmacyId       BigInt    @map("pharmacy_id")
+  amount           Int
+  paymentType      String    @default("platform_fee") @map("payment_type") @db.VarChar(20)
+  paymentMethod    String?   @map("payment_method") @db.VarChar(30)
+  paymentStatus    String    @default("pending") @map("payment_status") @db.VarChar(20)
+  paymentDate      DateTime? @map("payment_date") @db.Date
+  transferName     String?   @map("transfer_name") @db.VarChar(255)
+  confirmationNote String?   @map("confirmation_note")
+  reportedAt       DateTime? @map("reported_at")
+  confirmedAt      DateTime? @map("confirmed_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  contract         Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  pharmacy         Pharmacy  @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+
+  @@index([contractId], map: "idx_payments_contract_id")
+  @@index([pharmacyId], map: "idx_payments_pharmacy_id")
+  @@index([paymentStatus], map: "idx_payments_payment_status")
+  @@index([paymentDate], map: "idx_payments_payment_date")
+  @@map("payments")
+}
+
+model Document {
+  id                     BigInt      @id @default(autoincrement())
+  contractId             BigInt?     @map("contract_id")
+  pharmacyId             BigInt?     @map("pharmacy_id")
+  pharmacistId           BigInt?     @map("pharmacist_id")
+  documentType           String      @map("document_type") @db.VarChar(30)
+  documentTitle          String      @map("document_title") @db.VarChar(255)
+  filePath               String      @map("file_path") @db.VarChar(500)
+  fileSize               Int?        @map("file_size")
+  generatedAt            DateTime    @default(now()) @map("generated_at")
+  downloadedByPharmacy   Boolean     @default(false) @map("downloaded_by_pharmacy")
+  pharmacyDownloadedAt   DateTime?   @map("pharmacy_downloaded_at")
+  downloadedByPharmacist Boolean     @default(false) @map("downloaded_by_pharmacist")
+  pharmacistDownloadedAt DateTime?   @map("pharmacist_downloaded_at")
+  createdAt              DateTime    @default(now()) @map("created_at")
+  contract               Contract?   @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  pharmacist             Pharmacist? @relation(fields: [pharmacistId], references: [id])
+  pharmacy               Pharmacy?   @relation(fields: [pharmacyId], references: [id])
+
+  @@index([contractId], map: "idx_documents_contract_id")
+  @@index([pharmacyId], map: "idx_documents_pharmacy_id")
+  @@index([pharmacistId], map: "idx_documents_pharmacist_id")
+  @@index([documentType], map: "idx_documents_document_type")
+  @@map("documents")
+}
+
+model Penalty {
+  id             BigInt    @id @default(autoincrement())
+  pharmacyId     BigInt    @map("pharmacy_id")
+  contractId     BigInt?   @map("contract_id")
+  penaltyType    String    @map("penalty_type") @db.VarChar(30)
+  reason         String
+  penaltyStatus  String    @default("active") @map("penalty_status") @db.VarChar(20)
+  imposedAt      DateTime  @default(now()) @map("imposed_at")
+  resolvedAt     DateTime? @map("resolved_at")
+  resolutionNote String?   @map("resolution_note")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  pharmacy       Pharmacy  @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+
+  @@index([pharmacyId], map: "idx_penalties_pharmacy_id")
+  @@index([penaltyStatus], map: "idx_penalties_penalty_status")
+  @@index([imposedAt], map: "idx_penalties_imposed_at")
+  @@map("penalties")
+}
+
+model Certificate {
+  id                   BigInt      @id @default(autoincrement())
+  pharmacistId         BigInt      @map("pharmacist_id")
+  certificateType      String      @map("certificate_type") @db.VarChar(30)
+  fileName             String      @map("file_name") @db.VarChar(255)
+  filePath             String      @map("file_path") @db.VarChar(500)
+  fileSize             Int?        @map("file_size")
+  uploadedAt           DateTime    @default(now()) @map("uploaded_at")
+  verificationStatus   String      @default("pending") @map("verification_status") @db.VarChar(20)
+  verifiedAt           DateTime?   @map("verified_at")
+  verifiedBy           BigInt?     @map("verified_by")
+  rejectionReason      String?     @map("rejection_reason")
+  createdAt            DateTime    @default(now()) @map("created_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
+  pharmacist           Pharmacist  @relation(fields: [pharmacistId], references: [id], onDelete: Cascade)
+
+  @@index([pharmacistId], map: "idx_certificates_pharmacist_id")
+  @@index([certificateType], map: "idx_certificates_certificate_type")
+  @@index([verificationStatus], map: "idx_certificates_verification_status")
+  @@map("certificates")
+}
+
+model Notification {
+  id               BigInt    @id @default(autoincrement())
+  userId           BigInt    @map("user_id")
+  notificationType String    @map("notification_type") @db.VarChar(50)
+  title            String    @db.VarChar(255)
+  message          String
+  linkUrl          String?   @map("link_url") @db.VarChar(500)
+  isRead           Boolean   @default(false) @map("is_read")
+  readAt           DateTime? @map("read_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_notifications_user_id")
+  @@index([isRead], map: "idx_notifications_is_read")
+  @@index([createdAt], map: "idx_notifications_created_at")
+  @@index([notificationType], map: "idx_notifications_notification_type")
+  @@map("notifications")
+}
