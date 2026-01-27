@@ -291,16 +291,12 @@ export default function JobDetailPage() {
             </div>
           )}
 
-          {/* 薬局情報 */}
+          {/* 勤務地情報 */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">薬局情報</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">勤務地情報</h3>
             <div className="space-y-3">
               <div>
-                <p className="text-sm text-gray-600">薬局名</p>
-                <p className="font-medium">{job.pharmacy?.name || '情報非公開'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">所在地</p>
+                <p className="text-sm text-gray-600">勤務地</p>
                 <p className="font-medium">{job.workLocation || '場所未設定'}</p>
               </div>
             </div>
