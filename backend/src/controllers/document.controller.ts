@@ -55,7 +55,7 @@ export class DocumentController {
       }
 
       // ファイルをダウンロード
-      res.download(document.filePath, fileName);
+      return res.download(document.filePath, fileName);
     } catch (error: any) {
       console.error('Download document error:', error);
       return res.status(500).json({
@@ -83,8 +83,8 @@ export class DocumentController {
       return res.json({
         success: true,
         data: documents.map((doc) => ({
-          id: Number(doc.id),
           ...doc,
+          id: Number(doc.id),
           contractId: doc.contractId ? Number(doc.contractId) : null,
           pharmacyId: doc.pharmacyId ? Number(doc.pharmacyId) : null,
           pharmacistId: doc.pharmacistId ? Number(doc.pharmacistId) : null,
