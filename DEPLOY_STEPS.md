@@ -148,7 +148,7 @@ npm install --production
 nano .env
 ```
 
-`.env`ファイルの内容（パスワードは実際の値に変更してください）：
+`.env`ファイルの内容（IPアドレスを使用する場合）：
 
 ```env
 DATABASE_URL="postgresql://pharmacy_user:your_secure_password_here@localhost:5432/pharmacy_db?schema=public"
@@ -158,11 +158,13 @@ JWT_EXPIRES_IN=24h
 JWT_REFRESH_EXPIRES_IN=7d
 PORT=5001
 NODE_ENV=production
-FRONTEND_URL=https://your-domain.com
-RESEND_API_KEY=your-resend-api-key-if-needed
+FRONTEND_URL=http://85.131.247.170:3000
+RESEND_API_KEY=
 UPLOAD_DIR=./uploads
 MAX_FILE_SIZE=5242880
 ```
+
+**注意**: ドメインを取得した場合は、`FRONTEND_URL`を`https://your-domain.com`に変更してください。
 
 保存方法（nanoエディタ）：
 - `Ctrl + O` で保存
@@ -200,11 +202,13 @@ npm install
 nano .env.local
 ```
 
-`.env.local`ファイルの内容（ドメインは実際の値に変更してください）：
+`.env.local`ファイルの内容（IPアドレスを使用する場合）：
 
 ```env
-NEXT_PUBLIC_API_URL=https://your-domain.com/api
+NEXT_PUBLIC_API_URL=http://85.131.247.170:5001/api
 ```
+
+**注意**: ドメインを取得した場合は、`NEXT_PUBLIC_API_URL`を`https://your-domain.com/api`に変更してください。
 
 保存方法：
 - `Ctrl + O` で保存
@@ -230,7 +234,7 @@ pm2 logs yaku-navi-frontend
 nano /etc/nginx/sites-available/yaku-navi
 ```
 
-以下の内容を追加（ドメインは実際の値に変更してください）：
+以下の内容を追加（IPアドレスを使用する場合）：
 
 ```nginx
 upstream backend {
@@ -243,7 +247,7 @@ upstream frontend {
 
 server {
     listen 80;
-    server_name your-domain.com www.your-domain.com;
+    server_name 85.131.247.170 _;
 
     location / {
         proxy_pass http://frontend;
@@ -293,6 +297,8 @@ systemctl status nginx
 ```
 
 ### ステップ8: SSL証明書の設定（Let's Encrypt）
+
+**注意**: このステップはドメインを取得した後に実行してください。IPアドレスのみの場合はスキップできます。
 
 ```bash
 # Certbotのインストール
@@ -351,12 +357,84 @@ reboot
 pm2 status
 ```
 
+## 🌐 ドメイン取得後の変更手順
+
+ドメインを取得したら、以下のファイルを更新してください：
+
+### 1. バックエンド `.env`ファイル
+
+```bash
+cd ~/yaku_navi/backend
+nano .env
+```
+
+以下の行を変更：
+```env
+# 変更前
+FRONTEND_URL=http://85.131.247.170:3000
+
+# 変更後
+FRONTEND_URL=https://your-domain.com
+```
+
+### 2. フロントエンド `.env.local`ファイル
+
+```bash
+cd ~/yaku_navi/frontend
+nano .env.local
+```
+
+以下の行を変更：
+```env
+# 変更前
+NEXT_PUBLIC_API_URL=http://85.131.247.170:5001/api
+
+# 変更後
+NEXT_PUBLIC_API_URL=https://your-domain.com/api
+```
+
+### 3. Nginx設定ファイル
+
+```bash
+nano /etc/nginx/sites-available/yaku-navi
+```
+
+以下の行を変更：
+```nginx
+# 変更前
+server_name 85.131.247.170 _;
+
+# 変更後
+server_name your-domain.com www.your-domain.com;
+```
+
+設定を反映：
+```bash
+nginx -t
+systemctl restart nginx
+```
+
+### 4. アプリケーションの再起動
+
+```bash
+# バックエンドの再起動
+pm2 restart yaku-navi-backend
+
+# フロントエンドの再起動
+pm2 restart yaku-navi-frontend
+```
+
+### 5. SSL証明書の取得
+
+ステップ8の手順に従って、Let's EncryptでSSL証明書を取得してください。
+
 ## ⚠️ 注意事項
 
 1. **パスワード**: データベースパスワードとJWT_SECRETは必ず強力なものに変更してください
-2. **ドメイン**: `your-domain.com`を実際のドメイン名に置き換えてください
+2. **IPアドレス**: 初期設定ではIPアドレス（85.131.247.170）を使用します。ドメイン取得後は上記の手順で変更してください
 3. **環境変数**: `.env`と`.env.local`は本番環境用の値に設定してください
 4. **再起動**: システムの再起動が必要な場合は、すべてのセットアップ完了後に実行してください
+5. **SSL証明書**: ドメインを取得したら、必ずSSL証明書を設定してHTTPS化してください
 
 ## 🔄 更新手順（コードを更新する場合）
 
