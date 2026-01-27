@@ -1,5 +1,7 @@
 import prisma from '../utils/prisma';
-// import { PDFService } from './pdf.service';
+import { PDFService } from './pdf.service';
+import fs from 'fs';
+import path from 'path';
 
 interface CreateContractInput {
     applicationId: bigint;
@@ -10,10 +12,16 @@ interface CreateContractInput {
 }
 
 export class ContractService {
-    // private pdfService: PDFService;
+    private pdfService: PDFService;
 
     constructor() {
-        // this.pdfService = new PDFService();
+        this.pdfService = new PDFService();
+        
+        // uploadsディレクトリが存在しない場合は作成
+        const uploadsDir = path.join(process.cwd(), 'uploads', 'invoices');
+        if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+        }
     }
 
     /**
@@ -95,6 +103,56 @@ export class ContractService {
                 offeredAt: new Date(),
             },
         });
+
+        // プラットフォーム手数料請求書PDFを生成
+        try {
+            const invoiceNumber = `INV-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(contract.id).padStart(3, '0')}`;
+            const contractNumber = `CNT-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(contract.id).padStart(3, '0')}`;
+            
+            const pdfStream = this.pdfService.generateInvoice({
+                invoiceNumber,
+                issueDate: new Date(),
+                pharmacyName: contract.application.jobPosting.pharmacy.pharmacyName,
+                pharmacyAddress: contract.application.jobPosting.pharmacy.address || '住所未登録',
+                pharmacyPhone: contract.application.jobPosting.pharmacy.phoneNumber || '電話番号未登録',
+                contractNumber,
+                pharmacistName: `${contract.application.pharmacist.lastName} ${contract.application.pharmacist.firstName}`,
+                workDays: contract.workDays,
+                initialWorkDate: workDate,
+                serviceCharge: totalCompensation,
+                platformFee,
+                totalAmount: platformFee,
+                paymentDeadline,
+            });
+
+            // PDFをファイルとして保存
+            const fileName = `${invoiceNumber}.pdf`;
+            const filePath = path.join(process.cwd(), 'uploads', 'invoices', fileName);
+            const writeStream = fs.createWriteStream(filePath);
+            pdfStream.pipe(writeStream);
+
+            await new Promise((resolve, reject) => {
+                writeStream.on('finish', resolve);
+                writeStream.on('error', reject);
+            });
+
+            // Documentレコードを作成
+            await prisma.document.create({
+                data: {
+                    contractId: contract.id,
+                    pharmacyId: contract.pharmacyId,
+                    pharmacistId: contract.pharmacistId,
+                    documentType: 'invoice',
+                    title: 'プラットフォーム手数料請求書',
+                    filePath,
+                    fileSize: fs.statSync(filePath).size,
+                    mimeType: 'application/pdf',
+                },
+            });
+        } catch (pdfError) {
+            console.error('PDF generation error:', pdfError);
+            // PDFの生成に失敗しても契約作成は成功として扱う
+        }
 
         return {
             id: Number(contract.id),
