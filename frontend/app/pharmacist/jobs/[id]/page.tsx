@@ -225,7 +225,7 @@ export default function JobDetailPage() {
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <Calendar size={20} className="text-purple-600" />
-                <span>{job.workDays}日間</span>
+                <span>{job.desiredWorkDays || 0}日間</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <Clock size={20} className="text-orange-600" />
