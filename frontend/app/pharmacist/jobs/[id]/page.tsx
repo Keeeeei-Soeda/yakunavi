@@ -61,10 +61,11 @@ export default function JobDetailPage() {
       if (response.success && response.data) {
         setProfile(response.data);
         // プロフィールの最寄駅をデフォルト値として設定
-        if (response.data.nearestStation) {
+        const profileData = response.data;
+        if (profileData.nearestStation) {
           setApplicationForm(prev => ({
             ...prev,
-            nearestStation: response.data.nearestStation || '',
+            nearestStation: profileData.nearestStation || '',
           }));
         }
       }
@@ -213,7 +214,7 @@ export default function JobDetailPage() {
           {/* 基本情報 */}
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">{job.title}</h2>
-            
+
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="flex items-center gap-2 text-gray-700">
                 <MapPin size={20} className="text-blue-600" />
@@ -264,7 +265,7 @@ export default function JobDetailPage() {
               <div>
                 <p className="text-sm text-gray-600">勤務開始可能期間</p>
                 <p className="font-medium">
-                  {format(new Date(job.workStartPeriodStart), 'yyyy/MM/dd', { locale: ja })} 〜 
+                  {format(new Date(job.workStartPeriodStart), 'yyyy/MM/dd', { locale: ja })} 〜
                   {format(new Date(job.workStartPeriodEnd), 'yyyy/MM/dd', { locale: ja })}
                 </p>
               </div>
@@ -339,7 +340,7 @@ export default function JobDetailPage() {
             <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">応募確認</h3>
-                
+
                 {/* 資格証明書の警告 */}
                 {!hasVerifiedCertificate && (
                   <div className="mb-6 bg-orange-50 border border-orange-200 rounded-lg p-4">
