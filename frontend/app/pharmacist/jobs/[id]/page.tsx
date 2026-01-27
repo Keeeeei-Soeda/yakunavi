@@ -255,7 +255,7 @@ export default function JobDetailPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">報酬総額（目安）</p>
-                <p className="font-medium text-lg text-green-600">¥{(job.dailyWage * job.workDays).toLocaleString()}</p>
+                <p className="font-medium text-lg text-green-600">¥{((job.dailyWage * (job.desiredWorkDays || 0))).toLocaleString()}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">希望勤務時間</p>
