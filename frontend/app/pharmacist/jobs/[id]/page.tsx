@@ -251,7 +251,7 @@ export default function JobDetailPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-600">勤務日数</p>
-                <p className="font-medium">{job.workDays}日間</p>
+                <p className="font-medium">{job.desiredWorkDays || 0}日間</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">報酬総額（目安）</p>
