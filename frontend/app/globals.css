@@ -43,3 +43,90 @@ body {
   background: #555;
 }
 
+/* 印刷用スタイル */
+@media print {
+  /* ページ設定 */
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+
+  /* 印刷時に非表示にする要素 */
+  .no-print,
+  nav,
+  header,
+  footer,
+  button:not(.print-button),
+  .sidebar,
+  .navigation,
+  .action-buttons {
+    display: none !important;
+  }
+
+  /* 背景色を白に */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* 請求書コンテナ */
+  .invoice-container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* カードの背景とボーダーを調整 */
+  .invoice-card {
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+  }
+
+  /* ステータスバナーを非表示 */
+  .status-banner {
+    display: none !important;
+  }
+
+  /* 支払い報告フォームを非表示 */
+  .payment-form {
+    display: none !important;
+  }
+
+  /* リンクの下線を削除 */
+  a {
+    text-decoration: none !important;
+    color: black !important;
+  }
+
+  /* テキストの色を黒に統一 */
+  * {
+    color: black !important;
+  }
+
+  /* 請求額を強調 */
+  .invoice-amount {
+    font-size: 32px !important;
+    font-weight: bold !important;
+    color: black !important;
+  }
+
+  /* ページ区切りを避ける */
+  .no-break {
+    page-break-inside: avoid;
+  }
+
+  /* 印刷用の要素を表示 */
+  .print-only {
+    display: block !important;
+  }
+
+  /* 通常表示の要素を非表示 */
+  .screen-only {
+    display: none !important;
+  }
+}
+

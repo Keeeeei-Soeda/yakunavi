@@ -380,8 +380,8 @@ export default function JobDetailPage() {
                         <label
                           key={type}
                           className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${applicationForm.workExperienceTypes.includes(type)
-                              ? 'bg-green-50 border-green-500'
-                              : 'bg-white border-gray-300 hover:bg-gray-50'
+                            ? 'bg-green-50 border-green-500'
+                            : 'bg-white border-gray-300 hover:bg-gray-50'
                             }`}
                         >
                           <input

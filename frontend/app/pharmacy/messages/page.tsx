@@ -287,6 +287,10 @@ export default function MessagesPage() {
         (c) => c.applicationId === selectedConversation
     );
 
+    // 日付提案メッセージが存在するかチェック
+    const dateProposalMessage = messages.find((m) => m.messageType === 'date_proposal');
+    const hasProposedDates = !!dateProposalMessage;
+
     // 日付選択メッセージが存在するかチェック
     const dateSelectionMessage = messages.find((m) => m.messageType === 'date_selection');
     const hasSelectedDate = !!dateSelectionMessage;
@@ -456,16 +460,32 @@ export default function MessagesPage() {
                                 </div>
                                 {!hasSelectedDate ? (
                                     <>
-                                        <button
-                                            onClick={() => setShowDateProposalDialog(true)}
-                                            disabled={!selectedConversation}
-                                            className="mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                        >
-                                            📅 初回出勤日の候補を提案
-                                        </button>
-                                        <p className="text-xs text-gray-500 mt-2 text-center">
-                                            薬剤師に複数の候補日を提案できます
-                                        </p>
+                                        {hasProposedDates ? (
+                                            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                                <p className="text-sm text-blue-800 font-medium text-center">
+                                                    ⏳ 初回出勤日の候補を提案済みです
+                                                </p>
+                                                <p className="text-xs text-blue-600 mt-1 text-center">
+                                                    薬剤師が候補日から選択するまでお待ちください
+                                                </p>
+                                                <p className="text-xs text-gray-500 mt-2 text-center">
+                                                    ※提案は1回のみ可能です
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <button
+                                                    onClick={() => setShowDateProposalDialog(true)}
+                                                    disabled={!selectedConversation}
+                                                    className="mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                                >
+                                                    📅 初回出勤日の候補を提案
+                                                </button>
+                                                <p className="text-xs text-gray-500 mt-2 text-center">
+                                                    薬剤師に複数の候補日を提案できます（提案は1回のみ）
+                                                </p>
+                                            </>
+                                        )}
                                     </>
                                 ) : canSendOffer ? (
                                     <>
@@ -592,12 +612,17 @@ export default function MessagesPage() {
                 {showDateProposalDialog && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
-                            <h3 className="text-xl font-bold text-gray-900 mb-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">
                                 初回出勤日の候補を提案
                             </h3>
-                            <p className="text-sm text-gray-600 mb-4">
+                            <p className="text-sm text-gray-600 mb-2">
                                 薬剤師に提案する候補日を入力してください（最低1つ）
                             </p>
+                            <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                                <p className="text-xs text-orange-800">
+                                    ⚠️ <strong>提案は1回のみ</strong>可能です。慎重に候補日を選択してください。
+                                </p>
+                            </div>
                             <div className="space-y-3 mb-4">
                                 {proposedDates.map((date, index) => (
                                     <div key={index} className="flex gap-2">

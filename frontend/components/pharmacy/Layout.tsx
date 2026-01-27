@@ -8,16 +8,18 @@ interface PharmacyLayoutProps {
     children: React.ReactNode;
     title?: string;
     rightAction?: React.ReactNode;
+    hideSidebar?: boolean;
 }
 
 export const PharmacyLayout: React.FC<PharmacyLayoutProps> = ({
     children,
     title,
     rightAction,
+    hideSidebar = false,
 }) => {
     return (
         <div className="flex min-h-screen bg-gray-50">
-            <PharmacySidebar />
+            {!hideSidebar && <PharmacySidebar />}
 
             <div className="flex-1 flex flex-col">
                 {/* ヘッダー */}

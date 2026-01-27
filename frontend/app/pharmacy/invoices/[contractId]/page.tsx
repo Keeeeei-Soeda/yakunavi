@@ -5,13 +5,11 @@ import { useParams, useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { contractsAPI } from '@/lib/api/contracts';
+import { documentsAPI } from '@/lib/api/documents';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { ArrowLeft, Download, FileText } from 'lucide-react';
 import Link from 'next/link';
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
 
 export default function InvoicePage() {
   const params = useParams();
@@ -54,28 +52,20 @@ export default function InvoicePage() {
 
     setDownloading(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/documents/${invoiceDoc.id}/download`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        responseType: 'blob',
-      });
+      const result = await documentsAPI.download(
+        invoiceDoc.id,
+        'pharmacy',
+        `請求書_${contract.id}.pdf`
+      );
 
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `請求書_${contract.id}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
+      if (result.success) {
       alert('PDFをダウンロードしました');
-    } catch (error) {
+      } else {
+        alert(result.error || 'PDFのダウンロードに失敗しました');
+      }
+    } catch (error: any) {
       console.error('Failed to download PDF:', error);
-      alert('PDFのダウンロードに失敗しました');
+      alert(error.message || 'PDFのダウンロードに失敗しました');
     } finally {
       setDownloading(false);
     }

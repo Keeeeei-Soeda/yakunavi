@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { contractsAPI, Contract } from '@/lib/api/contracts';
+import { documentsAPI } from '@/lib/api/documents';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import {
@@ -25,6 +26,7 @@ export default function ContractDetailPage() {
 
   const [contract, setContract] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState<number | null>(null);
 
   useEffect(() => {
     fetchContractDetail();
@@ -44,11 +46,25 @@ export default function ContractDetailPage() {
     }
   };
 
-  const handleDownloadDocument = (documentId: number, fileName: string) => {
-    const link = document.createElement('a');
-    link.href = `${process.env.NEXT_PUBLIC_API_URL}/documents/${documentId}/download?userType=pharmacy`;
-    link.download = fileName;
-    link.click();
+  // ドキュメントをダウンロード
+  const handleDownloadDocument = async (documentId: number, documentTitle: string) => {
+    setDownloading(documentId);
+    try {
+      const result = await documentsAPI.download(
+        documentId,
+        'pharmacy',
+        documentTitle
+      );
+      
+      if (!result.success) {
+        alert(result.error || 'ダウンロードに失敗しました');
+      }
+    } catch (error: any) {
+      console.error('Download error:', error);
+      alert(error.message || 'ダウンロードに失敗しました');
+    } finally {
+      setDownloading(null);
+    }
   };
 
   if (loading) {
@@ -306,10 +322,11 @@ export default function ContractDetailPage() {
                     </div>
                     <button
                       onClick={() => handleDownloadDocument(doc.id, doc.documentTitle)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      disabled={downloading === doc.id}
+                      className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                     >
                       <Download className="w-4 h-4" />
-                      <span>ダウンロード</span>
+                      <span>{downloading === doc.id ? 'ダウンロード中...' : 'ダウンロード'}</span>
                     </button>
                   </div>
                 ))}

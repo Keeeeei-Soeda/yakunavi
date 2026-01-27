@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacistLayout } from '@/components/pharmacist/Layout';
 import { contractsAPI, Contract } from '@/lib/api/contracts';
+import { documentsAPI } from '@/lib/api/documents';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { ArrowLeft, FileText, Download, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
@@ -17,6 +18,7 @@ export default function ContractDetailPage() {
 
   const [contract, setContract] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState<number | null>(null);
 
   useEffect(() => {
     fetchContractDetail();
@@ -33,6 +35,27 @@ export default function ContractDetailPage() {
       console.error('Failed to fetch contract detail:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ドキュメントをダウンロード
+  const handleDownload = async (documentId: number, documentType: string) => {
+    setDownloading(documentId);
+    try {
+      const result = await documentsAPI.download(
+        documentId,
+        'pharmacist',
+        `${documentType}_契約${contractId}.pdf`
+      );
+      
+      if (!result.success) {
+        alert(result.error || 'ダウンロードに失敗しました');
+      }
+    } catch (error: any) {
+      console.error('Download error:', error);
+      alert(error.message || 'ダウンロードに失敗しました');
+    } finally {
+      setDownloading(null);
     }
   };
 
@@ -239,14 +262,14 @@ export default function ContractDetailPage() {
                         </p>
                       </div>
                     </div>
-                    <a
-                      href={doc.fileUrl}
-                      download
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                    <button
+                      onClick={() => handleDownload(doc.id, doc.documentType)}
+                      disabled={downloading === doc.id}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
                     >
                       <Download size={16} />
-                      ダウンロード
-                    </a>
+                      {downloading === doc.id ? 'ダウンロード中...' : 'ダウンロード'}
+                    </button>
                   </div>
                 ))}
               </div>

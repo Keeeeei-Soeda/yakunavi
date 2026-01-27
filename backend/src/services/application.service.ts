@@ -302,36 +302,38 @@ export class ApplicationService {
   }
 
   /**
-   * 応募を取り下げ
+   * 応募を取り下げ（廃止：運営への連絡が必要）
+   * ⚠️ 一度応募したら、基本的に取り下げはできません
+   * やむを得ない場合は運営（support@example.com）までご連絡ください
    */
-  async withdrawApplication(applicationId: bigint, pharmacistId: bigint) {
-    const application = await prisma.application.findUnique({
-      where: { id: applicationId },
-    });
+  // async withdrawApplication(applicationId: bigint, pharmacistId: bigint) {
+  //   const application = await prisma.application.findUnique({
+  //     where: { id: applicationId },
+  //   });
 
-    if (!application) {
-      throw new Error('応募が見つかりません');
-    }
+  //   if (!application) {
+  //     throw new Error('応募が見つかりません');
+  //   }
 
-    if (application.pharmacistId !== pharmacistId) {
-      throw new Error('この応募を取り下げる権限がありません');
-    }
+  //   if (application.pharmacistId !== pharmacistId) {
+  //     throw new Error('この応募を取り下げる権限がありません');
+  //   }
 
-    if (!['applied', 'under_review'].includes(application.status)) {
-      throw new Error('この応募は取り下げできません');
-    }
+  //   if (!['applied', 'under_review'].includes(application.status)) {
+  //     throw new Error('この応募は取り下げできません');
+  //   }
 
-    await prisma.application.update({
-      where: { id: applicationId },
-      data: {
-        status: 'withdrawn',
-      },
-    });
+  //   await prisma.application.update({
+  //     where: { id: applicationId },
+  //     data: {
+  //       status: 'withdrawn',
+  //     },
+  //   });
 
-    return {
-      id: Number(applicationId),
-      status: 'withdrawn',
-    };
-  }
+  //   return {
+  //     id: Number(applicationId),
+  //     status: 'withdrawn',
+  //   };
+  // }
 }
 

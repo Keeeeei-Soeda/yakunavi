@@ -154,36 +154,38 @@ export class ApplicationController {
 
   /**
    * 応募を取り下げ（薬剤師側）
+   * ⚠️ 廃止：一度応募したら、基本的に取り下げはできません
+   * やむを得ない場合は運営（support@example.com）までご連絡ください
    */
-  withdrawApplication = async (req: AuthRequest, res: Response) => {
-    try {
-      if (!req.user || req.user.userType !== 'pharmacist') {
-        return res.status(403).json({
-          success: false,
-          error: '薬剤師アカウントのみアクセス可能です',
-        });
-      }
+  // withdrawApplication = async (req: AuthRequest, res: Response) => {
+  //   try {
+  //     if (!req.user || req.user.userType !== 'pharmacist') {
+  //       return res.status(403).json({
+  //         success: false,
+  //         error: '薬剤師アカウントのみアクセス可能です',
+  //       });
+  //     }
 
-      const applicationId = BigInt(req.params.id);
-      const { pharmacistId } = req.body;
+  //     const applicationId = BigInt(req.params.id);
+  //     const { pharmacistId } = req.body;
 
-      const result = await this.applicationService.withdrawApplication(
-        applicationId,
-        BigInt(pharmacistId)
-      );
+  //     const result = await this.applicationService.withdrawApplication(
+  //       applicationId,
+  //       BigInt(pharmacistId)
+  //     );
 
-      return res.status(200).json({
-        success: true,
-        message: '応募を取り下げました',
-        data: result,
-      });
-    } catch (error: any) {
-      console.error('Withdraw application error:', error);
-      return res.status(400).json({
-        success: false,
-        error: error.message || '応募の取り下げに失敗しました',
-      });
-    }
-  };
+  //     return res.status(200).json({
+  //       success: true,
+  //       message: '応募を取り下げました',
+  //       data: result,
+  //     });
+  //   } catch (error: any) {
+  //     console.error('Withdraw application error:', error);
+  //     return res.status(400).json({
+  //       success: false,
+  //       error: error.message || '応募の取り下げに失敗しました',
+  //     });
+  //   }
+  // };
 }
 

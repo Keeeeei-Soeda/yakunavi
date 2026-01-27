@@ -17,6 +17,7 @@ import {
   CheckCircle,
   Clock,
   User,
+  Printer,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -32,10 +33,12 @@ export default function PaymentDetailPage() {
   const [paymentDate, setPaymentDate] = useState('');
   const [transferName, setTransferName] = useState('');
   const [confirmationNote, setConfirmationNote] = useState('');
+  const [pharmacyInfo, setPharmacyInfo] = useState<any>(null);
 
   useEffect(() => {
     fetchPaymentDetail();
-  }, [paymentId]);
+    fetchPharmacyInfo();
+  }, [paymentId, pharmacyId]);
 
   const fetchPaymentDetail = async () => {
     setLoading(true);
@@ -48,6 +51,15 @@ export default function PaymentDetailPage() {
       console.error('Failed to fetch payment detail:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPharmacyInfo = async () => {
+    try {
+      // 薬局情報を取得（必要に応じて実装）
+      // 現在はpayment.contractから取得できる情報を使用
+    } catch (error) {
+      console.error('Failed to fetch pharmacy info:', error);
     }
   };
 
@@ -87,6 +99,11 @@ export default function PaymentDetailPage() {
     link.href = `${process.env.NEXT_PUBLIC_API_URL}/documents/contract/${payment.contractId}?type=invoice&userType=pharmacy`;
     link.download = `invoice_INV-${String(payment.contractId).padStart(6, '0')}.pdf`;
     link.click();
+  };
+
+  // 印刷機能
+  const handlePrint = () => {
+    window.print();
   };
 
   if (loading) {
@@ -160,10 +177,10 @@ export default function PaymentDetailPage() {
 
   return (
     <ProtectedRoute requiredUserType="pharmacy">
-      <PharmacyLayout>
-        <div className="space-y-6">
+      <PharmacyLayout hideSidebar={true}>
+        <div className="space-y-6 invoice-container">
           {/* ヘッダー */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between no-print">
             <div>
               <Link
                 href="/pharmacy/payments"
@@ -175,17 +192,73 @@ export default function PaymentDetailPage() {
                 請求書 INV-{String(payment.contractId).padStart(6, '0')}
               </h1>
             </div>
-            <button
-              onClick={handleDownloadInvoice}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              <Download className="w-4 h-4" />
-              <span>PDFダウンロード</span>
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handlePrint}
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                <Printer className="w-4 h-4" />
+                <span>印刷 / PDF保存</span>
+              </button>
+              <button
+                onClick={handleDownloadInvoice}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                <Download className="w-4 h-4" />
+                <span>PDFダウンロード</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 印刷用ヘッダー（印刷時のみ表示） */}
+          <div className="hidden print-only mb-6">
+            <div className="text-right text-sm text-gray-600 mb-4">
+              発行日: {format(new Date(), 'yyyy年MM月dd日', { locale: ja })}
+            </div>
+            <h1 className="text-3xl font-bold text-center mb-2">
+              プラットフォーム手数料 請求書
+            </h1>
+            <p className="text-center text-gray-600 mb-6">
+              Platform Fee Invoice
+            </p>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">請求書番号</p>
+                <p className="text-lg font-bold">
+                  INV-{String(payment.contractId).padStart(6, '0')}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-600 mb-1">発行日</p>
+                <p className="text-lg font-bold">
+                  {format(new Date(), 'yyyy年MM月dd日', { locale: ja })}
+                </p>
+              </div>
+            </div>
+
+            {/* 請求先情報（印刷時のみ表示） */}
+            {payment.contract && (
+              <div className="mb-6 p-4 border-2 border-gray-400">
+                <h3 className="font-semibold text-lg mb-3">請求先</h3>
+                <p className="text-xl font-bold mb-2">
+                  {payment.contract.pharmacy?.pharmacyName || payment.contract.pharmacy?.name || '薬局名'} 御中
+                </p>
+                {(payment.contract.pharmacy?.address || payment.contract.pharmacy?.prefecture) && (
+                  <p className="text-sm mb-1">
+                    {payment.contract.pharmacy?.prefecture || ''}{payment.contract.pharmacy?.address || ''}
+                  </p>
+                )}
+                {payment.contract.pharmacy?.phoneNumber && (
+                  <p className="text-sm">
+                    TEL: {payment.contract.pharmacy.phoneNumber}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* ステータス */}
-          <div className={`bg-${statusDisplay.color}-50 border border-${statusDisplay.color}-200 rounded-lg p-6`}>
+          <div className={`bg-${statusDisplay.color}-50 border border-${statusDisplay.color}-200 rounded-lg p-6 status-banner no-print`}>
             <div className="flex items-center space-x-3">
               <div className={`text-${statusDisplay.color}-600`}>{statusDisplay.icon}</div>
               <div>
@@ -200,12 +273,13 @@ export default function PaymentDetailPage() {
           </div>
 
           {/* 請求内容 */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold mb-4">請求内容</h2>
+          <div className="bg-white rounded-lg shadow p-6 invoice-card no-break">
+            <h2 className="text-lg font-semibold mb-4 screen-only">請求内容</h2>
+            <h2 className="text-xl font-bold mb-4 hidden print-only">請求内訳</h2>
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-gray-200">
-                <span className="text-gray-700">請求額</span>
-                <span className="text-3xl font-bold text-blue-600">
+              <div className="flex items-center justify-between pb-4 border-b-2 border-gray-400">
+                <span className="text-lg font-semibold text-gray-900">請求額</span>
+                <span className="text-3xl font-bold text-gray-900 invoice-amount">
                   ¥{payment.amount.toLocaleString()}
                 </span>
               </div>
@@ -217,12 +291,9 @@ export default function PaymentDetailPage() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         契約ID
                       </label>
-                      <Link
-                        href={`/pharmacy/contracts/${payment.contractId}`}
-                        className="text-blue-600 hover:underline"
-                      >
+                      <span className="text-gray-900">
                         {payment.contractId}
-                      </Link>
+                      </span>
                     </div>
 
                     <div>
@@ -230,10 +301,10 @@ export default function PaymentDetailPage() {
                         薬剤師名
                       </label>
                       <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4 text-gray-400" />
+                        <User className="w-4 h-4 text-gray-400 screen-only" />
                         <span className="text-gray-900">
                           {payment.contract.pharmacist?.lastName}{' '}
-                          {payment.contract.pharmacist?.firstName}
+                          {payment.contract.pharmacist?.firstName} 様
                         </span>
                       </div>
                     </div>
@@ -243,7 +314,7 @@ export default function PaymentDetailPage() {
                         初回出勤日
                       </label>
                       <div className="flex items-center space-x-2">
-                        <Calendar className="w-4 h-4 text-gray-400" />
+                        <Calendar className="w-4 h-4 text-gray-400 screen-only" />
                         <span className="text-gray-900">
                           {format(new Date(payment.contract.initialWorkDate), 'yyyy年MM月dd日', {
                             locale: ja,
@@ -257,7 +328,7 @@ export default function PaymentDetailPage() {
                         支払い期限
                       </label>
                       <div className="flex items-center space-x-2">
-                        <Clock className="w-4 h-4 text-gray-400" />
+                        <Clock className="w-4 h-4 text-gray-400 screen-only" />
                         <span className="text-gray-900">
                           {format(new Date(payment.contract.paymentDeadline), 'yyyy年MM月dd日', {
                             locale: ja,
@@ -306,35 +377,35 @@ export default function PaymentDetailPage() {
           </div>
 
           {/* 振込先情報 */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold mb-4">振込先情報</h2>
-            <div className="space-y-2 text-sm">
-              <div className="flex">
-                <span className="w-32 text-gray-600">銀行名:</span>
-                <span className="text-gray-900">◯◯銀行</span>
+          <div className="bg-white rounded-lg shadow p-6 invoice-card no-break">
+            <h2 className="text-lg font-semibold mb-4">お振込先情報</h2>
+            <div className="space-y-3 text-sm">
+              <div className="flex border-b border-gray-200 pb-2">
+                <span className="w-32 font-medium text-gray-700">銀行名:</span>
+                <span className="text-gray-900">三菱UFJ銀行</span>
               </div>
-              <div className="flex">
-                <span className="w-32 text-gray-600">支店名:</span>
-                <span className="text-gray-900">◯◯支店</span>
+              <div className="flex border-b border-gray-200 pb-2">
+                <span className="w-32 font-medium text-gray-700">支店名:</span>
+                <span className="text-gray-900">渋谷支店</span>
               </div>
-              <div className="flex">
-                <span className="w-32 text-gray-600">口座種別:</span>
+              <div className="flex border-b border-gray-200 pb-2">
+                <span className="w-32 font-medium text-gray-700">口座種別:</span>
                 <span className="text-gray-900">普通</span>
               </div>
-              <div className="flex">
-                <span className="w-32 text-gray-600">口座番号:</span>
-                <span className="text-gray-900">1234567</span>
+              <div className="flex border-b border-gray-200 pb-2">
+                <span className="w-32 font-medium text-gray-700">口座番号:</span>
+                <span className="text-gray-900 font-bold">1234567</span>
               </div>
               <div className="flex">
-                <span className="w-32 text-gray-600">口座名義:</span>
-                <span className="text-gray-900">プラットフォーム運営株式会社</span>
+                <span className="w-32 font-medium text-gray-700">口座名義:</span>
+                <span className="text-gray-900">カ）ヤクナビ</span>
               </div>
             </div>
           </div>
 
           {/* 支払い報告フォーム */}
           {payment.paymentStatus === 'pending' && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-6 payment-form no-print">
               <h2 className="text-lg font-semibold mb-4">支払い報告</h2>
               <div className="space-y-4">
                 <div>
@@ -391,7 +462,7 @@ export default function PaymentDetailPage() {
           {/* 支払い報告情報（報告済みの場合） */}
           {(payment.paymentStatus === 'reported' || payment.paymentStatus === 'confirmed') &&
             payment.paymentDate && (
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white rounded-lg shadow p-6 no-print">
                 <h2 className="text-lg font-semibold mb-4">支払い報告情報</h2>
                 <div className="space-y-3">
                   <div>
@@ -444,7 +515,7 @@ export default function PaymentDetailPage() {
             )}
 
           {/* 重要事項 */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 no-print">
             <h3 className="font-semibold text-blue-900 mb-3">💡 お支払いについて</h3>
             <ul className="space-y-2 text-sm text-blue-800">
               <li>・振込手数料は貴社負担でお願いします</li>
@@ -452,6 +523,25 @@ export default function PaymentDetailPage() {
               <li>・確認完了後、薬剤師の連絡先が開示されます</li>
               <li>・薬剤師への報酬は、体験期間終了後に直接お支払いください</li>
             </ul>
+          </div>
+
+          {/* 印刷用の重要事項（印刷時のみ表示） */}
+          <div className="hidden print-only mt-8 border-t-2 border-gray-400 pt-6">
+            <h3 className="font-semibold text-lg mb-3">重要事項</h3>
+            <ul className="space-y-2 text-sm leading-relaxed">
+              <li>・お支払い確認後、薬剤師の個人情報（連絡先、免許証情報等）が開示されます</li>
+              <li>・期限内にお支払いが確認できない場合、契約がキャンセルされる場合があります</li>
+              <li>・お振込の際は、請求書番号（INV-{String(payment.contractId).padStart(6, '0')}）をお振込名義人欄にご記入ください</li>
+              <li>・振込手数料は貴社にてご負担ください</li>
+              <li>・薬剤師への報酬は、体験期間終了後に直接お支払いください</li>
+            </ul>
+          </div>
+
+          {/* 印刷用フッター */}
+          <div className="hidden print-only mt-12 pt-6 border-t border-gray-300 text-center text-sm text-gray-600">
+            <p className="font-semibold mb-2">ヤクナビ運営事務局</p>
+            <p>お問い合わせ: support@yakunavi.jp</p>
+            <p>TEL: 0120-XXX-XXXX（平日 9:00-18:00）</p>
           </div>
         </div>
       </PharmacyLayout>

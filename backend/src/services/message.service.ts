@@ -239,6 +239,18 @@ export class MessageService {
             throw new Error('この応募にアクセスする権限がありません');
         }
 
+        // 既に日付提案が送信されているかチェック
+        const existingDateProposal = await prisma.message.findFirst({
+            where: {
+                applicationId,
+                messageType: 'date_proposal',
+            },
+        });
+
+        if (existingDateProposal) {
+            throw new Error('初回出勤日の候補は既に提案済みです。提案は1回のみ可能です。');
+        }
+
         // 提案メッセージを作成
         const message = await prisma.message.create({
             data: {

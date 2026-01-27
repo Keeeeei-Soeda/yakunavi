@@ -26,11 +26,13 @@ router.patch(
 );
 
 // 応募取り下げ（薬剤師のみ）
-router.post(
-  '/:id/withdraw',
-  requireUserType('pharmacist'),
-  applicationController.withdrawApplication
-);
+// ⚠️ 廃止：一度応募したら、基本的に取り下げはできません
+// やむを得ない場合は運営（support@yakunavi.jp）までご連絡ください
+// router.post(
+//   '/:id/withdraw',
+//   requireUserType('pharmacist'),
+//   applicationController.withdrawApplication
+// );
 
 // 薬局の応募一覧取得
 router.get('/pharmacy/:pharmacyId', applicationController.getPharmacyApplications);

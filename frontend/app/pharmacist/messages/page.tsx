@@ -262,8 +262,8 @@ export default function MessagesPage() {
         <div className={`max-w-md ${isPharmacist ? 'ml-auto' : ''}`}>
           <div
             className={`px-4 py-3 rounded-lg ${message.senderType === 'pharmacist'
-                ? 'bg-green-600 text-white'
-                : 'bg-gray-100 text-gray-900'
+              ? 'bg-green-600 text-white'
+              : 'bg-gray-100 text-gray-900'
               }`}
           >
             <p>{message.messageContent}</p>
@@ -313,8 +313,8 @@ export default function MessagesPage() {
                     key={conversation.applicationId}
                     onClick={() => setSelectedConversation(conversation.applicationId)}
                     className={`w-full p-4 border-b border-gray-200 text-left hover:bg-gray-50 transition-colors ${selectedConversation === conversation.applicationId
-                        ? 'bg-green-50'
-                        : ''
+                      ? 'bg-green-50'
+                      : ''
                       }`}
                   >
                     <div className="flex items-start gap-3">
@@ -428,8 +428,8 @@ export default function MessagesPage() {
                     <div
                       key={message.id}
                       className={`flex ${message.senderType === 'pharmacist'
-                          ? 'justify-end'
-                          : 'justify-start'
+                        ? 'justify-end'
+                        : 'justify-start'
                         }`}
                     >
                       {renderMessage(message)}

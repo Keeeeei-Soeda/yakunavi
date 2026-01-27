@@ -38,18 +38,21 @@ export default function ApplicationsPage() {
     }
   };
 
-  const handleWithdraw = async (id: number) => {
-    if (!confirm('この応募を取り下げますか？')) return;
+  // ⚠️ 応募取り下げ機能は廃止されました
+  // 一度応募したら、基本的に取り下げはできません
+  // やむを得ない場合は運営（support@yakunavi.jp）までご連絡ください
+  // const handleWithdraw = async (id: number) => {
+  //   if (!confirm('この応募を取り下げますか？')) return;
 
-    try {
-      await applicationsAPI.withdraw(id, pharmacistId);
-      alert('応募を取り下げました');
-      fetchApplications();
-    } catch (error: any) {
-      console.error('Failed to withdraw:', error);
-      alert(error.response?.data?.error || '取り下げに失敗しました');
-    }
-  };
+  //   try {
+  //     await applicationsAPI.withdraw(id, pharmacistId);
+  //     alert('応募を取り下げました');
+  //     fetchApplications();
+  //   } catch (error: any) {
+  //     console.error('Failed to withdraw:', error);
+  //     alert(error.response?.data?.error || '取り下げに失敗しました');
+  //   }
+  // };
 
   const getStatusInfo = (status: string) => {
     const statusMap: { [key: string]: { label: string; color: string; icon: any } } = {
@@ -191,16 +194,8 @@ export default function ApplicationsPage() {
                         )}
                       </div>
                     </div>
-                    <div className="ml-4">
-                      {['applied', 'under_review'].includes(app.status) && (
-                        <button
-                          onClick={() => handleWithdraw(app.id)}
-                          className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
-                        >
-                          取り下げ
-                        </button>
-                      )}
-                    </div>
+                    {/* 応募取り下げ機能は廃止されました */}
+                    {/* やむを得ない場合は運営までご連絡ください */}
                   </div>
                 </div>
               );
