@@ -143,7 +143,7 @@ export default function JobDetailPage() {
   if (loading) {
     return (
       <ProtectedRoute requiredUserType="pharmacist">
-        <PharmacistLayout>
+        <PharmacistLayout title="求人詳細">
           <div className="flex items-center justify-center h-64">
             <div className="text-gray-500">読み込み中...</div>
           </div>
@@ -155,7 +155,7 @@ export default function JobDetailPage() {
   if (!job) {
     return (
       <ProtectedRoute requiredUserType="pharmacist">
-        <PharmacistLayout>
+        <PharmacistLayout title="求人詳細">
           <div className="flex items-center justify-center h-64">
             <div className="text-gray-500">求人が見つかりません</div>
           </div>
@@ -169,7 +169,7 @@ export default function JobDetailPage() {
 
   return (
     <ProtectedRoute requiredUserType="pharmacist">
-      <PharmacistLayout>
+      <PharmacistLayout title="求人詳細">
         <div className="space-y-6">
           {/* ヘッダー */}
           <div className="flex items-center justify-between">
@@ -180,7 +180,6 @@ export default function JobDetailPage() {
               >
                 <ArrowLeft size={24} />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">求人詳細</h1>
             </div>
             <button
               onClick={() => setShowApplicationDialog(true)}
