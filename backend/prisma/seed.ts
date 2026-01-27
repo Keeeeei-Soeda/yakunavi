@@ -177,30 +177,32 @@ async function main() {
     });
 
     // ============================================
-    // 求人1（薬局1から）
+    // 求人作成（5件）
     // ============================================
-    console.log('📋 求人1を作成中...');
     const today = new Date();
-    const workStartDate = new Date(today);
-    workStartDate.setDate(today.getDate() + 14); // 2週間後
-    const workEndDate = new Date(workStartDate);
-    workEndDate.setDate(workStartDate.getDate() + 30); // 30日後
-    const deadlineDate = new Date(today);
-    deadlineDate.setDate(today.getDate() + 7); // 7日後
+
+    // 求人001（薬局1から）
+    console.log('📋 求人001を作成中...');
+    const workStartDate1 = new Date(today);
+    workStartDate1.setDate(today.getDate() + 14); // 2週間後
+    const workEndDate1 = new Date(workStartDate1);
+    workEndDate1.setDate(workStartDate1.getDate() + 30); // 30日後
+    const deadlineDate1 = new Date(today);
+    deadlineDate1.setDate(today.getDate() + 7); // 7日後
 
     const jobPosting1 = await prisma.jobPosting.create({
         data: {
             pharmacyId: pharmacy1.id,
-            title: '調剤薬局での短期勤務募集（新宿）',
+            title: '【001】調剤薬局での短期勤務募集（新宿）',
             workLocation: '東京都新宿区新宿1-1-1',
             description: '新宿駅から徒歩5分の調剤薬局での短期勤務を募集しています。\n\n【業務内容】\n・調剤業務\n・服薬指導\n・在庫管理\n\n【こんな方におすすめ】\n・調剤薬局での経験がある方\n・患者様とのコミュニケーションを大切にできる方\n・チームワークを大切にできる方',
             dailyWage: 25000,
             totalCompensation: 750000,
             platformFee: 300000,
             desiredWorkDays: 30,
-            workStartPeriodFrom: workStartDate,
-            workStartPeriodTo: workEndDate,
-            recruitmentDeadline: deadlineDate,
+            workStartPeriodFrom: workStartDate1,
+            workStartPeriodTo: workEndDate1,
+            recruitmentDeadline: deadlineDate1,
             desiredWorkHours: '9:00-18:00',
             requirements: '調剤薬局での勤務経験2年以上、薬剤師免許',
             status: 'published',
@@ -208,32 +210,117 @@ async function main() {
         },
     });
 
-    // ============================================
-    // 求人2（薬局2から）
-    // ============================================
-    console.log('📋 求人2を作成中...');
+    // 求人002（薬局1から）
+    console.log('📋 求人002を作成中...');
     const workStartDate2 = new Date(today);
     workStartDate2.setDate(today.getDate() + 21); // 3週間後
     const workEndDate2 = new Date(workStartDate2);
-    workEndDate2.setDate(workStartDate2.getDate() + 45); // 45日後
+    workEndDate2.setDate(workStartDate2.getDate() + 20); // 20日後
     const deadlineDate2 = new Date(today);
     deadlineDate2.setDate(today.getDate() + 10); // 10日後
 
     const jobPosting2 = await prisma.jobPosting.create({
         data: {
+            pharmacyId: pharmacy1.id,
+            title: '【002】新宿駅前の調剤薬局で薬剤師募集',
+            workLocation: '東京都新宿区新宿3-3-3',
+            description: '新宿駅南口から徒歩3分の好立地調剤薬局で薬剤師を募集しています。\n\n【業務内容】\n・調剤業務全般\n・服薬指導\n・在庫管理\n・レセプト業務\n\n【待遇】\n・日給26,000円\n・交通費全額支給\n・残業手当あり\n\n【こんな方におすすめ】\n・調剤薬局での経験がある方\n・効率的な業務処理ができる方\n・患者様に寄り添った対応ができる方',
+            dailyWage: 26000,
+            totalCompensation: 520000,
+            platformFee: 208000,
+            desiredWorkDays: 20,
+            workStartPeriodFrom: workStartDate2,
+            workStartPeriodTo: workEndDate2,
+            recruitmentDeadline: deadlineDate2,
+            desiredWorkHours: '8:00-17:00',
+            requirements: '調剤薬局での勤務経験1年以上、薬剤師免許',
+            status: 'published',
+            publishedAt: new Date(),
+        },
+    });
+
+    // 求人003（薬局1から）
+    console.log('📋 求人003を作成中...');
+    const workStartDate3 = new Date(today);
+    workStartDate3.setDate(today.getDate() + 28); // 4週間後
+    const workEndDate3 = new Date(workStartDate3);
+    workEndDate3.setDate(workStartDate3.getDate() + 60); // 60日後
+    const deadlineDate3 = new Date(today);
+    deadlineDate3.setDate(today.getDate() + 14); // 14日後
+
+    const jobPosting3 = await prisma.jobPosting.create({
+        data: {
+            pharmacyId: pharmacy1.id,
+            title: '【003】新宿エリアの調剤薬局で長期勤務募集',
+            workLocation: '東京都新宿区新宿5-5-5',
+            description: '新宿エリアの調剤薬局で長期勤務を募集しています。\n\n【業務内容】\n・調剤業務全般\n・服薬指導\n・在庫管理\n・レセプト業務\n・外来業務のサポート\n\n【待遇】\n・日給27,000円\n・交通費全額支給\n・社会保険完備（長期勤務の場合）\n・賞与あり（長期勤務の場合）\n\n【こんな方におすすめ】\n・調剤薬局での経験が豊富な方\n・長期的に勤務できる方\n・チームリーダーとして活躍したい方',
+            dailyWage: 27000,
+            totalCompensation: 1620000,
+            platformFee: 648000,
+            desiredWorkDays: 60,
+            workStartPeriodFrom: workStartDate3,
+            workStartPeriodTo: workEndDate3,
+            recruitmentDeadline: deadlineDate3,
+            desiredWorkHours: '9:00-18:00',
+            requirements: '調剤薬局での勤務経験3年以上、薬剤師免許、保険薬剤師登録',
+            status: 'published',
+            publishedAt: new Date(),
+        },
+    });
+
+    // 求人004（薬局2から）
+    console.log('📋 求人004を作成中...');
+    const workStartDate4 = new Date(today);
+    workStartDate4.setDate(today.getDate() + 14); // 2週間後
+    const workEndDate4 = new Date(workStartDate4);
+    workEndDate4.setDate(workStartDate4.getDate() + 45); // 45日後
+    const deadlineDate4 = new Date(today);
+    deadlineDate4.setDate(today.getDate() + 7); // 7日後
+
+    const jobPosting4 = await prisma.jobPosting.create({
+        data: {
             pharmacyId: pharmacy2.id,
-            title: '渋谷の調剤薬局で薬剤師募集（長期可）',
+            title: '【004】渋谷の調剤薬局で薬剤師募集（長期可）',
             workLocation: '東京都渋谷区渋谷2-2-2',
             description: '渋谷駅から徒歩3分の調剤薬局で薬剤師を募集しています。\n\n【業務内容】\n・調剤業務全般\n・服薬指導\n・在庫管理\n・外来業務のサポート\n\n【待遇】\n・日給28,000円\n・交通費支給\n・社会保険完備（長期勤務の場合）\n\n【こんな方におすすめ】\n・調剤薬局での経験がある方\n・患者様第一を大切にできる方\n・最新のシステムを使いこなせる方',
             dailyWage: 28000,
             totalCompensation: 1260000,
             platformFee: 504000,
             desiredWorkDays: 45,
-            workStartPeriodFrom: workStartDate2,
-            workStartPeriodTo: workEndDate2,
-            recruitmentDeadline: deadlineDate2,
+            workStartPeriodFrom: workStartDate4,
+            workStartPeriodTo: workEndDate4,
+            recruitmentDeadline: deadlineDate4,
             desiredWorkHours: '8:30-19:00',
             requirements: '調剤薬局での勤務経験3年以上、薬剤師免許、保険薬剤師登録',
+            status: 'published',
+            publishedAt: new Date(),
+        },
+    });
+
+    // 求人005（薬局2から）
+    console.log('📋 求人005を作成中...');
+    const workStartDate5 = new Date(today);
+    workStartDate5.setDate(today.getDate() + 21); // 3週間後
+    const workEndDate5 = new Date(workStartDate5);
+    workEndDate5.setDate(workStartDate5.getDate() + 35); // 35日後
+    const deadlineDate5 = new Date(today);
+    deadlineDate5.setDate(today.getDate() + 12); // 12日後
+
+    const jobPosting5 = await prisma.jobPosting.create({
+        data: {
+            pharmacyId: pharmacy2.id,
+            title: '【005】渋谷エリアの調剤薬局で薬剤師募集',
+            workLocation: '東京都渋谷区渋谷4-4-4',
+            description: '渋谷エリアの調剤薬局で薬剤師を募集しています。\n\n【業務内容】\n・調剤業務全般\n・服薬指導\n・在庫管理\n・レセプト業務\n・外来業務のサポート\n\n【待遇】\n・日給29,000円\n・交通費全額支給\n・残業手当あり\n・社会保険完備（長期勤務の場合）\n\n【こんな方におすすめ】\n・調剤薬局での経験が豊富な方\n・効率的な業務処理ができる方\n・患者様に寄り添った対応ができる方\n・最新のシステムを使いこなせる方',
+            dailyWage: 29000,
+            totalCompensation: 1015000,
+            platformFee: 406000,
+            desiredWorkDays: 35,
+            workStartPeriodFrom: workStartDate5,
+            workStartPeriodTo: workEndDate5,
+            recruitmentDeadline: deadlineDate5,
+            desiredWorkHours: '9:00-18:00',
+            requirements: '調剤薬局での勤務経験2年以上、薬剤師免許、保険薬剤師登録',
             status: 'published',
             publishedAt: new Date(),
         },
@@ -261,12 +348,12 @@ async function main() {
     console.log('  資格証明書: 未確認');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('\n📋 作成された求人:');
-    console.log(`  1. ${jobPosting1.title} (ID: ${jobPosting1.id})`);
-    console.log(`  2. ${jobPosting2.title} (ID: ${jobPosting2.id})`);
+    console.log(`  001. ${jobPosting1.title} (ID: ${jobPosting1.id})`);
+    console.log(`  002. ${jobPosting2.title} (ID: ${jobPosting2.id})`);
+    console.log(`  003. ${jobPosting3.title} (ID: ${jobPosting3.id})`);
+    console.log(`  004. ${jobPosting4.title} (ID: ${jobPosting4.id})`);
+    console.log(`  005. ${jobPosting5.title} (ID: ${jobPosting5.id})`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-
-    // 変数を使用（TypeScriptエラー回避）
-    console.log(`薬剤師2 ID: ${pharmacist2.id}`);
 }
 
 main()
