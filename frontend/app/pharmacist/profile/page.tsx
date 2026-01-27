@@ -136,7 +136,7 @@ export default function ProfilePage() {
     if (loading) {
         return (
             <ProtectedRoute requiredUserType="pharmacist">
-                <PharmacistLayout>
+                <PharmacistLayout title="プロフィール管理">
                     <div className="flex items-center justify-center h-64">
                         <div className="text-gray-500">読み込み中...</div>
                     </div>
@@ -147,10 +147,9 @@ export default function ProfilePage() {
 
     return (
         <ProtectedRoute requiredUserType="pharmacist">
-            <PharmacistLayout>
+            <PharmacistLayout title="プロフィール管理">
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold text-gray-900">プロフィール管理</h1>
                         <button
                             onClick={handleSave}
                             disabled={saving}
