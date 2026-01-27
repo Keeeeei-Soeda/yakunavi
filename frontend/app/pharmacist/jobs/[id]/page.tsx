@@ -217,7 +217,7 @@ export default function JobDetailPage() {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="flex items-center gap-2 text-gray-700">
                 <MapPin size={20} className="text-blue-600" />
-                <span>{PREFECTURES.find(p => p.value === job.prefecture)?.label || job.prefecture}</span>
+                <span>{job.workLocation || '場所未設定'}</span>
               </div>
               <div className="flex items-center gap-2 text-gray-700">
                 <DollarSign size={20} className="text-green-600" />
