@@ -231,8 +231,9 @@ export default function MessagesPage() {
     const renderMessage = (message: any) => {
         if (message.messageType === 'date_proposal') {
             const dates = message.structuredData?.proposedDates || [];
+            const isPharmacy = message.senderType === 'pharmacy';
             return (
-                <div className="max-w-md">
+                <div className={`max-w-md ${isPharmacy ? 'ml-auto' : ''}`}>
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                         <div className="flex items-center gap-2 mb-2">
                             <span className="text-2xl">📅</span>
@@ -259,8 +260,9 @@ export default function MessagesPage() {
             );
         } else if (message.messageType === 'date_selection') {
             const selectedDate = message.structuredData?.selectedDate;
+            const isPharmacy = message.senderType === 'pharmacy';
             return (
-                <div className="max-w-md">
+                <div className={`max-w-md ${isPharmacy ? 'ml-auto' : ''}`}>
                     <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                         <div className="flex items-center gap-2 mb-2">
                             <span className="text-2xl">✅</span>
