@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import { APIResponse } from './auth';
+import { APIResponse } from '../types';
 
 export interface Document {
   id: number;
