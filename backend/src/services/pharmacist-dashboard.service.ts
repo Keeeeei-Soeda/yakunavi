@@ -82,7 +82,8 @@ export class PharmacistDashboardService {
             desiredWorkDays: true,
             pharmacy: {
               select: {
-                pharmacyName: true
+                pharmacyName: true,
+                id: true,
               }
             }
           }
@@ -94,7 +95,22 @@ export class PharmacistDashboardService {
       take: limit
     });
 
-    return applications;
+    // BigIntをNumberに変換
+    return applications.map((app) => ({
+      ...app,
+      id: Number(app.id),
+      jobPostingId: Number(app.jobPostingId),
+      pharmacistId: Number(app.pharmacistId),
+      jobPosting: {
+        ...app.jobPosting,
+        id: Number(app.jobPosting.id),
+        pharmacyId: Number(app.jobPosting.pharmacyId),
+        pharmacy: {
+          ...app.jobPosting.pharmacy,
+          id: Number(app.jobPosting.pharmacy.id),
+        },
+      },
+    }));
   }
 
   /**
@@ -111,12 +127,14 @@ export class PharmacistDashboardService {
       include: {
         pharmacy: {
           select: {
-            pharmacyName: true
+            pharmacyName: true,
+            id: true,
           }
         },
         jobPosting: {
           select: {
-            title: true
+            title: true,
+            id: true,
           }
         }
       },
@@ -126,7 +144,23 @@ export class PharmacistDashboardService {
       take: limit
     });
 
-    return contracts;
+    // BigIntをNumberに変換
+    return contracts.map((contract) => ({
+      ...contract,
+      id: Number(contract.id),
+      applicationId: Number(contract.applicationId),
+      pharmacyId: Number(contract.pharmacyId),
+      pharmacistId: Number(contract.pharmacistId),
+      jobPostingId: Number(contract.jobPostingId),
+      pharmacy: {
+        ...contract.pharmacy,
+        id: Number(contract.pharmacy.id),
+      },
+      jobPosting: {
+        ...contract.jobPosting,
+        id: Number(contract.jobPosting.id),
+      },
+    }));
   }
 
   /**
