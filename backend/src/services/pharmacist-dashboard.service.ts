@@ -104,7 +104,6 @@ export class PharmacistDashboardService {
       jobPosting: {
         ...app.jobPosting,
         id: Number(app.jobPosting.id),
-        pharmacyId: Number(app.jobPosting.pharmacyId),
         pharmacy: {
           ...app.jobPosting.pharmacy,
           id: Number(app.jobPosting.pharmacy.id),
