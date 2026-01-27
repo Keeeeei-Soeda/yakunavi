@@ -288,6 +288,212 @@ npx prisma db push
 
 ---
 
+### ステップ10: バックエンドのビルドと起動
+
+#### 10.1 開発依存関係のインストール
+
+**初回実行（エラー発生）**:
+```bash
+cd ~/yaku_navi/backend
+npm install --production
+npm run build
+```
+
+**エラー内容**:
+```
+sh: 1: tsc: not found
+```
+
+**原因**: `--production`フラグを使用したため、TypeScriptなどの開発依存関係がインストールされていない。
+
+**解決方法**:
+```bash
+npm install
+npm run build
+```
+
+**結果**:
+- TypeScriptを含む開発依存関係インストール完了 ✅
+- ビルド完了 ✅
+
+#### 10.2 PM2でバックエンドを起動
+
+```bash
+pm2 start dist/index.js --name "yaku-navi-backend"
+pm2 status
+pm2 logs yaku-navi-backend --lines 30
+```
+
+**結果**:
+- バックエンド起動完了 ✅
+- ポート5001でリッスン中 ✅
+
+**出力**:
+```
+🚀 Server is running on port 5001
+📝 API URL: http://localhost:5001
+🏥 Health check: http://localhost:5001/health
+```
+
+---
+
+### ステップ11: フロントエンドのセットアップ
+
+#### 11.1 依存関係のインストール
+
+```bash
+cd ~/yaku_navi/frontend
+npm install
+```
+
+**結果**:
+- 依存関係インストール完了 ✅
+
+#### 11.2 .env.localファイルの作成
+
+```bash
+nano .env.local
+```
+
+**設定内容**:
+```env
+NEXT_PUBLIC_API_URL=http://85.131.247.170/api
+```
+
+**結果**: `.env.local`ファイル作成完了 ✅
+
+#### 11.3 ビルド
+
+```bash
+npm run build
+```
+
+**結果**:
+- ビルド完了 ✅
+- 26ページ生成完了 ✅
+
+**出力**:
+```
+✓ Compiled successfully
+✓ Linting and checking validity of types
+✓ Collecting page data
+✓ Generating static pages (26/26)
+✓ Collecting build traces
+✓ Finalizing page optimization
+```
+
+#### 11.4 PM2でフロントエンドを起動
+
+```bash
+pm2 start npm --name "yaku-navi-frontend" -- start
+pm2 save
+```
+
+**結果**:
+- フロントエンド起動完了 ✅
+- ポート3000でリッスン中 ✅
+- PM2設定保存完了 ✅
+
+**出力**:
+```
+▲ Next.js 14.2.35
+- Local:        http://localhost:3000
+✓ Starting...
+✓ Ready in 542ms
+```
+
+---
+
+### ステップ12: Nginx設定
+
+#### 12.1 Nginx設定ファイルの作成
+
+```bash
+sudo nano /etc/nginx/sites-available/yaku-navi
+```
+
+**設定内容**:
+```nginx
+upstream backend {
+    server localhost:5001;
+}
+
+upstream frontend {
+    server localhost:3000;
+}
+
+server {
+    listen 80;
+    server_name 85.131.247.170 _;
+
+    location / {
+        proxy_pass http://frontend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /health {
+        proxy_pass http://backend/health;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    client_max_body_size 10M;
+}
+```
+
+**結果**: Nginx設定ファイル作成完了 ✅
+
+#### 12.2 Nginx設定の有効化
+
+```bash
+sudo ln -s /etc/nginx/sites-available/yaku-navi /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default 2>/dev/null || echo "Default config already removed"
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+**結果**:
+- 設定ファイル有効化完了 ✅
+- 設定テスト成功 ✅
+- Nginx再起動完了 ✅
+
+#### 12.3 ヘルスチェック
+
+```bash
+curl http://localhost/health
+curl http://localhost:5001/health
+```
+
+**結果**:
+- `/health`エンドポイント正常動作 ✅
+- バックエンド直接アクセス正常動作 ✅
+
+**出力**:
+```
+{"success":true,"message":"Server is running","timestamp":"2026-01-27T15:25:26.847Z"}
+```
+
+---
+
 ## ⚠️ 発生したエラーと解決方法
 
 ### エラー1: PostgreSQLスキーマ権限エラー
@@ -332,6 +538,67 @@ No migration found in prisma/migrations
 
 ---
 
+### エラー3: TypeScriptコンパイルエラー（バックエンド）
+
+**エラーメッセージ**:
+```
+error TS7030: Not all code paths return a value.
+error TS2783: 'id' is specified more than once
+```
+
+**原因**: 
+- `document.controller.ts`で`res.download()`の後に`return`が不足
+- オブジェクトスプレッドで`id`プロパティが重複
+
+**解決方法**:
+- `res.download()`の前に`return`を追加
+- オブジェクトスプレッドの順序を修正
+
+**結果**: 解決 ✅
+
+---
+
+### エラー4: TypeScriptコンパイルエラー（フロントエンド）
+
+**エラーメッセージ**:
+```
+Property 'title' is missing in type '{ children: Element; }' but required in type 'PharmacistLayoutProps'.
+Property 'workDays' does not exist on type 'JobPosting'.
+Property 'preferredWorkHours' does not exist on type 'JobPosting'.
+```
+
+**原因**: 
+- `PharmacistLayout`コンポーネントに`title`プロパティが必須
+- スキーマのプロパティ名が不一致（`workDays` → `desiredWorkDays`, `preferredWorkHours` → `desiredWorkHours`）
+
+**解決方法**:
+- すべての`PharmacistLayout`に`title`プロパティを追加
+- プロパティ名をスキーマに合わせて修正
+
+**結果**: 解決 ✅
+
+---
+
+### エラー5: Nginxヘルスチェックエラー
+
+**エラーメッセージ**:
+```
+curl http://localhost/api/health
+{"success":false,"error":"Route not found"}
+```
+
+**原因**: 
+- バックエンドのヘルスチェックエンドポイントは`/health`（`/api/health`ではない）
+- Nginx設定に`/health`専用のlocationブロックが不足
+
+**解決方法**:
+- Nginx設定に`location /health`ブロックを追加
+- `location /api`ブロックを修正（rewriteを削除）
+
+**結果**: 解決 ✅
+
+---
+
 ## 📊 現在の状態
 
 ### インストール済みソフトウェア
@@ -359,66 +626,84 @@ No migration found in prisma/migrations
 - **Prisma Client**: v5.22.0 生成済み ✅
 - **データベース**: スキーマ同期完了 ✅
 - **.envファイル**: 作成完了 ✅
-- **ビルド**: 未実行（次のステップ）
-- **起動**: 未実行（次のステップ）
+- **ビルド**: 完了 ✅
+- **起動**: PM2で起動中（ポート5001）✅
 
 ### フロントエンド
 
 - **ディレクトリ**: `~/yaku_navi/frontend`
-- **状態**: 未セットアップ（次のステップ）
+- **依存関係**: インストール済み ✅
+- **.env.localファイル**: 作成完了 ✅
+- **ビルド**: 完了 ✅
+- **起動**: PM2で起動中（ポート3000）✅
+
+### Nginx
+
+- **設定ファイル**: `/etc/nginx/sites-available/yaku-navi` ✅
+- **リバースプロキシ**: 設定完了 ✅
+- **状態**: 起動中 ✅
 
 ---
 
-## 🔄 次のステップ
+## ✅ デプロイメント完了
 
-### バックエンド（残り）
+すべてのサービスが正常に起動し、デプロイメントが完了しました。
 
-1. **TypeScriptのビルド**
-   ```bash
-   cd ~/yaku_navi/backend
-   npm run build
-   ```
+### 現在の状態
 
-2. **PM2でバックエンドを起動**
-   ```bash
-   pm2 start dist/index.js --name "yaku-navi-backend"
-   pm2 status
-   pm2 logs yaku-navi-backend
-   ```
+- ✅ **バックエンド**: PM2で起動中（ポート5001）
+- ✅ **フロントエンド**: PM2で起動中（ポート3000）
+- ✅ **Nginx**: リバースプロキシとして動作中（ポート80）
+- ✅ **PostgreSQL**: データベース稼働中
+- ✅ **ヘルスチェック**: `/health`エンドポイント正常動作
 
-3. **ヘルスチェック**
-   ```bash
-   curl http://localhost:5001/health
-   ```
+### アクセス方法
 
-### フロントエンド
+- **フロントエンド**: `http://85.131.247.170`
+- **薬局ログイン**: `http://85.131.247.170/pharmacy/login`
+- **薬剤師ログイン**: `http://85.131.247.170/pharmacist/login`
+- **ヘルスチェック**: `http://85.131.247.170/health`
 
-1. **依存関係のインストール**
-   ```bash
-   cd ~/yaku_navi/frontend
-   npm install
-   ```
+## 🔄 今後の改善項目
 
-2. **.env.localファイルの作成**
-   ```env
-   NEXT_PUBLIC_API_URL=http://85.131.247.170:5001/api
-   ```
+### セキュリティ
 
-3. **ビルド**
-   ```bash
-   npm run build
-   ```
+1. **SSL証明書の取得**（Let's Encrypt推奨）
+   - ドメイン取得後、HTTPS化を実施
+   - Nginx設定にSSL証明書を追加
 
-4. **PM2でフロントエンドを起動**
-   ```bash
-   pm2 start npm --name "yaku-navi-frontend" -- start
-   ```
+2. **JWT_SECRETの強化**
+   - より強力なランダム文字列に変更
+   - 環境変数の管理を強化
 
-### Nginx設定
+3. **脆弱性の対応**
+   - 3件の高重要度脆弱性を修正
+   - 定期的なセキュリティアップデート
 
-1. **Nginx設定ファイルの作成**
-2. **リバースプロキシの設定**
-3. **SSL証明書の取得**（ドメイン取得後）
+### パフォーマンス
+
+1. **非推奨パッケージの更新**
+   - `rimraf@3.0.2` → 最新版
+   - `multer@1.4.5-lts.2` → 最新版
+   - その他の非推奨パッケージ
+
+2. **データベース最適化**
+   - インデックスの追加
+   - クエリの最適化
+
+### 運用
+
+1. **マイグレーションファイルの管理**
+   - `.gitignore`から`prisma/migrations/`を除外
+   - マイグレーションファイルをGitに含める
+
+2. **ログ管理**
+   - PM2ログのローテーション設定
+   - エラーログの監視設定
+
+3. **バックアップ**
+   - データベースの定期バックアップ
+   - ファイルアップロードのバックアップ
 
 ---
 
@@ -447,4 +732,11 @@ No migration found in prisma/migrations
   - システムセットアップ完了
   - データベースセットアップ完了
   - バックエンドセットアップ（途中まで）
+
+- **2026-01-28**: デプロイメント完了
+  - バックエンドビルド・起動完了
+  - フロントエンドビルド・起動完了
+  - Nginx設定完了
+  - ヘルスチェック正常動作確認
+  - すべてのサービス稼働中
 
