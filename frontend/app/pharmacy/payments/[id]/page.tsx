@@ -10,7 +10,6 @@ import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import {
   FileText,
-  Download,
   DollarSign,
   Calendar,
   AlertCircle,
@@ -93,14 +92,6 @@ export default function PaymentDetailPage() {
     } finally {
       setReporting(false);
     }
-  };
-
-  const handleDownloadInvoice = () => {
-    if (!payment?.contract) return;
-    const link = document.createElement('a');
-    link.href = `${process.env.NEXT_PUBLIC_API_URL}/documents/contract/${payment.contractId}?type=invoice&userType=pharmacy`;
-    link.download = `invoice_INV-${String(payment.contractId).padStart(6, '0')}.pdf`;
-    link.click();
   };
 
   // 印刷機能
@@ -201,13 +192,6 @@ export default function PaymentDetailPage() {
               >
                 <Printer className="w-4 h-4" />
                 <span>印刷 / PDF保存</span>
-              </button>
-              <button
-                onClick={handleDownloadInvoice}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                <Download className="w-4 h-4" />
-                <span>PDFダウンロード</span>
               </button>
             </div>
           </div>
