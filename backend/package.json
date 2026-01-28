@@ -11,7 +11,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
-    "update:profiles": "ts-node scripts/update-pharmacist-profiles.ts"
+    "update:profiles": "ts-node scripts/update-pharmacist-profiles.ts",
+    "confirm:payment": "ts-node scripts/confirm-payment.ts"
   },
   "keywords": [
     "pharmacy",

@@ -491,6 +491,95 @@ export class ContractService {
     }
 
     /**
+     * 採用済み薬剤師のプロフィール一覧を取得（薬局側）
+     * 支払い確認済み（confirmed）の契約のみを対象とする
+     */
+    async getHiredPharmacists(pharmacyId: bigint) {
+        const contracts = await prisma.contract.findMany({
+            where: {
+                pharmacyId,
+                status: 'active',
+                payment: {
+                    paymentStatus: 'confirmed',
+                },
+            },
+            include: {
+                pharmacist: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                email: true,
+                            },
+                        },
+                    },
+                },
+                jobPosting: {
+                    select: {
+                        id: true,
+                        title: true,
+                    },
+                },
+                application: {
+                    select: {
+                        id: true,
+                        appliedAt: true,
+                        nearestStation: true,
+                        coverLetter: true,
+                    },
+                },
+                payment: {
+                    select: {
+                        id: true,
+                        confirmedAt: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+
+        return contracts.map((contract) => ({
+            contractId: Number(contract.id),
+            pharmacist: {
+                id: Number(contract.pharmacist.id),
+                lastName: contract.pharmacist.lastName,
+                firstName: contract.pharmacist.firstName,
+                phoneNumber: contract.pharmacist.phoneNumber,
+                email: contract.pharmacist.user.email,
+                age: contract.pharmacist.age,
+                university: contract.pharmacist.university,
+                graduationYear: contract.pharmacist.graduationYear,
+                licenseYear: contract.pharmacist.licenseYear,
+                certifiedPharmacistLicense: contract.pharmacist.certifiedPharmacistLicense,
+                otherLicenses: contract.pharmacist.otherLicenses,
+                workExperienceYears: contract.pharmacist.workExperienceYears,
+                workExperienceMonths: contract.pharmacist.workExperienceMonths,
+                workExperienceTypes: contract.pharmacist.workExperienceTypes,
+                mainDuties: contract.pharmacist.mainDuties,
+                specialtyAreas: contract.pharmacist.specialtyAreas,
+                pharmacySystems: contract.pharmacist.pharmacySystems,
+                specialNotes: contract.pharmacist.specialNotes,
+                selfIntroduction: contract.pharmacist.selfIntroduction,
+            },
+            jobPosting: {
+                id: Number(contract.jobPosting.id),
+                title: contract.jobPosting.title,
+            },
+            application: {
+                id: Number(contract.application.id),
+                appliedAt: contract.application.appliedAt,
+                nearestStation: contract.application.nearestStation,
+                workExperienceTypes: null, // ApplicationモデルにはworkExperienceTypesフィールドがない
+                coverLetter: contract.application.coverLetter,
+            },
+            paymentConfirmedAt: contract.payment?.confirmedAt,
+            contractCreatedAt: contract.createdAt,
+        }));
+    }
+
+    /**
      * 契約一覧を取得（薬剤師側）
      */
     async getContractsByPharmacist(pharmacistId: bigint, status?: string) {

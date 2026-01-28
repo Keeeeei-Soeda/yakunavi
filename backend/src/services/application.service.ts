@@ -167,6 +167,31 @@ export class ApplicationService {
             lastName: true,
             firstName: true,
             phoneNumber: true,
+            age: true,
+            university: true,
+            graduationYear: true,
+            licenseYear: true,
+            certifiedPharmacistLicense: true,
+            otherLicenses: true,
+            workExperienceYears: true,
+            workExperienceMonths: true,
+            workExperienceTypes: true,
+            mainDuties: true,
+            specialtyAreas: true,
+            pharmacySystems: true,
+            specialNotes: true,
+            selfIntroduction: true,
+          },
+        },
+        contract: {
+          include: {
+            payment: {
+              select: {
+                id: true,
+                confirmedAt: true,
+                paymentStatus: true,
+              },
+            },
           },
         },
       },
@@ -194,6 +219,18 @@ export class ApplicationService {
         ...application.pharmacist,
         id: Number(application.pharmacist.id),
       },
+      contract: application.contract ? {
+        ...application.contract,
+        id: Number(application.contract.id),
+        applicationId: Number(application.contract.applicationId),
+        pharmacyId: Number(application.contract.pharmacyId),
+        pharmacistId: Number(application.contract.pharmacistId),
+        jobPostingId: Number(application.contract.jobPostingId),
+        payment: application.contract.payment ? {
+          ...application.contract.payment,
+          id: Number(application.contract.payment.id),
+        } : null,
+      } : null,
     };
   }
 
@@ -227,6 +264,17 @@ export class ApplicationService {
             firstName: true,
           },
         },
+        contract: {
+          include: {
+            payment: {
+              select: {
+                id: true,
+                confirmedAt: true,
+                paymentStatus: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         appliedAt: 'desc',
@@ -246,6 +294,18 @@ export class ApplicationService {
         ...app.pharmacist,
         id: Number(app.pharmacist.id),
       },
+      contract: app.contract ? {
+        ...app.contract,
+        id: Number(app.contract.id),
+        applicationId: Number(app.contract.applicationId),
+        pharmacyId: Number(app.contract.pharmacyId),
+        pharmacistId: Number(app.contract.pharmacistId),
+        jobPostingId: Number(app.contract.jobPostingId),
+        payment: app.contract.payment ? {
+          ...app.contract.payment,
+          id: Number(app.contract.payment.id),
+        } : null,
+      } : null,
     }));
   }
 

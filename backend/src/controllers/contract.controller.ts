@@ -208,5 +208,28 @@ export class ContractController {
             });
         }
     }
+
+    /**
+     * 採用済み薬剤師のプロフィール一覧を取得（薬局側）
+     * GET /api/contracts/pharmacy/:pharmacyId/hired-pharmacists
+     */
+    async getHiredPharmacists(req: Request, res: Response) {
+        try {
+            const pharmacyId = BigInt(req.params.pharmacyId);
+
+            const pharmacists = await contractService.getHiredPharmacists(pharmacyId);
+
+            return res.json({
+                success: true,
+                data: pharmacists,
+            });
+        } catch (error: any) {
+            console.error('Get hired pharmacists error:', error);
+            return res.status(500).json({
+                success: false,
+                error: error.message || '採用済み薬剤師の取得に失敗しました',
+            });
+        }
+    }
 }
 

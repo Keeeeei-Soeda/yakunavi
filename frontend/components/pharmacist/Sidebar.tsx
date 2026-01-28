@@ -21,7 +21,7 @@ export const PharmacistSidebar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    router.push('/auth/login');
+    router.push('/pharmacist/login');
   };
 
   const menuItems = [
@@ -75,11 +75,10 @@ export const PharmacistSidebar: React.FC = () => {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-green-50 text-green-700 font-medium'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
+                    ? 'bg-green-50 text-green-700 font-medium'
+                    : 'text-gray-700 hover:bg-gray-50'
+                    }`}
                 >
                   <Icon size={20} />
                   <span>{item.label}</span>

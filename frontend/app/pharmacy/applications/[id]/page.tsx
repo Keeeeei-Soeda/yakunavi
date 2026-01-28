@@ -157,10 +157,6 @@ export default function ApplicationDetailPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">ステータス</p>
-                <p className="font-medium">{application.status}</p>
-              </div>
-              <div>
                 <p className="text-sm text-gray-600">最寄駅</p>
                 <p className="font-medium">{application.nearestStation || '未記入'}</p>
               </div>
@@ -218,17 +214,20 @@ export default function ApplicationDetailPage() {
             <div className="mb-6">
               <h3 className="font-semibold text-gray-900 mb-3">資格情報</h3>
               <div className="space-y-3">
-                {pharmacist?.certifications && (
+                {pharmacist?.certifiedPharmacistLicense && (
                   <div>
                     <p className="text-sm text-gray-600">認定薬剤師資格</p>
-                    <p className="font-medium">{pharmacist.certifications || '未記入'}</p>
+                    <p className="font-medium">{pharmacist.certifiedPharmacistLicense}</p>
                   </div>
                 )}
-                {pharmacist?.otherQualifications && (
+                {pharmacist?.otherLicenses && (
                   <div>
                     <p className="text-sm text-gray-600">その他の関連資格</p>
-                    <p className="font-medium">{pharmacist.otherQualifications || '未記入'}</p>
+                    <p className="font-medium">{pharmacist.otherLicenses}</p>
                   </div>
+                )}
+                {(!pharmacist?.certifiedPharmacistLicense && !pharmacist?.otherLicenses) && (
+                  <p className="text-sm text-gray-500">未記入</p>
                 )}
               </div>
             </div>
@@ -240,9 +239,11 @@ export default function ApplicationDetailPage() {
                 <div>
                   <p className="text-sm text-gray-600">勤務経験年数</p>
                   <p className="font-medium">
-                    {pharmacist?.workExperienceYears !== undefined
-                      ? `${pharmacist.workExperienceYears}年`
-                      : '未記入'}
+                    {pharmacist?.workExperienceYears !== undefined && pharmacist?.workExperienceMonths !== undefined
+                      ? `${pharmacist.workExperienceYears}年${pharmacist.workExperienceMonths > 0 ? `${pharmacist.workExperienceMonths}ヶ月` : ''}`
+                      : pharmacist?.workExperienceYears !== undefined
+                        ? `${pharmacist.workExperienceYears}年`
+                        : '未記入'}
                   </p>
                 </div>
                 {application.workExperienceTypes && application.workExperienceTypes.length > 0 && (

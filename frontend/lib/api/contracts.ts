@@ -79,5 +79,10 @@ export const contractsAPI = {
     getByApplicationId: async (applicationId: number) => {
         return apiClient.get<APIResponse<Contract | null>>(`/contracts/application/${applicationId}`);
     },
+
+    // 採用済み薬剤師のプロフィール一覧を取得（薬局側）
+    getHiredPharmacists: async (pharmacyId: number) => {
+        return apiClient.get<APIResponse<any[]>>(`/contracts/pharmacy/${pharmacyId}/hired-pharmacists`);
+    },
 };
 

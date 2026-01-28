@@ -57,5 +57,13 @@ router.get('/:id', authenticate, (req, res) =>
     contractController.getContractById(req, res)
 );
 
+// 採用済み薬剤師のプロフィール一覧を取得（薬局側）
+router.get(
+    '/pharmacy/:pharmacyId/hired-pharmacists',
+    authenticate,
+    authorizeUserType('pharmacy'),
+    (req, res) => contractController.getHiredPharmacists(req, res)
+);
+
 export default router;
 

@@ -326,7 +326,7 @@ export default function MessagesPage() {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-semibold text-gray-900 truncate">
-                                                {conversation.pharmacist?.name}
+                                                {conversation.pharmacist?.name || '応募者'}
                                             </h4>
                                             <p className="text-sm text-gray-500 truncate">
                                                 {conversation.lastMessage?.content || '新しい会話'}
@@ -355,7 +355,7 @@ export default function MessagesPage() {
                             <div className="flex items-center justify-between mb-2">
                                 <h3 className="font-semibold text-gray-900">
                                     {selectedConv
-                                        ? `${selectedConv.pharmacist?.name} - ${selectedConv.jobPosting?.title}`
+                                        ? `${selectedConv.pharmacist?.name || '応募者'} - ${selectedConv.jobPosting?.title}`
                                         : 'メッセージを選択してください'}
                                 </h3>
                                 {isContractActive && (

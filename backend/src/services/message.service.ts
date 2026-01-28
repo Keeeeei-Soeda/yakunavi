@@ -39,6 +39,17 @@ export class MessageService {
                         title: true,
                     },
                 },
+                contract: {
+                    include: {
+                        payment: {
+                            select: {
+                                id: true,
+                                confirmedAt: true,
+                                paymentStatus: true,
+                            },
+                        },
+                    },
+                },
                 messages: {
                     orderBy: {
                         createdAt: 'desc',
@@ -51,27 +62,48 @@ export class MessageService {
             },
         });
 
-        return applications.map((app) => ({
-            applicationId: Number(app.id),
-            pharmacist: {
-                id: Number(app.pharmacist.id),
-                name: `${app.pharmacist.lastName} ${app.pharmacist.firstName}`,
-            },
-            jobPosting: {
-                id: Number(app.jobPosting.id),
-                title: app.jobPosting.title,
-            },
-            lastMessage: app.messages[0]
-                ? {
-                    content: app.messages[0].messageContent || '',
-                    timestamp: app.messages[0].createdAt,
-                    isRead: app.messages[0].isRead,
-                }
-                : null,
-            unreadCount: app.messages.filter(
-                (m) => m.senderType === 'pharmacist' && !m.isRead
-            ).length,
-        }));
+        // 匿名化用のインデックスを生成（同じ薬剤師でも異なる応募では異なる匿名名を付与）
+        const anonymousNames = ['応募者A', '応募者B', '応募者C', '応募者D', '応募者E', '応募者F', '応募者G', '応募者H', '応募者I', '応募者J'];
+
+        return applications.map((app, index) => {
+            // 手数料支払い確認済みかチェック
+            const isPaymentConfirmed = app.contract?.payment?.confirmedAt || app.contract?.paymentConfirmedAt;
+            
+            return {
+                applicationId: Number(app.id),
+                pharmacist: {
+                    id: Number(app.pharmacist.id),
+                    lastName: app.pharmacist.lastName,
+                    firstName: app.pharmacist.firstName,
+                    name: isPaymentConfirmed
+                        ? `${app.pharmacist.lastName} ${app.pharmacist.firstName}`
+                        : anonymousNames[index % anonymousNames.length],
+                    isAnonymous: !isPaymentConfirmed,
+                },
+                jobPosting: {
+                    id: Number(app.jobPosting.id),
+                    title: app.jobPosting.title,
+                },
+                contract: app.contract ? {
+                    id: Number(app.contract.id),
+                    payment: app.contract.payment ? {
+                        id: Number(app.contract.payment.id),
+                        confirmedAt: app.contract.payment.confirmedAt,
+                        paymentStatus: app.contract.payment.paymentStatus,
+                    } : null,
+                } : null,
+                lastMessage: app.messages[0]
+                    ? {
+                        content: app.messages[0].messageContent || '',
+                        timestamp: app.messages[0].createdAt,
+                        isRead: app.messages[0].isRead,
+                    }
+                    : null,
+                unreadCount: app.messages.filter(
+                    (m) => m.senderType === 'pharmacist' && !m.isRead
+                ).length,
+            };
+        });
     }
 
     /**

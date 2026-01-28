@@ -36,13 +36,13 @@ export default function Home() {
   // 薬局側のメリット
   const pharmacyBenefits = [
     {
-      image: '/pharmacy_top_page01.jpg',
+      image: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&h=600&fit=crop',
       title: '実際の働きを見てから採用',
       description: 'トライアル勤務で実際のスキル、人柄、職場との相性を確認してから本採用を判断できます。',
       imagePosition: 'left'
     },
     {
-      image: '/pharmacy_top_page02.jpg',
+      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop',
       title: '採用コストを大幅削減',
       description: '紹介手数料不要。トライアル期間の時給のみで、低コストで優秀な人材を採用できます。',
       imagePosition: 'right'
@@ -75,11 +75,14 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center">
-              <div className="h-12 w-auto flex items-center">
-                <span className="text-2xl font-black bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
-                  薬ナビ
-                </span>
-              </div>
+              <Image
+                src="/logo_yakunavi.png"
+                alt="薬ナビ"
+                width={200}
+                height={60}
+                className="h-12 w-auto object-contain"
+                priority
+              />
             </Link>
             <div className="flex items-center space-x-3">
               <Link
@@ -97,12 +100,12 @@ export default function Home() {
                 </Link>
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
+              <Link
                   href="/auth/register/pharmacy"
                   className="px-4 py-2 bg-white text-teal-600 border-2 border-teal-500 rounded-full text-sm font-medium hover:bg-teal-50 transition-all inline-block"
-                >
+              >
                   🏥 薬局登録
-                </Link>
+              </Link>
               </motion.div>
             </div>
           </div>
@@ -114,9 +117,9 @@ export default function Home() {
         {/* 背景画像 */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-teal-50 via-white to-blue-50 opacity-95"></div>
-          <img
-            src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=1920&h=1080&fit=crop"
-            alt="薬剤師"
+          <img 
+            src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=1920&h=1080&fit=crop" 
+            alt="薬剤師" 
             className="w-full h-full object-cover opacity-20"
           />
         </div>
@@ -152,7 +155,7 @@ export default function Home() {
               <span className="text-gray-900">
                 新しい転職のカタチ。
               </span>
-            </h1>
+          </h1>
 
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
               トライアル勤務で職場を体験。<br className="hidden md:block" />
@@ -184,7 +187,7 @@ export default function Home() {
                   🏥 薬局・病院の採用担当者の方
                 </div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Link
+              <Link
                     href="/auth/register/pharmacy"
                     className="w-full px-8 sm:px-10 py-4 sm:py-5 bg-white text-gray-700 text-base sm:text-lg font-bold rounded-2xl border-2 border-teal-500 hover:bg-teal-50 transition-all inline-flex items-center justify-center gap-2"
                   >
@@ -205,7 +208,7 @@ export default function Home() {
                 サービス詳細を見る
               </motion.button>
             </div>
-
+            
             <div className="mt-8 text-xs sm:text-sm text-gray-500">
               登録完了まで約1分 | 完全無料 | トライアル勤務可能
             </div>
@@ -257,19 +260,21 @@ export default function Home() {
           <div className="flex justify-center mb-12">
             <div className="inline-flex bg-gray-100 rounded-full p-1">
               <button
-                className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all ${activeTab === 'pharmacist'
-                  ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg'
-                  : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all ${
+                  activeTab === 'pharmacist'
+                    ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
                 onClick={() => setActiveTab('pharmacist')}
               >
                 💊 薬剤師の方
               </button>
               <button
-                className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all ${activeTab === 'pharmacy'
-                  ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg'
-                  : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                className={`px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full font-bold text-sm sm:text-base transition-all ${
+                  activeTab === 'pharmacy'
+                    ? 'bg-gradient-to-r from-teal-500 to-blue-600 text-white shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
                 onClick={() => setActiveTab('pharmacy')}
               >
                 🏥 薬局・病院の方
@@ -298,13 +303,13 @@ export default function Home() {
                   <div className={`flex flex-col ${benefit.imagePosition === 'left' ? 'md:flex-row' : 'md:flex-row-reverse'} items-center`}>
                     {/* 画像 */}
                     <div className="w-full md:w-1/2 h-64 md:h-80 overflow-hidden">
-                      <img
-                        src={benefit.image}
+                      <img 
+                        src={benefit.image} 
                         alt={benefit.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
-
+                    
                     {/* テキスト */}
                     <div className="w-full md:w-1/2 p-8 md:p-12">
                       <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-900 group-hover:text-white transition-colors">
@@ -341,13 +346,13 @@ export default function Home() {
                   <div className={`flex flex-col ${benefit.imagePosition === 'left' ? 'md:flex-row' : 'md:flex-row-reverse'} items-center`}>
                     {/* 画像 */}
                     <div className="w-full md:w-1/2 h-64 md:h-80 overflow-hidden">
-                      <img
-                        src={benefit.image}
+                      <img 
+                        src={benefit.image} 
                         alt={benefit.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
-
+                    
                     {/* テキスト */}
                     <div className="w-full md:w-1/2 p-8 md:p-12">
                       <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-900 group-hover:text-white transition-colors">
@@ -437,9 +442,9 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <img
-                src="/pharmacy_top_page03.jpg"
-                alt="薬局での仕事風景"
+              <img 
+                src="/pharmacy_top_page03.jpg" 
+                alt="薬局での仕事風景" 
                 className="w-full h-64 md:h-96 object-cover"
               />
             </motion.div>

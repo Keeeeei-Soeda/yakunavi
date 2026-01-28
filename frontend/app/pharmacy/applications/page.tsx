@@ -131,7 +131,9 @@ export default function ApplicationsPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">
-                          {app.pharmacist?.lastName} {app.pharmacist?.firstName}
+                          {app.contract?.payment?.confirmedAt || app.contract?.paymentConfirmedAt
+                            ? `${app.pharmacist?.lastName || ''} ${app.pharmacist?.firstName || ''}`
+                            : '応募者'}
                         </h3>
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}

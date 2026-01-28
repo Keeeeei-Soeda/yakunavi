@@ -63,49 +63,8 @@ export default function JobSearchPage() {
   };
 
   const handleApply = async (jobPostingId: number) => {
-    // 応募確認ダイアログを表示
-    const nearestStation = prompt('最寄駅を入力してください（例: 天王寺駅）');
-    if (!nearestStation) {
-      alert('最寄駅の入力が必要です');
-      return;
-    }
-
-    const workExperienceTypesInput = prompt(
-      '勤務経験のある業態を入力してください（カンマ区切り）\n例: 調剤薬局,ドラッグストア'
-    );
-    if (!workExperienceTypesInput) {
-      alert('勤務経験のある業態を最低1つ入力してください');
-      return;
-    }
-
-    const workExperienceTypes = workExperienceTypesInput
-      .split(',')
-      .map((s) => s.trim())
-      .filter((s) => s);
-
-    const coverLetter = prompt('自己紹介（任意）\n100〜300文字程度');
-
-    if (!confirm('この内容で応募しますか？')) return;
-
-    setApplying(jobPostingId);
-    try {
-      const response = await applicationsAPI.create({
-        jobPostingId,
-        pharmacistId,
-        coverLetter: coverLetter || undefined,
-        nearestStation,
-        workExperienceTypes,
-      });
-      if (response.success) {
-        alert('応募を送信しました');
-        searchJobs();
-      }
-    } catch (error: any) {
-      console.error('Failed to apply:', error);
-      alert(error.response?.data?.error || '応募に失敗しました');
-    } finally {
-      setApplying(null);
-    }
+    // 詳細画面に遷移して応募フォームを表示
+    window.location.href = `/pharmacist/jobs/${jobPostingId}`;
   };
 
   return (

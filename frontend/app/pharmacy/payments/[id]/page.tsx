@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -23,6 +23,7 @@ import Link from 'next/link';
 
 export default function PaymentDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const paymentId = Number(params.id);
   const user = useAuthStore((state) => state.user);
   const pharmacyId = user?.relatedId || 1;
@@ -83,7 +84,8 @@ export default function PaymentDetailPage() {
 
       if (response.success) {
         alert('支払い報告を送信しました。運営の確認をお待ちください。');
-        fetchPaymentDetail();
+        // 請求書管理画面に遷移
+        router.push('/pharmacy/payments');
       }
     } catch (error: any) {
       console.error('Failed to report payment:', error);
