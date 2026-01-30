@@ -41,7 +41,7 @@ export default function ProfilePage() {
     setSaving(true);
     try {
       const response = await pharmacyAPI.updateProfile(pharmacyId, formData);
-      if (response.success) {
+      if (response.success && response.data) {
         alert('プロフィールを更新しました');
         setProfile(response.data);
         setIsEditing(false);
