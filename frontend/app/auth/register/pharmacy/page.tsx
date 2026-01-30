@@ -18,6 +18,7 @@ export default function PharmacyRegisterPage() {
     pharmacyName: '',
     representativeLastName: '',
     representativeFirstName: '',
+    termsAgreed: false,
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +36,12 @@ export default function PharmacyRegisterPage() {
     // パスワードの長さチェック
     if (formData.password.length < 8) {
       setError('パスワードは8文字以上で設定してください');
+      return;
+    }
+
+    // 利用規約への同意チェック
+    if (!formData.termsAgreed) {
+      setError('利用規約への同意が必要です');
       return;
     }
 
@@ -171,6 +178,22 @@ export default function PharmacyRegisterPage() {
             />
           </div>
 
+          <div className="flex items-start">
+            <input
+              id="termsAgreed"
+              type="checkbox"
+              checked={formData.termsAgreed}
+              onChange={(e) => setFormData({ ...formData, termsAgreed: e.target.checked })}
+              className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="termsAgreed" className="ml-2 text-sm text-gray-700">
+              <Link href="/terms" target="_blank" className="text-blue-600 hover:text-blue-800 underline">
+                利用規約
+              </Link>
+              に同意します <span className="text-red-500">*</span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={isLoading}
@@ -191,7 +214,7 @@ export default function PharmacyRegisterPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             既にアカウントをお持ちの方は{' '}
-            <Link href="/auth/login" className="text-blue-600 hover:text-blue-800 font-medium">
+            <Link href="/pharmacy/login" className="text-blue-600 hover:text-blue-800 font-medium">
               ログイン
             </Link>
           </p>

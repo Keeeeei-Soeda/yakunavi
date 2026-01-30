@@ -2,6 +2,84 @@ import prisma from '../utils/prisma';
 
 export class PharmacyService {
   /**
+   * 薬局プロフィールを取得
+   */
+  async getProfile(pharmacyId: bigint) {
+    const pharmacy = await prisma.pharmacy.findUnique({
+      where: { id: pharmacyId },
+      select: {
+        id: true,
+        pharmacyName: true,
+        representativeLastName: true,
+        representativeFirstName: true,
+        phoneNumber: true,
+        faxNumber: true,
+        prefecture: true,
+        address: true,
+        nearestStation: true,
+        establishedDate: true,
+        dailyPrescriptionCount: true,
+        staffCount: true,
+        businessHoursStart: true,
+        businessHoursEnd: true,
+        introduction: true,
+        strengths: true,
+        equipmentSystems: true,
+      },
+    });
+
+    if (!pharmacy) {
+      throw new Error('薬局が見つかりません');
+    }
+
+    return {
+      ...pharmacy,
+      id: Number(pharmacy.id),
+    };
+  }
+
+  /**
+   * 薬局プロフィールを更新
+   */
+  async updateProfile(pharmacyId: bigint, data: any) {
+    const updateData: any = {};
+
+    // 更新可能なフィールドのみを抽出
+    if (data.pharmacyName !== undefined) updateData.pharmacyName = data.pharmacyName;
+    if (data.representativeLastName !== undefined) updateData.representativeLastName = data.representativeLastName;
+    if (data.representativeFirstName !== undefined) updateData.representativeFirstName = data.representativeFirstName;
+    if (data.phoneNumber !== undefined) updateData.phoneNumber = data.phoneNumber;
+    if (data.faxNumber !== undefined) updateData.faxNumber = data.faxNumber;
+    if (data.prefecture !== undefined) updateData.prefecture = data.prefecture;
+    if (data.address !== undefined) updateData.address = data.address;
+    if (data.nearestStation !== undefined) updateData.nearestStation = data.nearestStation;
+    if (data.establishedDate !== undefined) {
+      updateData.establishedDate = data.establishedDate ? new Date(data.establishedDate) : null;
+    }
+    if (data.dailyPrescriptionCount !== undefined) updateData.dailyPrescriptionCount = data.dailyPrescriptionCount;
+    if (data.staffCount !== undefined) updateData.staffCount = data.staffCount;
+    if (data.businessHoursStart !== undefined) {
+      updateData.businessHoursStart = data.businessHoursStart ? new Date(`1970-01-01T${data.businessHoursStart}`) : null;
+    }
+    if (data.businessHoursEnd !== undefined) {
+      updateData.businessHoursEnd = data.businessHoursEnd ? new Date(`1970-01-01T${data.businessHoursEnd}`) : null;
+    }
+    if (data.introduction !== undefined) updateData.introduction = data.introduction;
+    if (data.strengths !== undefined) updateData.strengths = data.strengths;
+    if (data.equipmentSystems !== undefined) updateData.equipmentSystems = data.equipmentSystems;
+
+    const pharmacy = await prisma.pharmacy.update({
+      where: { id: pharmacyId },
+      data: updateData,
+    });
+
+    return {
+      ...pharmacy,
+      id: Number(pharmacy.id),
+    };
+  }
+
+  /**
    * ダッシュボード統計を取得
    */
   async getDashboardStats(pharmacyId: bigint) {

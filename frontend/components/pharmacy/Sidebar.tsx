@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -11,12 +11,12 @@ import {
   FileText,
   User,
   UserCircle,
-  Calculator,
   DollarSign,
   Settings,
   LogOut,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
+import { pharmacyAPI, PharmacyProfile } from '@/lib/api/pharmacy';
 
 const menuItems = [
     {
@@ -26,7 +26,7 @@ const menuItems = [
     },
     {
         icon: Users,
-        label: '薬剤師からの応募確認',
+        label: '応募確認',
         href: '/pharmacy/applications',
     },
     {
@@ -36,7 +36,7 @@ const menuItems = [
     },
     {
         icon: Briefcase,
-        label: '薬局からの募集掲載',
+        label: '求人票',
         href: '/pharmacy/job-postings',
     },
     {
@@ -59,21 +59,35 @@ const menuItems = [
         label: '採用薬剤師のプロフィール',
         href: '/pharmacy/pharmacist-profiles',
     },
-    {
-        icon: Calculator,
-        label: '給与計算と費用管理',
-        href: '/pharmacy/payroll',
-    },
 ];
 
 export const PharmacySidebar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
+  const pharmacyId = user?.relatedId || 1;
+  
+  const [pharmacyProfile, setPharmacyProfile] = useState<PharmacyProfile | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await pharmacyAPI.getProfile(pharmacyId);
+        if (response.success && response.data) {
+          setPharmacyProfile(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch pharmacy profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, [pharmacyId]);
 
   const handleLogout = () => {
     logout();
-    router.push('/auth/login');
+    router.push('/pharmacy/login');
   };
 
     return (
@@ -81,7 +95,9 @@ export const PharmacySidebar: React.FC = () => {
             {/* ヘッダー */}
             <div className="p-6 border-b border-gray-200">
                 <h1 className="text-xl font-bold text-gray-900">薬局管理システム</h1>
-                <p className="text-sm text-gray-500 mt-1">羽曳野薬局</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  {pharmacyProfile?.pharmacyName || '読み込み中...'}
+                </p>
             </div>
 
             {/* メニュー */}

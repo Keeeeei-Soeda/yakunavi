@@ -21,7 +21,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated) {
-        router.push('/auth/login');
+        // ユーザータイプに応じたログインページにリダイレクト
+        if (requiredUserType === 'pharmacy') {
+          router.push('/pharmacy/login');
+        } else if (requiredUserType === 'pharmacist') {
+          router.push('/pharmacist/login');
+        } else {
+          router.push('/auth/login');
+        }
       } else if (requiredUserType && user?.userType !== requiredUserType) {
         // ユーザータイプが一致しない場合、適切なダッシュボードにリダイレクト
         if (user?.userType === 'pharmacy') {

@@ -112,17 +112,7 @@ export default function PaymentsPage() {
           </div>
 
           {/* サマリーカード */}
-          <div className="grid grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm text-gray-600">請求総額</h3>
-                <DollarSign className="text-blue-600" size={24} />
-              </div>
-              <p className="text-3xl font-bold text-blue-600">
-                ¥{getTotalAmount().toLocaleString()}
-              </p>
-            </div>
-
+          <div className="grid grid-cols-2 gap-6">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-sm text-gray-600">支払い待ち</h3>
@@ -279,5 +269,6 @@ export default function PaymentsPage() {
     </ProtectedRoute>
   );
 }
+
 
 

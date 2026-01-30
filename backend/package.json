@@ -12,7 +12,11 @@
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
     "update:profiles": "ts-node scripts/update-pharmacist-profiles.ts",
-    "confirm:payment": "ts-node scripts/confirm-payment.ts"
+    "confirm:payment": "ts-node scripts/confirm-payment.ts",
+    "add:dummy": "ts-node scripts/add-dummy-accounts.ts",
+    "list:pharmacists": "ts-node scripts/list-pharmacists.ts",
+    "list:pharmacies": "ts-node scripts/list-pharmacies.ts",
+    "stats": "ts-node scripts/stats.ts"
   },
   "keywords": [
     "pharmacy",

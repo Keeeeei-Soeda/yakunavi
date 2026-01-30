@@ -51,8 +51,9 @@ export class AuthService {
         });
 
         // ユーザータイプに応じて追加情報を作成
+        let relatedId = null;
         if (userType === 'pharmacy') {
-            await prisma.pharmacy.create({
+            const pharmacy = await prisma.pharmacy.create({
                 data: {
                     userId: user.id,
                     pharmacyName: input.pharmacyName || '未設定',
@@ -60,14 +61,16 @@ export class AuthService {
                     representativeFirstName: input.representativeFirstName || '未設定',
                 },
             });
+            relatedId = Number(pharmacy.id);
         } else if (userType === 'pharmacist') {
-            await prisma.pharmacist.create({
+            const pharmacist = await prisma.pharmacist.create({
                 data: {
                     userId: user.id,
                     lastName: input.lastName || '未設定',
                     firstName: input.firstName || '未設定',
                 },
             });
+            relatedId = Number(pharmacist.id);
         }
 
         // JWTトークンを生成
@@ -89,6 +92,7 @@ export class AuthService {
                 email: user.email,
                 userType: user.userType,
                 isActive: user.isActive,
+                relatedId, // 薬局IDまたは薬剤師IDを追加
             },
             accessToken,
             refreshToken,

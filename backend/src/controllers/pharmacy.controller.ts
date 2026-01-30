@@ -6,6 +6,51 @@ const pharmacyService = new PharmacyService();
 
 export class PharmacyController {
   /**
+   * 薬局プロフィールを取得
+   */
+  async getProfile(req: AuthRequest, res: Response) {
+    try {
+      const pharmacyId = BigInt(req.params.pharmacyId);
+
+      const profile = await pharmacyService.getProfile(pharmacyId);
+
+      res.json({
+        success: true,
+        data: profile,
+      });
+    } catch (error) {
+      console.error('Get pharmacy profile error:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : '薬局プロフィールの取得に失敗しました',
+      });
+    }
+  }
+
+  /**
+   * 薬局プロフィールを更新
+   */
+  async updateProfile(req: AuthRequest, res: Response) {
+    try {
+      const pharmacyId = BigInt(req.params.pharmacyId);
+
+      const profile = await pharmacyService.updateProfile(pharmacyId, req.body);
+
+      res.json({
+        success: true,
+        message: 'プロフィールを更新しました',
+        data: profile,
+      });
+    } catch (error) {
+      console.error('Update pharmacy profile error:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : '薬局プロフィールの更新に失敗しました',
+      });
+    }
+  }
+
+  /**
    * ダッシュボード統計を取得
    */
   async getDashboardStats(req: AuthRequest, res: Response) {

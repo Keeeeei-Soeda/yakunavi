@@ -6,7 +6,42 @@ import {
   JobPosting,
 } from '../types';
 
+export interface PharmacyProfile {
+  id: number;
+  pharmacyName: string;
+  representativeLastName: string;
+  representativeFirstName: string;
+  phoneNumber?: string;
+  faxNumber?: string;
+  prefecture?: string;
+  address?: string;
+  nearestStation?: string;
+  establishedDate?: string;
+  dailyPrescriptionCount?: number;
+  staffCount?: number;
+  businessHoursStart?: string;
+  businessHoursEnd?: string;
+  introduction?: string;
+  strengths?: string;
+  equipmentSystems?: string;
+}
+
 export const pharmacyAPI = {
+  // 薬局プロフィール取得
+  getProfile: async (pharmacyId: number) => {
+    return apiClient.get<APIResponse<PharmacyProfile>>(
+      `/pharmacy/profile/${pharmacyId}`
+    );
+  },
+
+  // 薬局プロフィール更新
+  updateProfile: async (pharmacyId: number, data: Partial<PharmacyProfile>) => {
+    return apiClient.put<APIResponse<PharmacyProfile>>(
+      `/pharmacy/profile/${pharmacyId}`,
+      data
+    );
+  },
+
   // ダッシュボード統計
   getDashboardStats: async (pharmacyId: number) => {
     return apiClient.get<APIResponse<PharmacyDashboardStats>>(

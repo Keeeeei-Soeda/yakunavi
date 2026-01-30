@@ -22,13 +22,13 @@ export default function Home() {
     {
       image: '/pharmacy_top_page02.jpg',
       title: '実際に働いてから転職を判断',
-      description: 'トライアル勤務で職場の雰囲気、人間関係、業務内容を体験してから本採用を決定できます。',
+      description: 'おためし転職で職場の雰囲気、人間関係、業務内容を体験してから本採用を決定できます。',
       imagePosition: 'left'
     },
     {
       image: '/pharmacy_top-page04.jpg',
-      title: '給料をもらいながら転職活動',
-      description: 'トライアル期間中も時給が発生。収入を得ながら自分に合う職場を探せます。',
+      title: '日給が発生する転職活動',
+      description: 'トライアル期間中も日給が発生。収入を得ながら自分に合う職場を探せます。',
       imagePosition: 'right'
     }
   ];
@@ -38,28 +38,25 @@ export default function Home() {
     {
       image: '/pharmacy_top_page01.jpg',
       title: '実際の働きを見てから採用',
-      description: 'トライアル勤務で実際のスキル、人柄、職場との相性を確認してから本採用を判断できます。',
+      description: 'おためし転職で実際のスキル、人柄、職場との相性を確認してから本採用を判断できます。',
       imagePosition: 'left'
     },
     {
-      image: '/pharmacy_top_page02.jpg',
+      image: '/pharmacy_top-page04.jpg',
       title: '採用コストを大幅削減',
-      description: '紹介手数料不要。トライアル期間の時給のみで、低コストで優秀な人材を採用できます。',
+      description: '本採用時の紹介手数料不要。トライアル期間の日給のみで、低コストで優秀な人材を採用できます。',
       imagePosition: 'right'
     }
   ];
 
   const stats = [
-    { number: '95%', label: 'トライアル後の本採用率' },
-    { number: '5,000+', label: '提携薬局・病院' },
-    { number: '100%', label: '満足保証（合わなければ次へ）' },
-    { number: '0円', label: '薬剤師の利用料金' }
+    { number: '', label: '薬局の掲載料・本採用時の手数料０円' }
   ];
 
   const steps = [
     { step: '1', title: '無料登録', desc: '1分で完了' },
     { step: '2', title: '求人応募 / 応募者確認', desc: '気になる求人に応募' },
-    { step: '3', title: 'トライアル勤務開始', desc: '実際に働いてみる' },
+    { step: '3', title: 'おためし転職開始', desc: '実際に働いてみる' },
     { step: '4', title: '本採用決定', desc: '双方が納得したら' }
   ];
 
@@ -76,12 +73,22 @@ export default function Home() {
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center">
               <div className="h-12 w-auto flex items-center">
-                <span className="text-2xl font-black bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
-                  薬ナビ
-                </span>
+                <Image
+                  src="/logo_yakunavi.png"
+                  alt="薬ナビ"
+                  width={120}
+                  height={48}
+                  className="h-12 w-auto"
+                />
               </div>
             </Link>
             <div className="flex items-center space-x-3">
+              <Link
+                href="/contact"
+                className="text-gray-700 hover:text-teal-600 transition-colors text-sm"
+              >
+                お問い合わせ
+              </Link>
               <Link
                 href="/auth/login"
                 className="text-gray-700 hover:text-teal-600 transition-colors text-sm"
@@ -115,7 +122,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-teal-50 via-white to-blue-50 opacity-95"></div>
           <img
-            src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=1920&h=1080&fit=crop"
+            src="/medicine_top.png"
             alt="薬剤師"
             className="w-full h-full object-cover opacity-20"
           />
@@ -141,7 +148,7 @@ export default function Home() {
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              ✨ トライアル勤務で、失敗しない転職を実現
+              ✨ おためし転職で、失敗しない転職を実現
             </motion.div>
 
             <h1 className="text-3xl sm:text-5xl md:text-7xl font-black mb-6 leading-tight">
@@ -155,8 +162,8 @@ export default function Home() {
             </h1>
 
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
-              トライアル勤務で職場を体験。<br className="hidden md:block" />
-              <span className="font-bold text-teal-600">給料をもらいながら</span>、本当に合う職場を見つけられる。
+              おためし転職で職場を体験。<br className="hidden md:block" />
+              本当に合う職場を見つけられる。
             </p>
 
             <div className="flex flex-col gap-6 items-center mb-8">
@@ -197,17 +204,8 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <motion.button
-                className="w-full sm:w-auto px-8 py-3 bg-white text-teal-600 text-base font-medium rounded-xl border border-gray-200 hover:border-teal-300 hover:bg-teal-50 transition-all"
-                whileHover={{ scale: 1.02 }}
-              >
-                サービス詳細を見る
-              </motion.button>
-            </div>
-
             <div className="mt-8 text-xs sm:text-sm text-gray-500">
-              登録完了まで約1分 | 完全無料 | トライアル勤務可能
+              登録完了まで約1分 | 完全無料
             </div>
           </motion.div>
         </div>
@@ -216,22 +214,17 @@ export default function Home() {
       {/* 統計データ */}
       <section className="py-16 px-4 bg-white/70 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                className="text-center"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className="text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-sm sm:text-base text-gray-600 font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
+          <div className="flex justify-center">
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-2xl sm:text-3xl md:text-4xl font-black bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                薬局の掲載料・本採用時の手数料０円
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -422,7 +415,7 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4">
-              トライアル勤務とは？
+              おためし転職とは？
             </h2>
             <p className="text-lg sm:text-xl text-gray-600">
               実際に働いてから判断できる、新しい転職の仕組み
@@ -454,7 +447,7 @@ export default function Home() {
                 従来の転職では、入社してから「想像と違った...」と後悔することも。
               </p>
               <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-8">
-                当サービスの<span className="font-bold text-teal-600">トライアル勤務</span>なら、<br />
+                当サービスの<span className="font-bold text-teal-600">おためし転職</span>なら、<br />
                 実際に働いてから判断できるので、<span className="font-bold text-teal-600">失敗しない転職</span>が実現します。
               </p>
 
@@ -467,7 +460,7 @@ export default function Home() {
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2 text-sm sm:text-base text-gray-700">
                       <span className="text-teal-600 font-bold mt-1">✓</span>
-                      <span>時給が発生（給料をもらいながら体験）</span>
+                      <span>日給が発生</span>
                     </li>
                     <li className="flex items-start gap-2 text-sm sm:text-base text-gray-700">
                       <span className="text-teal-600 font-bold mt-1">✓</span>
@@ -526,7 +519,7 @@ export default function Home() {
             viewport={{ once: true }}
           >
             <h2 className="text-xl sm:text-2xl md:text-4xl font-black text-white mb-6 leading-tight">
-              まずはトライアル勤務で<br />
+              まずはおためし転職で<br />
               本当に合う職場を見つけませんか？
             </h2>
             <p className="text-base sm:text-lg md:text-2xl text-white/90 mb-10">
@@ -558,12 +551,6 @@ export default function Home() {
                 </svg>
                 登録1分
               </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                トライアル勤務可能
-              </div>
             </div>
           </motion.div>
         </div>
@@ -582,30 +569,26 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">サービス</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-teal-400 transition-colors">求人検索</a></li>
-                <li><a href="#" className="hover:text-teal-400 transition-colors">トライアル勤務</a></li>
-                <li><a href="#" className="hover:text-teal-400 transition-colors">転職ガイド</a></li>
+                <li><a href="#" className="hover:text-teal-400 transition-colors">おためし転職</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">会社情報</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-teal-400 transition-colors">会社概要</a></li>
-                <li><a href="#" className="hover:text-teal-400 transition-colors">採用情報</a></li>
-                <li><a href="#" className="hover:text-teal-400 transition-colors">お問い合わせ</a></li>
+                <li><Link href="/about" className="hover:text-teal-400 transition-colors">会社概要</Link></li>
+                <li><Link href="/contact" className="hover:text-teal-400 transition-colors">お問い合わせ</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">その他</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-teal-400 transition-colors">利用規約</a></li>
-                <li><a href="#" className="hover:text-teal-400 transition-colors">プライバシーポリシー</a></li>
-                <li><a href="#" className="hover:text-teal-400 transition-colors">特定商取引法</a></li>
+                <li><Link href="/terms" className="hover:text-teal-400 transition-colors">利用規約</Link></li>
+                <li><Link href="/privacy" className="hover:text-teal-400 transition-colors">プライバシーポリシー</Link></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-xs sm:text-sm text-gray-400">
-            <p>&copy; 2024 薬ナビ. All rights reserved.</p>
+            <p>&copy; 2026 薬ナビ. All rights reserved.</p>
           </div>
         </div>
       </footer>
