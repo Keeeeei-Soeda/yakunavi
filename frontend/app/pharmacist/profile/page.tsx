@@ -72,9 +72,16 @@ export default function ProfilePage() {
                 pharmacistId,
                 formData
             );
-            if (response.success) {
+            if (response.success && response.data) {
+                setProfile(response.data);
+                setFormData({
+                    ...response.data,
+                    workExperienceTypes: response.data.workExperienceTypes || [],
+                    mainDuties: response.data.mainDuties || [],
+                    specialtyAreas: response.data.specialtyAreas || [],
+                    pharmacySystems: response.data.pharmacySystems || [],
+                });
                 alert('プロフィールを更新しました');
-                fetchProfile();
             }
         } catch (error: any) {
             console.error('Failed to update profile:', error);
