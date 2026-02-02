@@ -31,7 +31,7 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
-      alert('プロフィールの取得に失敗しました');
+      // アラート非表示：コンソールにログのみ記録
     } finally {
       setLoading(false);
     }
