@@ -42,11 +42,10 @@ export default function ProfilePage() {
     try {
       const response = await pharmacyAPI.updateProfile(pharmacyId, formData);
       if (response.success && response.data) {
-        alert('プロフィールを更新しました');
         setProfile(response.data);
+        setFormData(response.data);
         setIsEditing(false);
-        // サイドバーの薬局名を更新するためにリロード
-        window.location.reload();
+        alert('プロフィールを更新しました');
       }
     } catch (error: any) {
       console.error('Failed to update profile:', error);
