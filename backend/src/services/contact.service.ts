@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 
 // APIキーがある場合のみResendを初期化（ない場合はnull）
-const resend = process.env.RESEND_API_KEY 
+const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
