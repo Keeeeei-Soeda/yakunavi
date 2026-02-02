@@ -1,6 +1,9 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// APIキーがある場合のみResendを初期化（ない場合はnull）
+const resend = process.env.RESEND_API_KEY 
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@yaku-navi.com';
 const FROM_NAME = process.env.FROM_NAME || '薬ナビ';
@@ -20,6 +23,12 @@ export class ContactService {
    * 問い合わせフォームからメールを送信
    */
   async sendContactEmail(data: ContactFormData) {
+    // Resend APIキーが設定されていない場合はスキップ
+    if (!resend) {
+      console.warn('RESEND_API_KEY is not set. Email sending is skipped.');
+      return { success: true, message: 'メール送信機能は現在利用できません' };
+    }
+
     try {
       // 1. 問い合わせ者への自動返信メール
       await this.sendAutoReplyToUser(data);
@@ -108,6 +117,10 @@ export class ContactService {
 </html>
     `;
 
+    if (!resend) {
+      throw new Error('Resend is not initialized');
+    }
+
     await resend.emails.send({
       from: `${FROM_NAME} <${FROM_EMAIL}>`,
       to: data.email,
@@ -183,6 +196,10 @@ export class ContactService {
 </body>
 </html>
     `;
+
+    if (!resend) {
+      throw new Error('Resend is not initialized');
+    }
 
     await resend.emails.send({
       from: `${FROM_NAME} <${FROM_EMAIL}>`,
