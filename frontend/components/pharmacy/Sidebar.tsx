@@ -11,7 +11,7 @@ import {
   FileText,
   User,
   UserCircle,
-  DollarSign,
+  CreditCard,
   Settings,
   LogOut,
 } from 'lucide-react';
@@ -45,7 +45,7 @@ const menuItems = [
         href: '/pharmacy/contracts',
     },
     {
-        icon: DollarSign,
+        icon: CreditCard,
         label: '請求書管理',
         href: '/pharmacy/payments',
     },
