@@ -12,6 +12,7 @@ import pharmacistProfileRoutes from './routes/pharmacist-profile.routes';
 import pharmacyRoutes from './routes/pharmacy.routes';
 import pharmacistRoutes from './routes/pharmacist.routes';
 import contactRoutes from './routes/contact.routes';
+import adminRoutes from './routes/admin.routes';
 
 // 環境変数の読み込み
 dotenv.config();
@@ -21,7 +22,7 @@ const PORT = process.env.PORT || 5001;
 
 // ミドルウェア
 // CORS設定：開発環境では複数のポートを許可
-const allowedOrigins = process.env.FRONTEND_URL 
+const allowedOrigins = process.env.FRONTEND_URL
     ? [process.env.FRONTEND_URL]
     : [
         'http://localhost:3000',
@@ -30,31 +31,31 @@ const allowedOrigins = process.env.FRONTEND_URL
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001',
         'http://127.0.0.1:3002',
-      ];
+    ];
 
 app.use(cors({
     origin: (origin, callback) => {
         // デバッグログ
         console.log(`[CORS] Request from origin: ${origin || 'none (server-side)'}`);
-        
+
         // オリジンが未指定（Postman等、サーバーサイドリクエスト）の場合は許可
         if (!origin) {
             console.log(`[CORS] Allowing request without origin`);
             return callback(null, true);
         }
-        
+
         // 開発環境では localhost と 127.0.0.1 からのリクエストを全て許可
         if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
             console.log(`[CORS] Allowing local origin: ${origin}`);
             return callback(null, true);
         }
-        
+
         // 本番環境では許可リストをチェック
         if (allowedOrigins.includes(origin)) {
             console.log(`[CORS] Allowing origin: ${origin}`);
             return callback(null, true);
         }
-        
+
         // 許可されていないオリジンの場合
         console.warn(`[CORS] Blocked origin: ${origin}`);
         return callback(null, false);
@@ -87,6 +88,7 @@ app.use('/api/pharmacist-profiles', pharmacistProfileRoutes);
 app.use('/api/pharmacy', pharmacyRoutes);
 app.use('/api/pharmacist', pharmacistRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ヘルスチェック
 app.get('/health', (_req: Request, res: Response) => {
@@ -116,7 +118,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
             message: 'このオリジンからのアクセスは許可されていません',
         });
     }
-    
+
     console.error('Error:', err);
     return res.status(err.status || 500).json({
         success: false,

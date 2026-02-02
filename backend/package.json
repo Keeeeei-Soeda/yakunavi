@@ -16,7 +16,8 @@
     "add:dummy": "ts-node scripts/add-dummy-accounts.ts",
     "list:pharmacists": "ts-node scripts/list-pharmacists.ts",
     "list:pharmacies": "ts-node scripts/list-pharmacies.ts",
-    "stats": "ts-node scripts/stats.ts"
+    "stats": "ts-node scripts/stats.ts",
+    "create:admin": "ts-node scripts/create-admin.ts"
   },
   "keywords": [
     "pharmacy",

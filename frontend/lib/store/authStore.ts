@@ -21,6 +21,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (typeof window !== 'undefined') {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('userType', user.userType || '');
     }
     apiClient.setToken(token);
     set({ user, isAuthenticated: true, isLoading: false });
@@ -30,6 +31,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('userType');
     }
     apiClient.clearToken();
     set({ user: null, isAuthenticated: false, isLoading: false });

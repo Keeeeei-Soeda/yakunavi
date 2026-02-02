@@ -71,3 +71,22 @@ export const requireUserType = (...allowedTypes: UserType[]) => {
 // ユーザータイプ認可ミドルウェア（別名エクスポート）
 export const authorizeUserType = requireUserType;
 
+// 管理者認証ミドルウェア
+export const authenticateAdmin = (req: AuthRequest, res: Response, next: NextFunction): void => {
+  authenticate(req, res, () => {
+    if (!req.user) {
+      return;
+    }
+
+    if (req.user.userType !== 'admin') {
+      res.status(403).json({
+        error: 'Forbidden',
+        message: '管理者権限が必要です'
+      });
+      return;
+    }
+
+    next();
+  });
+};
+
