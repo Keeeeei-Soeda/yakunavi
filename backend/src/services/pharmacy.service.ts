@@ -9,6 +9,7 @@ export class PharmacyService {
       where: { id: pharmacyId },
       select: {
         id: true,
+        userId: true,
         pharmacyName: true,
         representativeLastName: true,
         representativeFirstName: true,
@@ -35,6 +36,7 @@ export class PharmacyService {
     return {
       ...pharmacy,
       id: Number(pharmacy.id),
+      userId: Number(pharmacy.userId),
     };
   }
 
@@ -76,6 +78,7 @@ export class PharmacyService {
     return {
       ...pharmacy,
       id: Number(pharmacy.id),
+      userId: Number(pharmacy.userId),
     };
   }
 
