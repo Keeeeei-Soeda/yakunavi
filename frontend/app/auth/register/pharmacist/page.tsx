@@ -78,7 +78,7 @@ export default function PharmacistRegisterPage() {
         {/* ヘッダー */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            薬局管理システム
+            薬ナビ
           </h1>
           <p className="text-gray-600">薬剤師アカウント登録</p>
         </div>
