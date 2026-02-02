@@ -104,54 +104,7 @@ export class ContractService {
             },
         });
 
-        // プラットフォーム手数料請求書PDFを生成
-        try {
-            const invoiceNumber = `INV-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(contract.id).padStart(3, '0')}`;
-            const contractNumber = `CNT-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(contract.id).padStart(3, '0')}`;
-
-            const pdfStream = this.pdfService.generateInvoice({
-                invoiceNumber,
-                issueDate: new Date(),
-                pharmacyName: contract.application.jobPosting.pharmacy.pharmacyName,
-                pharmacyAddress: contract.application.jobPosting.pharmacy.address || '住所未登録',
-                pharmacyPhone: contract.application.jobPosting.pharmacy.phoneNumber || '電話番号未登録',
-                contractNumber,
-                pharmacistName: `${contract.application.pharmacist.lastName} ${contract.application.pharmacist.firstName}`,
-                workDays: contract.workDays,
-                initialWorkDate: workDate,
-                serviceCharge: totalCompensation,
-                platformFee,
-                totalAmount: platformFee,
-                paymentDeadline,
-            });
-
-            // PDFをファイルとして保存
-            const fileName = `${invoiceNumber}.pdf`;
-            const filePath = path.join(process.cwd(), 'uploads', 'invoices', fileName);
-            const writeStream = fs.createWriteStream(filePath);
-            pdfStream.pipe(writeStream);
-
-            await new Promise<void>((resolve, reject) => {
-                writeStream.on('finish', () => resolve());
-                writeStream.on('error', reject);
-            });
-
-            // Documentレコードを作成
-            await prisma.document.create({
-                data: {
-                    contractId: contract.id,
-                    pharmacyId: contract.pharmacyId,
-                    pharmacistId: contract.pharmacistId,
-                    documentType: 'invoice',
-                    documentTitle: 'プラットフォーム手数料請求書',
-                    filePath,
-                    fileSize: fs.statSync(filePath).size,
-                },
-            });
-        } catch (pdfError) {
-            console.error('PDF generation error:', pdfError);
-            // PDFの生成に失敗しても契約作成は成功として扱う
-        }
+        // 請求書は薬剤師承認後（approveContract）に生成されます
 
         return {
             id: Number(contract.id),
@@ -295,6 +248,55 @@ export class ContractService {
                 paymentStatus: 'pending',
             },
         });
+
+        // プラットフォーム手数料請求書PDFを生成（薬剤師承認後に生成）
+        try {
+            const invoiceNumber = `INV-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(contractId).padStart(3, '0')}`;
+            const contractNumber = `CNT-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(contractId).padStart(3, '0')}`;
+
+            const pdfStream = this.pdfService.generateInvoice({
+                invoiceNumber,
+                issueDate: new Date(),
+                pharmacyName: contract.pharmacy.pharmacyName,
+                pharmacyAddress: contract.pharmacy.address || '住所未登録',
+                pharmacyPhone: contract.pharmacy.phoneNumber || '電話番号未登録',
+                contractNumber,
+                pharmacistName: `${contract.pharmacist.lastName} ${contract.pharmacist.firstName}`,
+                workDays: contract.workDays,
+                initialWorkDate: new Date(contract.initialWorkDate),
+                serviceCharge: contract.totalCompensation,
+                platformFee: contract.platformFee,
+                totalAmount: contract.platformFee,
+                paymentDeadline: new Date(contract.paymentDeadline),
+            });
+
+            // PDFをファイルとして保存
+            const fileName = `${invoiceNumber}.pdf`;
+            const filePath = path.join(process.cwd(), 'uploads', 'invoices', fileName);
+            const writeStream = fs.createWriteStream(filePath);
+            pdfStream.pipe(writeStream);
+
+            await new Promise<void>((resolve, reject) => {
+                writeStream.on('finish', () => resolve());
+                writeStream.on('error', reject);
+            });
+
+            // Documentレコードを作成
+            await prisma.document.create({
+                data: {
+                    contractId,
+                    pharmacyId: contract.pharmacyId,
+                    pharmacistId: contract.pharmacistId,
+                    documentType: 'invoice',
+                    documentTitle: 'プラットフォーム手数料請求書',
+                    filePath,
+                    fileSize: fs.statSync(filePath).size,
+                },
+            });
+        } catch (pdfError) {
+            console.error('PDF generation error:', pdfError);
+            // PDFの生成に失敗しても契約承認は成功として扱う
+        }
 
         // 労働条件通知書を生成
         // TODO: PDF生成機能は今後実装予定

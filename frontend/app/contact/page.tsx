@@ -44,7 +44,7 @@ export default function ContactPage() {
         email: formData.email,
         phone: formData.phone,
       });
-      
+
       setSubmitStatus('success');
       setFormData({
         name: '',
@@ -318,7 +318,7 @@ export default function ContactPage() {
             <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">サービス</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-teal-400 transition-colors">おためし転職</a></li>
+                <li><Link href="/" className="hover:text-teal-400 transition-colors">おためし転職</Link></li>
               </ul>
             </div>
             <div>

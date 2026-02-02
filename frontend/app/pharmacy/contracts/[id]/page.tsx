@@ -55,7 +55,7 @@ export default function ContractDetailPage() {
         'pharmacy',
         documentTitle
       );
-      
+
       if (!result.success) {
         alert(result.error || 'ダウンロードに失敗しました');
       }
@@ -251,13 +251,16 @@ export default function ContractDetailPage() {
                   <span className="text-gray-900">¥{contract.platformFee.toLocaleString()}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">（報酬総額の40%）</p>
-                <Link
-                  href={`/pharmacy/invoices/${contract.id}`}
-                  className="mt-2 inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline"
-                >
-                  <FileText size={16} />
-                  請求書を表示
-                </Link>
+                {/* 請求書は薬剤師承認後（pending_payment以降）に表示 */}
+                {contract.status !== 'pending_approval' && (
+                  <Link
+                    href={`/pharmacy/invoices/${contract.id}`}
+                    className="mt-2 inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline"
+                  >
+                    <FileText size={16} />
+                    請求書を表示
+                  </Link>
+                )}
               </div>
 
               <div>
@@ -306,30 +309,38 @@ export default function ContractDetailPage() {
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-lg font-semibold mb-4">📄 書類ダウンロード</h2>
               <div className="space-y-3">
-                {contract.documents.map((doc: any) => (
-                  <div
-                    key={doc.id}
-                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <FileText className="w-5 h-5 text-gray-400" />
-                      <div>
-                        <p className="font-medium text-gray-900">{doc.documentTitle}</p>
-                        <p className="text-xs text-gray-500">
-                          作成日: {format(new Date(doc.createdAt), 'yyyy年MM月dd日', { locale: ja })}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleDownloadDocument(doc.id, doc.documentTitle)}
-                      disabled={downloading === doc.id}
-                      className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                {contract.documents
+                  .filter((doc: any) => {
+                    // pending_approval 時は請求書を非表示
+                    if (contract.status === 'pending_approval' && doc.documentType === 'invoice') {
+                      return false;
+                    }
+                    return true;
+                  })
+                  .map((doc: any) => (
+                    <div
+                      key={doc.id}
+                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
                     >
-                      <Download className="w-4 h-4" />
-                      <span>{downloading === doc.id ? 'ダウンロード中...' : 'ダウンロード'}</span>
-                    </button>
-                  </div>
-                ))}
+                      <div className="flex items-center space-x-3">
+                        <FileText className="w-5 h-5 text-gray-400" />
+                        <div>
+                          <p className="font-medium text-gray-900">{doc.documentTitle}</p>
+                          <p className="text-xs text-gray-500">
+                            作成日: {format(new Date(doc.createdAt), 'yyyy年MM月dd日', { locale: ja })}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDownloadDocument(doc.id, doc.documentTitle)}
+                        disabled={downloading === doc.id}
+                        className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                      >
+                        <Download className="w-4 h-4" />
+                        <span>{downloading === doc.id ? 'ダウンロード中...' : 'ダウンロード'}</span>
+                      </button>
+                    </div>
+                  ))}
               </div>
             </div>
           )}

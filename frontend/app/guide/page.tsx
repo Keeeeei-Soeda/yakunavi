@@ -91,7 +91,7 @@ export default function GuidePage() {
                 <span className="text-3xl">💊</span>
                 薬剤師の方へ
               </h2>
-              
+
               <div className="space-y-6">
                 <div className="bg-teal-50 rounded-2xl p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">1. 無料登録</h3>
@@ -136,7 +136,7 @@ export default function GuidePage() {
                 <span className="text-3xl">🏥</span>
                 薬局・病院の方へ
               </h2>
-              
+
               <div className="space-y-6">
                 <div className="bg-blue-50 rounded-2xl p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">1. 無料登録</h3>
@@ -223,7 +223,7 @@ export default function GuidePage() {
             <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">サービス</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-teal-400 transition-colors">おためし転職</a></li>
+                <li><Link href="/" className="hover:text-teal-400 transition-colors">おためし転職</Link></li>
               </ul>
             </div>
             <div>

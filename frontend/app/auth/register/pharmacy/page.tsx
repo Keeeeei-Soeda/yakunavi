@@ -6,11 +6,12 @@ import Link from 'next/link';
 import { useAuthStore } from '@/lib/store/authStore';
 import { authAPI } from '@/lib/api/auth';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { TermsModal } from '@/components/common/TermsModal';
 
 export default function PharmacyRegisterPage() {
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,6 +23,7 @@ export default function PharmacyRegisterPage() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +58,7 @@ export default function PharmacyRegisterPage() {
         representativeLastName: formData.representativeLastName,
         representativeFirstName: formData.representativeFirstName,
       });
-      
+
       if (response.success && response.data) {
         const { user, accessToken } = response.data;
         login(user, accessToken);
@@ -187,9 +189,13 @@ export default function PharmacyRegisterPage() {
               className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label htmlFor="termsAgreed" className="ml-2 text-sm text-gray-700">
-              <Link href="/terms" target="_blank" className="text-blue-600 hover:text-blue-800 underline">
+              <button
+                type="button"
+                onClick={() => setIsTermsModalOpen(true)}
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
                 利用規約
-              </Link>
+              </button>
               に同意します <span className="text-red-500">*</span>
             </label>
           </div>
@@ -220,6 +226,12 @@ export default function PharmacyRegisterPage() {
           </p>
         </div>
       </div>
+
+      {/* 利用規約モーダル */}
+      <TermsModal
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+      />
     </div>
   );
 }

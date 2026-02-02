@@ -5,11 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { contractsAPI } from '@/lib/api/contracts';
-import { documentsAPI } from '@/lib/api/documents';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
-import { ArrowLeft, Download, FileText } from 'lucide-react';
-import Link from 'next/link';
+import { Download } from 'lucide-react';
 
 export default function InvoicePage() {
   const params = useParams();
@@ -18,7 +16,6 @@ export default function InvoicePage() {
 
   const [contract, setContract] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     fetchContractDetail();
@@ -38,37 +35,9 @@ export default function InvoicePage() {
     }
   };
 
-  const handleDownloadPDF = async () => {
-    if (!contract || !contract.documents || contract.documents.length === 0) {
-      alert('請求書が見つかりません');
-      return;
-    }
-
-    const invoiceDoc = contract.documents.find((doc: any) => doc.documentType === 'invoice');
-    if (!invoiceDoc) {
-      alert('請求書が見つかりません');
-      return;
-    }
-
-    setDownloading(true);
-    try {
-      const result = await documentsAPI.download(
-        invoiceDoc.id,
-        'pharmacy',
-        `請求書_${contract.id}.pdf`
-      );
-
-      if (result.success) {
-      alert('PDFをダウンロードしました');
-      } else {
-        alert(result.error || 'PDFのダウンロードに失敗しました');
-      }
-    } catch (error: any) {
-      console.error('Failed to download PDF:', error);
-      alert(error.message || 'PDFのダウンロードに失敗しました');
-    } finally {
-      setDownloading(false);
-    }
+  // 印刷機能
+  const handlePrint = () => {
+    window.print();
   };
 
   if (loading) {
@@ -100,33 +69,89 @@ export default function InvoicePage() {
 
   return (
     <ProtectedRoute requiredUserType="pharmacy">
-      <PharmacyLayout>
-        <div className="space-y-6">
+      <PharmacyLayout hideSidebar={true}>
+        <style jsx global>{`
+          @media print {
+            body * {
+              visibility: hidden;
+            }
+            .invoice-container,
+            .invoice-container * {
+              visibility: visible;
+            }
+            .invoice-container {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+            }
+            .no-print {
+              display: none !important;
+            }
+            .print-only {
+              display: block !important;
+            }
+            .screen-only {
+              display: none !important;
+            }
+            .no-break {
+              page-break-inside: avoid;
+            }
+            .invoice-card {
+              box-shadow: none !important;
+              border: 1px solid #ddd;
+            }
+            .invoice-amount {
+              font-size: 2rem;
+            }
+          }
+          .print-only {
+            display: none;
+          }
+        `}</style>
+
+        <div className="space-y-6 invoice-container">
           {/* ヘッダー */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between no-print">
+            <div>
               <button
                 onClick={() => router.back()}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="text-blue-600 hover:underline text-sm mb-2 inline-block"
               >
-                <ArrowLeft size={24} />
+                ← 契約一覧に戻る
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">プラットフォーム手数料 請求書</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                請求書 INV-{String(contract.id).padStart(6, '0')}
+              </h1>
             </div>
-            <button
-              onClick={handleDownloadPDF}
-              disabled={downloading}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium disabled:bg-gray-300"
-            >
-              <Download size={20} />
-              {downloading ? 'ダウンロード中...' : 'PDFダウンロード'}
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handlePrint}
+                className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                <Download size={20} />
+                <span>印刷 / PDF保存</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 印刷用ヘッダー（印刷時のみ表示） */}
+          <div className="hidden print-only mb-6">
+            <div className="text-right text-sm text-gray-600 mb-4">
+              発行日: {format(issueDate, 'yyyy年MM月dd日', { locale: ja })}
+            </div>
+            <h1 className="text-3xl font-bold text-center mb-2">
+              プラットフォーム手数料 請求書
+            </h1>
+            <p className="text-center text-gray-600 mb-6">
+              Platform Fee Invoice
+            </p>
           </div>
 
           {/* 請求書本体 */}
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto">
-            {/* タイトル */}
-            <div className="text-center mb-8">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto invoice-container">
+            {/* タイトル（画面表示時のみ） */}
+            <div className="text-center mb-8 screen-only">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">
                 プラットフォーム手数料 請求書
               </h2>
@@ -134,150 +159,189 @@ export default function InvoicePage() {
             </div>
 
             {/* 請求書番号・発行日 */}
-            <div className="flex justify-between mb-8">
+            <div className="flex justify-between mb-8 print-only">
               <div>
-                <p className="text-sm text-gray-600">請求書番号</p>
-                <p className="text-lg font-semibold">{invoiceNumber}</p>
+                <p className="text-sm text-gray-600 mb-1">請求書番号</p>
+                <p className="text-lg font-bold">
+                  {invoiceNumber}
+                </p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-600">発行日</p>
-                <p className="text-lg font-semibold">
+                <p className="text-sm text-gray-600 mb-1">発行日</p>
+                <p className="text-lg font-bold">
                   {format(issueDate, 'yyyy年MM月dd日', { locale: ja })}
                 </p>
               </div>
             </div>
 
             {/* 請求先 */}
-            <div className="mb-8 bg-gray-50 rounded-lg p-6">
-              <h3 className="font-semibold text-gray-900 mb-3">請求先</h3>
-              <p className="text-xl font-bold text-gray-900">{contract.pharmacy?.pharmacyName || '薬局名不明'} 御中</p>
-              <p className="text-sm text-gray-700 mt-2">
-                {contract.pharmacy?.prefecture || ''}{contract.pharmacy?.address || ''}
+            <div className="mb-6 p-4 border-2 border-gray-400 no-break">
+              <h3 className="font-semibold text-lg mb-3">請求先</h3>
+              <p className="text-xl font-bold mb-2">
+                {contract.pharmacy?.pharmacyName || '薬局名不明'} 御中
               </p>
-              <p className="text-sm text-gray-700">
-                TEL: {contract.pharmacy?.phoneNumber || ''}
-              </p>
+              {(contract.pharmacy?.address || contract.pharmacy?.prefecture) && (
+                <p className="text-sm mb-1">
+                  {contract.pharmacy?.prefecture || ''}{contract.pharmacy?.address || ''}
+                </p>
+              )}
+              {contract.pharmacy?.phoneNumber && (
+                <p className="text-sm">
+                  TEL: {contract.pharmacy.phoneNumber}
+                </p>
+              )}
             </div>
 
             {/* 契約情報 */}
-            <div className="mb-8">
-              <h3 className="font-semibold text-gray-900 mb-3">契約情報</h3>
-              <div className="grid grid-cols-2 gap-4">
+            <div className="mb-8 no-break">
+              <h3 className="text-xl font-bold mb-4 hidden print-only">契約情報</h3>
+              <h3 className="font-semibold text-gray-900 mb-3 screen-only">契約情報</h3>
+              <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <p className="text-sm text-gray-600">契約番号</p>
-                  <p className="font-medium">CNT-{format(issueDate, 'yyyy-MMdd', { locale: ja })}-{String(contract.id).padStart(3, '0')}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    契約ID
+                  </label>
+                  <span className="text-gray-900">
+                    {contract.id}
+                  </span>
                 </div>
+
                 <div>
-                  <p className="text-sm text-gray-600">薬剤師名</p>
-                  <p className="font-medium">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    薬剤師名
+                  </label>
+                  <span className="text-gray-900">
                     {contract.pharmacist?.lastName || ''} {contract.pharmacist?.firstName || ''} 様
-                  </p>
+                  </span>
                 </div>
+
                 <div>
-                  <p className="text-sm text-gray-600">勤務予定日数</p>
-                  <p className="font-medium">{contract.workDays}日間</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    初回出勤日
+                  </label>
+                  <span className="text-gray-900">
+                    {format(new Date(contract.initialWorkDate), 'yyyy年MM月dd日', {
+                      locale: ja,
+                    })}
+                  </span>
                 </div>
+
                 <div>
-                  <p className="text-sm text-gray-600">初回出勤予定日</p>
-                  <p className="font-medium">
-                    {format(new Date(contract.initialWorkDate), 'yyyy年MM月dd日（E）', { locale: ja })}
-                  </p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    支払い期限
+                  </label>
+                  <span className="text-gray-900">
+                    {format(new Date(contract.paymentDeadline), 'yyyy年MM月dd日', {
+                      locale: ja,
+                    })}
+                  </span>
                 </div>
-              </div>
-            </div>
 
-            {/* 請求内容 */}
-            <div className="mb-8">
-              <h3 className="font-semibold text-gray-900 mb-3">請求内容</h3>
-              <table className="w-full border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border border-gray-300 px-4 py-3 text-left">項目</th>
-                    <th className="border border-gray-300 px-4 py-3 text-right">金額</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border border-gray-300 px-4 py-3">
-                      薬剤師紹介サービス利用料
-                    </td>
-                    <td className="border border-gray-300 px-4 py-3 text-right font-medium">
-                      ¥{contract.totalCompensation?.toLocaleString() || '0'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border border-gray-300 px-4 py-3">
-                      プラットフォーム手数料（40%）
-                    </td>
-                    <td className="border border-gray-300 px-4 py-3 text-right font-medium">
-                      ¥{contract.platformFee?.toLocaleString() || '0'}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    勤務日数
+                  </label>
+                  <span className="text-gray-900">{contract.workDays}日間</span>
+                </div>
 
-            {/* お支払い金額 */}
-            <div className="mb-8 bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
-              <div className="flex justify-between items-center">
-                <p className="text-xl font-bold text-gray-900">お支払い金額（税込）</p>
-                <p className="text-3xl font-bold text-blue-600">
-                  ¥{contract.platformFee?.toLocaleString() || '0'}
-                </p>
-              </div>
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    日給
+                  </label>
+                  <span className="text-gray-900">
+                    ¥{contract.dailyWage.toLocaleString()}
+                  </span>
+                </div>
 
-            {/* お振込先情報 */}
-            <div className="mb-8 bg-gray-50 rounded-lg p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">お振込先情報</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex">
-                  <span className="w-24 text-gray-600">銀行名:</span>
-                  <span className="font-medium">三菱UFJ銀行</span>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    報酬総額
+                  </label>
+                  <span className="text-gray-900">
+                    ¥{contract.totalCompensation.toLocaleString()}
+                  </span>
                 </div>
-                <div className="flex">
-                  <span className="w-24 text-gray-600">支店名:</span>
-                  <span className="font-medium">渋谷支店</span>
-                </div>
-                <div className="flex">
-                  <span className="w-24 text-gray-600">口座種別:</span>
-                  <span className="font-medium">普通</span>
-                </div>
-                <div className="flex">
-                  <span className="w-24 text-gray-600">口座番号:</span>
-                  <span className="font-medium">1234567</span>
-                </div>
-                <div className="flex">
-                  <span className="w-24 text-gray-600">口座名義:</span>
-                  <span className="font-medium">カ）ヤクナビ</span>
-                </div>
-                <div className="flex">
-                  <span className="w-24 text-gray-600">お支払い期限:</span>
-                  <span className="font-medium text-red-600">
-                    {format(new Date(contract.paymentDeadline), 'yyyy年MM月dd日（E）', { locale: ja })}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    プラットフォーム手数料 (40%)
+                  </label>
+                  <span className="text-gray-900">
+                    ¥{contract.platformFee.toLocaleString()}
                   </span>
                 </div>
               </div>
             </div>
 
+            {/* 請求内容 */}
+            <div className="mb-8 no-break">
+              <h2 className="text-lg font-semibold mb-4 screen-only">請求内容</h2>
+              <h2 className="text-xl font-bold mb-4 hidden print-only">請求内訳</h2>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b-2 border-gray-400">
+                  <span className="text-lg font-semibold text-gray-900">請求額</span>
+                  <span className="text-3xl font-bold text-gray-900 invoice-amount">
+                    ¥{contract.platformFee?.toLocaleString() || '0'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 振込先情報 */}
+            <div className="bg-white rounded-lg shadow p-6 invoice-card no-break">
+              <h2 className="text-lg font-semibold mb-4">お振込先情報</h2>
+              <div className="space-y-3 text-sm">
+                <div className="flex border-b border-gray-200 pb-2">
+                  <span className="w-32 font-medium text-gray-700">銀行名:</span>
+                  <span className="text-gray-900">paypay銀行</span>
+                </div>
+                <div className="flex border-b border-gray-200 pb-2">
+                  <span className="w-32 font-medium text-gray-700">支店名:</span>
+                  <span className="text-gray-900">ビジネス営業部（005）</span>
+                </div>
+                <div className="flex border-b border-gray-200 pb-2">
+                  <span className="w-32 font-medium text-gray-700">口座種別:</span>
+                  <span className="text-gray-900">普通</span>
+                </div>
+                <div className="flex border-b border-gray-200 pb-2">
+                  <span className="w-32 font-medium text-gray-700">口座番号:</span>
+                  <span className="text-gray-900 font-bold">7555812</span>
+                </div>
+                <div className="flex">
+                  <span className="w-32 font-medium text-gray-700">口座名義:</span>
+                  <span className="text-gray-900">ｶ) ﾄﾚｽｸｰﾚ</span>
+                </div>
+              </div>
+            </div>
+
             {/* 重要事項 */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h3 className="font-semibold text-yellow-900 mb-2">⚠️ 重要事項</h3>
-              <ul className="text-sm text-yellow-800 space-y-1">
-                <li>• お支払い確認後、薬剤師の個人情報（連絡先、免許情報等）が開示されます。</li>
-                <li>• 期限内にお支払いが確認できない場合、契約がキャンセルされる場合があります。</li>
-                <li>
-                  • お振込の際は、請求書番号（{invoiceNumber}）をお振込名義人に含めてご入金ください。
-                </li>
-                <li>• 振込手数料は当社にてご負担させていただきます。</li>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 no-print">
+              <h3 className="font-semibold text-blue-900 mb-3">💡 お支払いについて</h3>
+              <ul className="space-y-2 text-sm text-blue-800">
+                <li>・振込手数料は貴社負担でお願いします</li>
+                <li>・支払い報告後、運営が入金を確認します（1-2営業日）</li>
+                <li>・確認完了後、薬剤師の連絡先が開示されます</li>
+                <li>・薬剤師への報酬は、体験期間終了後に直接お支払いください</li>
               </ul>
             </div>
 
-            {/* 発行元 */}
-            <div className="mt-8 pt-6 border-t border-gray-300 text-center">
-              <p className="font-bold text-lg mb-2">ヤクナビ運営事務局</p>
-              <p className="text-sm text-gray-600">お問い合わせ: support@yakunavi.jp</p>
-              <p className="text-sm text-gray-600">TEL: 0120-XXX-XXXX（平日 9:00-18:00）</p>
+            {/* 印刷用の重要事項（印刷時のみ表示） */}
+            <div className="hidden print-only mt-8 border-t-2 border-gray-400 pt-6">
+              <h3 className="font-semibold text-lg mb-3">重要事項</h3>
+              <ul className="space-y-2 text-sm leading-relaxed">
+                <li>・お支払い確認後、薬剤師の個人情報（連絡先、免許証情報等）が開示されます</li>
+                <li>・期限内にお支払いが確認できない場合、契約がキャンセルされる場合があります</li>
+                <li>・お振込の際は、請求書番号（{invoiceNumber}）をお振込名義人欄にご記入ください</li>
+                <li>・振込手数料は貴社にてご負担ください</li>
+                <li>・薬剤師への報酬は、体験期間終了後に直接お支払いください</li>
+              </ul>
+            </div>
+
+            {/* 印刷用フッター */}
+            <div className="hidden print-only mt-12 pt-6 border-t border-gray-300 text-center text-sm text-gray-600">
+              <p className="font-semibold mb-2">ヤクナビ運営事務局</p>
+              <p>お問い合わせ: support@yakunavi.jp</p>
+              <p>TEL: 0120-XXX-XXXX（平日 9:00-18:00）</p>
             </div>
           </div>
         </div>

@@ -44,7 +44,7 @@ export default function Home() {
     {
       image: '/pharmacy_top-page04.jpg',
       title: '採用コストを大幅削減',
-      description: '本採用時の紹介手数料不要。トライアル期間の日給のみで、低コストで優秀な人材を採用できます。',
+      description: '本採用時の紹介手数料不要。トライアル期間の手数料のみで、低コストで優秀な人材を採用できます。',
       imagePosition: 'right'
     }
   ];
@@ -569,7 +569,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">サービス</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-teal-400 transition-colors">おためし転職</a></li>
+                <li><Link href="/" className="hover:text-teal-400 transition-colors">おためし転職</Link></li>
               </ul>
             </div>
             <div>

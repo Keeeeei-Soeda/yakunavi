@@ -368,11 +368,11 @@ export default function PaymentDetailPage() {
             <div className="space-y-3 text-sm">
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">銀行名:</span>
-                <span className="text-gray-900">三菱UFJ銀行</span>
+                <span className="text-gray-900">paypay銀行</span>
               </div>
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">支店名:</span>
-                <span className="text-gray-900">渋谷支店</span>
+                <span className="text-gray-900">ビジネス営業部（005）</span>
               </div>
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">口座種別:</span>
@@ -380,11 +380,11 @@ export default function PaymentDetailPage() {
               </div>
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">口座番号:</span>
-                <span className="text-gray-900 font-bold">1234567</span>
+                <span className="text-gray-900 font-bold">7555812</span>
               </div>
               <div className="flex">
                 <span className="w-32 font-medium text-gray-700">口座名義:</span>
-                <span className="text-gray-900">カ）ヤクナビ</span>
+                <span className="text-gray-900">ｶ) ﾄﾚｽｸｰﾚ</span>
               </div>
             </div>
           </div>

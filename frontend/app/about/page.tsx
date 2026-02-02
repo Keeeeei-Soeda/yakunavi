@@ -72,14 +72,7 @@ export default function AboutPage() {
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">担当者</h2>
               <p className="text-gray-700 leading-relaxed">
-                津守貴裕（ツモリタカヒロ）
-              </p>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">電話番号</h2>
-              <p className="text-gray-700 leading-relaxed">
-                090-4296-7118
+                津守貴裕
               </p>
             </div>
           </div>
@@ -99,7 +92,7 @@ export default function AboutPage() {
             <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">サービス</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-teal-400 transition-colors">おためし転職</a></li>
+                <li><Link href="/" className="hover:text-teal-400 transition-colors">おためし転職</Link></li>
               </ul>
             </div>
             <div>
