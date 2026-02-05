@@ -8,7 +8,7 @@ const resend = process.env.RESEND_API_KEY
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@yaku-navi.com';
 const FROM_NAME = process.env.FROM_NAME || '薬ナビ';
 // 管理者メールアドレス（カンマ区切りで複数指定可能）
-const ADMIN_EMAILS = process.env.ADMIN_EMAILS 
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS
   ? process.env.ADMIN_EMAILS.split(',').map(email => email.trim())
   : ['pharnewton@gmail.com', 'info@yaku-navi.com'];
 
@@ -234,7 +234,7 @@ export class ContactService {
     }
 
     // 複数の管理者メールアドレスに送信
-    const sendPromises = ADMIN_EMAILS.map(email => 
+    const sendPromises = ADMIN_EMAILS.map(email =>
       resend.emails.send({
         from: `${FROM_NAME} <${FROM_EMAIL}>`,
         to: email,
