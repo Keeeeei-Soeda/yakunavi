@@ -7,7 +7,10 @@ const resend = process.env.RESEND_API_KEY
 
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@yaku-navi.com';
 const FROM_NAME = process.env.FROM_NAME || '薬ナビ';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'pharnewton@gmail.com';
+// 管理者メールアドレス（カンマ区切りで複数指定可能）
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS 
+  ? process.env.ADMIN_EMAILS.split(',').map(email => email.trim())
+  : ['pharnewton@gmail.com', 'info@medi-canvas.com'];
 
 interface ContactFormData {
   name: string;
@@ -19,6 +22,35 @@ interface ContactFormData {
 }
 
 export class ContactService {
+  /**
+   * テストメールを送信（管理者のみ）
+   */
+  async sendTestEmail() {
+    // Resend APIキーが設定されていない場合はスキップ
+    if (!resend) {
+      console.warn('RESEND_API_KEY is not set. Email sending is skipped.');
+      return { success: false, message: 'メール送信機能は現在利用できません（RESEND_API_KEYが設定されていません）' };
+    }
+
+    const testData: ContactFormData = {
+      name: 'テスト 太郎',
+      age: '30',
+      occupation: 'pharmacist',
+      content: 'これはテストメールです。お問い合わせフォームの動作確認のために送信されました。',
+      email: 'test@example.com',
+      phone: '090-1234-5678',
+    };
+
+    try {
+      // 管理者への通知メールのみ送信（自動返信は送信しない）
+      await this.sendNotificationToAdmin(testData);
+      return { success: true, message: 'テストメールを送信しました' };
+    } catch (error) {
+      console.error('Test email error:', error);
+      throw new Error('テストメールの送信に失敗しました');
+    }
+  }
+
   /**
    * 問い合わせフォームからメールを送信
    */
@@ -201,12 +233,17 @@ export class ContactService {
       throw new Error('Resend is not initialized');
     }
 
-    await resend.emails.send({
-      from: `${FROM_NAME} <${FROM_EMAIL}>`,
-      to: ADMIN_EMAIL,
-      subject: `【薬ナビ】新しいお問い合わせ: ${data.name}様（${occupationMap[data.occupation] || data.occupation}）`,
-      html,
-    });
+    // 複数の管理者メールアドレスに送信
+    const sendPromises = ADMIN_EMAILS.map(email => 
+      resend.emails.send({
+        from: `${FROM_NAME} <${FROM_EMAIL}>`,
+        to: email,
+        subject: `【薬ナビ】新しいお問い合わせ: ${data.name}様（${occupationMap[data.occupation] || data.occupation}）`,
+        html,
+      })
+    );
+
+    await Promise.all(sendPromises);
   }
 }
 

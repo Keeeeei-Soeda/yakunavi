@@ -53,5 +53,32 @@ export class ContactController {
       });
     }
   };
+
+  /**
+   * テストメールの送信
+   */
+  sendTestEmail = async (req: Request, res: Response) => {
+    try {
+      const result = await this.contactService.sendTestEmail();
+      
+      if (result.success) {
+        return res.status(200).json({
+          success: true,
+          message: result.message,
+        });
+      } else {
+        return res.status(500).json({
+          success: false,
+          error: result.message,
+        });
+      }
+    } catch (error: any) {
+      console.error('Test email error:', error);
+      return res.status(500).json({
+        success: false,
+        error: error.message || 'テストメールの送信に失敗しました',
+      });
+    }
+  };
 }
 
