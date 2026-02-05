@@ -10,7 +10,7 @@ const FROM_NAME = process.env.FROM_NAME || '薬ナビ';
 // 管理者メールアドレス（カンマ区切りで複数指定可能）
 const ADMIN_EMAILS = process.env.ADMIN_EMAILS 
   ? process.env.ADMIN_EMAILS.split(',').map(email => email.trim())
-  : ['pharnewton@gmail.com', 'info@medi-canvas.com'];
+  : ['pharnewton@gmail.com', 'info@yaku-navi.com'];
 
 interface ContactFormData {
   name: string;
