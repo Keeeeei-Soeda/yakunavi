@@ -58,6 +58,8 @@ export class PharmacistProfileController {
       }
 
       const pharmacistId = BigInt(req.params.pharmacistId);
+      console.log(`[Profile] Getting profile for pharmacistId: ${pharmacistId}, userId: ${req.user.id}`);
+      
       const profile = await this.profileService.getProfile(pharmacistId);
 
       return res.status(200).json({
