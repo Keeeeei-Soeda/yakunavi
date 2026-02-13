@@ -30,11 +30,11 @@ export default function ProfilePage() {
         // 営業時間をHH:MM形式に変換してformDataに設定
         const processedData = {
           ...response.data,
-          businessHoursStart: response.data.businessHoursStart 
-            ? extractTimeFromDateTime(response.data.businessHoursStart) 
+          businessHoursStart: response.data.businessHoursStart
+            ? extractTimeFromDateTime(response.data.businessHoursStart)
             : '',
-          businessHoursEnd: response.data.businessHoursEnd 
-            ? extractTimeFromDateTime(response.data.businessHoursEnd) 
+          businessHoursEnd: response.data.businessHoursEnd
+            ? extractTimeFromDateTime(response.data.businessHoursEnd)
             : '',
         };
         setFormData(processedData);
@@ -56,11 +56,11 @@ export default function ProfilePage() {
         // 営業時間をHH:MM形式に変換してformDataに設定
         const processedData = {
           ...response.data,
-          businessHoursStart: response.data.businessHoursStart 
-            ? extractTimeFromDateTime(response.data.businessHoursStart) 
+          businessHoursStart: response.data.businessHoursStart
+            ? extractTimeFromDateTime(response.data.businessHoursStart)
             : '',
-          businessHoursEnd: response.data.businessHoursEnd 
-            ? extractTimeFromDateTime(response.data.businessHoursEnd) 
+          businessHoursEnd: response.data.businessHoursEnd
+            ? extractTimeFromDateTime(response.data.businessHoursEnd)
             : '',
         };
         setFormData(processedData);
@@ -80,11 +80,11 @@ export default function ProfilePage() {
       // 営業時間をHH:MM形式に変換してformDataに設定
       const processedData = {
         ...profile,
-        businessHoursStart: profile.businessHoursStart 
-          ? extractTimeFromDateTime(profile.businessHoursStart) 
+        businessHoursStart: profile.businessHoursStart
+          ? extractTimeFromDateTime(profile.businessHoursStart)
           : '',
-        businessHoursEnd: profile.businessHoursEnd 
-          ? extractTimeFromDateTime(profile.businessHoursEnd) 
+        businessHoursEnd: profile.businessHoursEnd
+          ? extractTimeFromDateTime(profile.businessHoursEnd)
           : '',
       };
       setFormData(processedData);

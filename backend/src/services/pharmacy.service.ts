@@ -67,7 +67,7 @@ export class PharmacyService {
         // HH:MM形式の場合
         if (/^\d{2}:\d{2}$/.test(data.businessHoursStart)) {
           updateData.businessHoursStart = new Date(`1970-01-01T${data.businessHoursStart}:00`);
-        } 
+        }
         // ISO形式の場合（念のため対応）
         else {
           const date = new Date(data.businessHoursStart);
@@ -84,7 +84,7 @@ export class PharmacyService {
         // HH:MM形式の場合
         if (/^\d{2}:\d{2}$/.test(data.businessHoursEnd)) {
           updateData.businessHoursEnd = new Date(`1970-01-01T${data.businessHoursEnd}:00`);
-        } 
+        }
         // ISO形式の場合（念のため対応）
         else {
           const date = new Date(data.businessHoursEnd);

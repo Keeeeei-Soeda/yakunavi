@@ -42,8 +42,15 @@ export const approveCertificate = async (certificateId: number, comment?: string
 };
 
 export const rejectCertificate = async (certificateId: number, reason: string) => {
-    const response = await adminApi.post(`/certificates/${certificateId}/reject`, { reason });
-    return response.data;
+  const response = await adminApi.post(`/certificates/${certificateId}/reject`, { reason });
+  return response.data;
+};
+
+export const getCertificateFile = async (certificateId: number): Promise<Blob> => {
+  const response = await adminApi.get(`/certificates/${certificateId}/file`, {
+    responseType: 'blob',
+  });
+  return response.data;
 };
 
 // 契約管理
