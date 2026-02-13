@@ -164,8 +164,11 @@ export default function JobDetailPage() {
     );
   }
 
+  // 薬剤師プロフィール自体のverificationStatusをチェック
+  const isPharmacistVerified = profile?.verificationStatus === 'verified';
+  // 証明書の確認状況もチェック（追加の情報として）
   const verifiedCerts = certificates.filter(c => c.verificationStatus === 'verified');
-  const hasVerifiedCertificate = verifiedCerts.length > 0;
+  const hasVerifiedCertificate = isPharmacistVerified || verifiedCerts.length > 0;
 
   return (
     <ProtectedRoute requiredUserType="pharmacist">
