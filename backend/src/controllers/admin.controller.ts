@@ -176,40 +176,19 @@ export class AdminController {
     async confirmPayment(req: Request, res: Response) {
         try {
             const paymentId = BigInt(req.params.id);
+            const paymentService = new (await import('../services/payment.service')).PaymentService();
 
-            const payment = await prisma.payment.findUnique({
-                where: { id: paymentId },
-            });
-
-            if (!payment) {
-                return res.status(404).json({
-                    success: false,
-                    error: '支払いが見つかりません',
-                });
-            }
-
-            if (payment.paymentStatus !== 'reported') {
-                return res.status(400).json({
-                    success: false,
-                    error: 'この支払いは確認できません',
-                });
-            }
-
-            const updatedPayment = await prisma.payment.update({
-                where: { id: paymentId },
-                data: {
-                    paymentStatus: 'confirmed',
-                    confirmedAt: new Date(),
-                },
-            });
+            const updatedPayment = await paymentService.confirmPayment(paymentId);
 
             return res.status(200).json({
                 success: true,
                 data: {
-                    id: Number(updatedPayment.id),
+                    id: updatedPayment.id,
+                    contractId: updatedPayment.contractId,
                     paymentStatus: updatedPayment.paymentStatus,
                     confirmedAt: updatedPayment.confirmedAt,
                 },
+                message: '支払いを確認しました。契約ステータスを「勤務中」に更新しました。',
             });
         } catch (error: any) {
             console.error('Confirm payment error:', error);
