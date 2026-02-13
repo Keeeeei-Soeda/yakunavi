@@ -128,6 +128,14 @@ export default function JobDetailPage() {
 
     setApplying(true);
     try {
+      console.log('[Debug] Submitting application:', {
+        jobPostingId: jobId,
+        pharmacistId,
+        nearestStation: applicationForm.nearestStation,
+        workExperienceTypes: applicationForm.workExperienceTypes,
+        workExperienceTypesLength: applicationForm.workExperienceTypes.length,
+      });
+
       const response = await applicationsAPI.create({
         jobPostingId: jobId,
         pharmacistId,
@@ -186,6 +194,13 @@ export default function JobDetailPage() {
   // 証明書の確認状況もチェック（追加の情報として）
   const verifiedCerts = certificates.filter(c => c.verificationStatus === 'verified');
   const hasVerifiedCertificate = isPharmacistVerified || verifiedCerts.length > 0;
+
+  console.log('[Debug] Profile verification:', {
+    profile: profile ? { id: profile.id, verificationStatus: profile.verificationStatus } : null,
+    isPharmacistVerified,
+    verifiedCertsCount: verifiedCerts.length,
+    hasVerifiedCertificate,
+  });
 
   return (
     <ProtectedRoute requiredUserType="pharmacist">

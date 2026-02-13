@@ -20,6 +20,15 @@ export class ApplicationService {
   async createApplication(input: CreateApplicationInput) {
     const { jobPostingId, pharmacistId, coverLetter, nearestStation, workExperienceTypes } = input;
 
+    console.log('[Application] Creating application:', {
+      jobPostingId,
+      pharmacistId,
+      nearestStation,
+      workExperienceTypes,
+      workExperienceTypesType: typeof workExperienceTypes,
+      workExperienceTypesIsArray: Array.isArray(workExperienceTypes),
+    });
+
     // 薬剤師プロフィールを取得
     const pharmacist = await prisma.pharmacist.findUnique({
       where: { id: pharmacistId },
