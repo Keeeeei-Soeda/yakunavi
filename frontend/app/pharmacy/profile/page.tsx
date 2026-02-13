@@ -27,7 +27,17 @@ export default function ProfilePage() {
       const response = await pharmacyAPI.getProfile(pharmacyId);
       if (response.success && response.data) {
         setProfile(response.data);
-        setFormData(response.data);
+        // 営業時間をHH:MM形式に変換してformDataに設定
+        const processedData = {
+          ...response.data,
+          businessHoursStart: response.data.businessHoursStart 
+            ? extractTimeFromDateTime(response.data.businessHoursStart) 
+            : '',
+          businessHoursEnd: response.data.businessHoursEnd 
+            ? extractTimeFromDateTime(response.data.businessHoursEnd) 
+            : '',
+        };
+        setFormData(processedData);
       }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
@@ -43,7 +53,17 @@ export default function ProfilePage() {
       const response = await pharmacyAPI.updateProfile(pharmacyId, formData);
       if (response.success && response.data) {
         setProfile(response.data);
-        setFormData(response.data);
+        // 営業時間をHH:MM形式に変換してformDataに設定
+        const processedData = {
+          ...response.data,
+          businessHoursStart: response.data.businessHoursStart 
+            ? extractTimeFromDateTime(response.data.businessHoursStart) 
+            : '',
+          businessHoursEnd: response.data.businessHoursEnd 
+            ? extractTimeFromDateTime(response.data.businessHoursEnd) 
+            : '',
+        };
+        setFormData(processedData);
         setIsEditing(false);
         alert('プロフィールを更新しました');
       }
@@ -56,13 +76,40 @@ export default function ProfilePage() {
   };
 
   const handleCancel = () => {
-    setFormData(profile || {});
+    if (profile) {
+      // 営業時間をHH:MM形式に変換してformDataに設定
+      const processedData = {
+        ...profile,
+        businessHoursStart: profile.businessHoursStart 
+          ? extractTimeFromDateTime(profile.businessHoursStart) 
+          : '',
+        businessHoursEnd: profile.businessHoursEnd 
+          ? extractTimeFromDateTime(profile.businessHoursEnd) 
+          : '',
+      };
+      setFormData(processedData);
+    }
     setIsEditing(false);
   };
 
+  // DateTime文字列からHH:MM形式の時刻を抽出
+  const extractTimeFromDateTime = (timeString: string): string => {
+    if (!timeString) return '';
+    const date = new Date(timeString);
+    if (isNaN(date.getTime())) return '';
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  };
+
+  // 表示用の時刻フォーマット（閲覧モード用）
   const formatTime = (timeString?: string) => {
     if (!timeString) return '未設定';
+    // すでにHH:MM形式の場合はそのまま返す
+    if (typeof timeString === 'string' && /^\d{2}:\d{2}$/.test(timeString)) {
+      return timeString;
+    }
+    // DateTime形式の場合は変換
     const date = new Date(timeString);
+    if (isNaN(date.getTime())) return '未設定';
     return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   };
 
@@ -242,7 +289,7 @@ export default function ProfilePage() {
                     </label>
                     <input
                       type="time"
-                      value={formData.businessHoursStart ? formatTime(formData.businessHoursStart) : ''}
+                      value={formData.businessHoursStart || ''}
                       onChange={(e) => setFormData({ ...formData, businessHoursStart: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -253,7 +300,7 @@ export default function ProfilePage() {
                     </label>
                     <input
                       type="time"
-                      value={formData.businessHoursEnd ? formatTime(formData.businessHoursEnd) : ''}
+                      value={formData.businessHoursEnd || ''}
                       onChange={(e) => setFormData({ ...formData, businessHoursEnd: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />

@@ -61,10 +61,38 @@ export class PharmacyService {
     if (data.dailyPrescriptionCount !== undefined) updateData.dailyPrescriptionCount = data.dailyPrescriptionCount;
     if (data.staffCount !== undefined) updateData.staffCount = data.staffCount;
     if (data.businessHoursStart !== undefined) {
-      updateData.businessHoursStart = data.businessHoursStart ? new Date(`1970-01-01T${data.businessHoursStart}`) : null;
+      if (!data.businessHoursStart) {
+        updateData.businessHoursStart = null;
+      } else if (typeof data.businessHoursStart === 'string') {
+        // HH:MM形式の場合
+        if (/^\d{2}:\d{2}$/.test(data.businessHoursStart)) {
+          updateData.businessHoursStart = new Date(`1970-01-01T${data.businessHoursStart}:00`);
+        } 
+        // ISO形式の場合（念のため対応）
+        else {
+          const date = new Date(data.businessHoursStart);
+          if (!isNaN(date.getTime())) {
+            updateData.businessHoursStart = date;
+          }
+        }
+      }
     }
     if (data.businessHoursEnd !== undefined) {
-      updateData.businessHoursEnd = data.businessHoursEnd ? new Date(`1970-01-01T${data.businessHoursEnd}`) : null;
+      if (!data.businessHoursEnd) {
+        updateData.businessHoursEnd = null;
+      } else if (typeof data.businessHoursEnd === 'string') {
+        // HH:MM形式の場合
+        if (/^\d{2}:\d{2}$/.test(data.businessHoursEnd)) {
+          updateData.businessHoursEnd = new Date(`1970-01-01T${data.businessHoursEnd}:00`);
+        } 
+        // ISO形式の場合（念のため対応）
+        else {
+          const date = new Date(data.businessHoursEnd);
+          if (!isNaN(date.getTime())) {
+            updateData.businessHoursEnd = date;
+          }
+        }
+      }
     }
     if (data.introduction !== undefined) updateData.introduction = data.introduction;
     if (data.strengths !== undefined) updateData.strengths = data.strengths;
