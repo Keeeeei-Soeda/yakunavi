@@ -68,11 +68,15 @@ export default function ProfilePage() {
     const handleSave = async () => {
         setSaving(true);
         try {
+            // 送信前に読み取り専用フィールドを除外
+            const { id, userId, verificationStatus, verifiedAt, ...updateData } = formData as any;
+            
             const response = await pharmacistProfileAPI.updateProfile(
                 pharmacistId,
-                formData
+                updateData
             );
             if (response.success && response.data) {
+                // 最新データで状態を更新
                 setProfile(response.data);
                 setFormData({
                     ...response.data,
@@ -85,7 +89,7 @@ export default function ProfilePage() {
             }
         } catch (error: any) {
             console.error('Failed to update profile:', error);
-            alert(error.response?.data?.error || '更新に失敗しました');
+            alert(error.response?.data?.error || 'プロフィールの更新に失敗しました');
         } finally {
             setSaving(false);
         }
@@ -104,11 +108,13 @@ export default function ProfilePage() {
             );
             if (response.success) {
                 alert('証明書をアップロードしました');
-                fetchCertificates();
+                // 証明書一覧とプロフィールを再取得（検証ステータスが更新される可能性）
+                await fetchCertificates();
+                await fetchProfile();
             }
         } catch (error: any) {
             console.error('Failed to upload certificate:', error);
-            alert(error.response?.data?.error || 'アップロードに失敗しました');
+            alert(error.response?.data?.error || '証明書のアップロードに失敗しました');
         } finally {
             setUploading(null);
         }
@@ -124,11 +130,13 @@ export default function ProfilePage() {
             );
             if (response.success) {
                 alert('証明書を削除しました');
-                fetchCertificates();
+                // 証明書一覧とプロフィールを再取得
+                await fetchCertificates();
+                await fetchProfile();
             }
         } catch (error: any) {
             console.error('Failed to delete certificate:', error);
-            alert(error.response?.data?.error || '削除に失敗しました');
+            alert(error.response?.data?.error || '証明書の削除に失敗しました');
         }
     };
 

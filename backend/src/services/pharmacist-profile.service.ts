@@ -79,22 +79,46 @@ export class PharmacistProfileService {
    * プロフィールを更新
    */
   async updateProfile(pharmacistId: bigint, input: UpdateProfileInput) {
-    // birthDateが文字列の場合はDateに変換
-    const updateData: any = { ...input };
-    if (input.birthDate && typeof input.birthDate === 'string') {
-      updateData.birthDate = new Date(input.birthDate);
-    }
+    // 更新不可能なフィールドを除外
+    const excludeFields = [
+      'id',
+      'userId',
+      'user',
+      'certificates',
+      'verificationStatus',
+      'verifiedAt',
+      'createdAt',
+      'updatedAt',
+    ];
 
-    const pharmacist = await prisma.pharmacist.update({
-      where: { id: pharmacistId },
-      data: updateData,
+    // 許可されたフィールドのみを抽出
+    const updateData: any = {};
+    Object.keys(input).forEach((key) => {
+      if (!excludeFields.includes(key)) {
+        updateData[key] = (input as any)[key];
+      }
     });
 
-    return {
-      ...pharmacist,
-      id: Number(pharmacist.id),
-      userId: Number(pharmacist.userId),
-    };
+    // birthDateが文字列の場合はDateに変換
+    if (updateData.birthDate && typeof updateData.birthDate === 'string') {
+      updateData.birthDate = new Date(updateData.birthDate);
+    }
+
+    try {
+      const pharmacist = await prisma.pharmacist.update({
+        where: { id: pharmacistId },
+        data: updateData,
+      });
+
+      return {
+        ...pharmacist,
+        id: Number(pharmacist.id),
+        userId: Number(pharmacist.userId),
+      };
+    } catch (error: any) {
+      console.error('Prisma update error:', error);
+      throw new Error(`プロフィールの更新に失敗しました: ${error.message}`);
+    }
   }
 
   /**
