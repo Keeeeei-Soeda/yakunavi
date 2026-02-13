@@ -292,9 +292,19 @@ export default function MessagesPage() {
   const isContractActive = contract && ['pending_payment', 'active', 'completed'].includes(contract.status);
   const canSendMessage = !isContractActive;
 
+  // 正式オファー通知（H1横に表示）
+  const offerNotification = contract && contract.status === 'pending_approval' ? (
+    <div className="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-lg px-4 py-2 animate-pulse">
+      <FileText className="w-5 h-5 text-orange-600" />
+      <span className="text-sm font-semibold text-orange-900">
+        薬局からオファーが来ています
+      </span>
+    </div>
+  ) : null;
+
   return (
     <ProtectedRoute requiredUserType="pharmacist">
-      <PharmacistLayout title="メッセージ管理">
+      <PharmacistLayout title="メッセージ管理" offerNotification={offerNotification}>
         <div className="grid grid-cols-3 gap-6 h-[calc(100vh-180px)]">
           {/* 会話リスト */}
           <div className="col-span-1 bg-white rounded-lg shadow overflow-hidden">

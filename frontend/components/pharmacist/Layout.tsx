@@ -8,6 +8,7 @@ interface PharmacistLayoutProps {
   title?: string;
   rightAction?: React.ReactNode;
   hideSidebar?: boolean;
+  offerNotification?: React.ReactNode;
 }
 
 export const PharmacistLayout: React.FC<PharmacistLayoutProps> = ({
@@ -15,6 +16,7 @@ export const PharmacistLayout: React.FC<PharmacistLayoutProps> = ({
   title,
   rightAction,
   hideSidebar = false,
+  offerNotification,
 }) => {
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -25,7 +27,10 @@ export const PharmacistLayout: React.FC<PharmacistLayoutProps> = ({
           <header className="bg-white shadow-sm sticky top-0 z-10">
             <div className="px-6 py-4">
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                <div className="flex items-center gap-4">
+                  <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                  {offerNotification && <div>{offerNotification}</div>}
+                </div>
                 {rightAction && <div>{rightAction}</div>}
               </div>
             </div>
