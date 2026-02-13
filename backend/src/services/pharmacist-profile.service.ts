@@ -40,6 +40,8 @@ export class PharmacistProfileService {
    * プロフィールを取得
    */
   async getProfile(pharmacistId: bigint) {
+    console.log(`[Service] Searching for pharmacist with id: ${pharmacistId}, type: ${typeof pharmacistId}`);
+    
     const pharmacist = await prisma.pharmacist.findUnique({
       where: { id: pharmacistId },
       include: {
@@ -55,13 +57,15 @@ export class PharmacistProfileService {
       },
     });
 
+    console.log(`[Service] Found pharmacist:`, pharmacist ? `ID ${pharmacist.id}` : 'NULL');
+
     if (!pharmacist) {
       throw new Error('薬剤師プロフィールが見つかりません');
     }
 
     // BigInt を Number に変換し、Date オブジェクトを文字列に変換
     const { id, userId, user, certificates, ...pharmacistData } = pharmacist;
-    
+
     return {
       ...pharmacistData,
       id: Number(id),
