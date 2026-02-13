@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -13,11 +13,35 @@ import {
   LogOut,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
+import { pharmacistProfileAPI } from '@/lib/api/pharmacist-profile';
 
 export const PharmacistSidebar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
+  const pharmacistId = user?.relatedId;
+  const [pharmacistName, setPharmacistName] = useState<string>('');
+
+  useEffect(() => {
+    if (pharmacistId) {
+      fetchPharmacistName();
+    }
+  }, [pharmacistId]);
+
+  const fetchPharmacistName = async () => {
+    try {
+      const response = await pharmacistProfileAPI.getProfile(pharmacistId!);
+      if (response.success && response.data) {
+        const { lastName, firstName } = response.data;
+        setPharmacistName(`${lastName} ${firstName}`);
+      }
+    } catch (error) {
+      console.error('Failed to fetch pharmacist name:', error);
+      // エラー時はデフォルト表示を維持
+      setPharmacistName('');
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -62,7 +86,9 @@ export const PharmacistSidebar: React.FC = () => {
       {/* ロゴ・ヘッダー */}
       <div className="p-6 border-b border-gray-200">
         <h1 className="text-xl font-bold text-gray-900">薬剤師管理</h1>
-        <p className="text-sm text-gray-500 mt-1">Yaku Navi</p>
+        <p className="text-sm text-gray-500 mt-1">
+          {pharmacistName || 'Yaku Navi'}
+        </p>
       </div>
 
       {/* メニュー */}

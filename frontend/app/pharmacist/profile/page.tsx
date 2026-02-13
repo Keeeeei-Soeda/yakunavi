@@ -70,7 +70,7 @@ export default function ProfilePage() {
         try {
             // 送信前に読み取り専用フィールドを除外
             const { id, userId, verificationStatus, verifiedAt, ...updateData } = formData as any;
-            
+
             const response = await pharmacistProfileAPI.updateProfile(
                 pharmacistId,
                 updateData
