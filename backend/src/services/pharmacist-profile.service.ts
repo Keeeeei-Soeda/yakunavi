@@ -71,6 +71,7 @@ export class PharmacistProfileService {
         ...cert,
         id: Number(cert.id),
         pharmacistId: Number(cert.pharmacistId),
+        verifiedBy: cert.verifiedBy ? Number(cert.verifiedBy) : null,
       })),
     };
   }
@@ -172,6 +173,7 @@ export class PharmacistProfileService {
       ...cert,
       id: Number(cert.id),
       pharmacistId: Number(cert.pharmacistId),
+      verifiedBy: cert.verifiedBy ? Number(cert.verifiedBy) : null,
     }));
   }
 
