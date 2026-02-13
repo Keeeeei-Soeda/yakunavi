@@ -56,14 +56,14 @@ export const pharmacistProfileAPI = {
   // プロフィール取得
   getProfile: async (pharmacistId: number) => {
     return apiClient.get<APIResponse<PharmacistProfile>>(
-      `/pharmacist/profile/${pharmacistId}`
+      `/pharmacist-profiles/${pharmacistId}`
     );
   },
 
   // プロフィール更新
   updateProfile: async (pharmacistId: number, data: Partial<PharmacistProfile>) => {
     return apiClient.put<APIResponse<PharmacistProfile>>(
-      `/pharmacist/profile/${pharmacistId}`,
+      `/pharmacist-profiles/${pharmacistId}`,
       data
     );
   },
@@ -79,7 +79,7 @@ export const pharmacistProfileAPI = {
     formData.append('certificateType', certificateType);
 
     return apiClient.post<APIResponse<Certificate>>(
-      `/pharmacist/profile/${pharmacistId}/certificates`,
+      `/pharmacist-profiles/${pharmacistId}/certificates`,
       formData
     );
   },
@@ -87,21 +87,21 @@ export const pharmacistProfileAPI = {
   // 証明書一覧取得
   getCertificates: async (pharmacistId: number) => {
     return apiClient.get<APIResponse<Certificate[]>>(
-      `/pharmacist/profile/${pharmacistId}/certificates`
+      `/pharmacist-profiles/${pharmacistId}/certificates`
     );
   },
 
   // 証明書削除
   deleteCertificate: async (pharmacistId: number, certificateId: number) => {
     return apiClient.delete<APIResponse>(
-      `/pharmacist/profile/${pharmacistId}/certificates/${certificateId}`
+      `/pharmacist-profiles/${pharmacistId}/certificates/${certificateId}`
     );
   },
 
   // 証明書確認ステータス取得
   getVerificationStatus: async (pharmacistId: number) => {
     return apiClient.get<APIResponse<any>>(
-      `/pharmacist/profile/${pharmacistId}/verification-status`
+      `/pharmacist-profiles/${pharmacistId}/verification-status`
     );
   },
 };
