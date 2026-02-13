@@ -37,7 +37,7 @@ export default function AdminLayout({
       <AdminSidebar />
 
       {/* メインコンテンツエリア */}
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1 lg:ml-64">
         {/* ヘッダー */}
         <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8 py-4">
