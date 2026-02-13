@@ -19,15 +19,16 @@ export default function JobDetailPage() {
   const router = useRouter();
   const jobId = Number(params.id);
   const user = useAuthStore((state) => state.user);
+  const isLoading = useAuthStore((state) => state.isLoading);
   const pharmacistId = user?.relatedId;
 
-  // relatedIdがない場合はログインページにリダイレクト
+  // 認証の初期化を待ってからリダイレクト判定
   useEffect(() => {
-    if (!pharmacistId) {
+    if (!isLoading && !pharmacistId) {
       console.error('pharmacistId is not set. Redirecting to login.');
       router.push('/pharmacist/login');
     }
-  }, [pharmacistId, router]);
+  }, [pharmacistId, isLoading, router]);
 
   const [job, setJob] = useState<JobPosting | null>(null);
   const [loading, setLoading] = useState(true);

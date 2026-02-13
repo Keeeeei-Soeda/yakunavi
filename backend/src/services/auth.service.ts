@@ -157,6 +157,8 @@ export class AuthService {
             relatedId = Number(user.pharmacist.id);
         }
 
+        console.log(`[Auth] Login successful for user ${user.email} (${user.userType}), relatedId: ${relatedId}`);
+
         return {
             user: {
                 id: Number(user.id),
