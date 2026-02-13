@@ -134,7 +134,7 @@ export class AdminService {
         }
 
         if (certificate.verificationStatus !== 'pending') {
-            throw new Error('この証明書は既に処理されています');
+            throw new Error('この証明書は既に承認されています');
         }
 
         // 証明書を承認
@@ -165,10 +165,13 @@ export class AdminService {
             });
         }
 
+        // BigIntをNumberに変換してreturn
         return {
-            ...updatedCertificate,
             id: Number(updatedCertificate.id),
             pharmacistId: Number(updatedCertificate.pharmacistId),
+            verificationStatus: updatedCertificate.verificationStatus,
+            verifiedAt: updatedCertificate.verifiedAt,
+            message: '証明書を承認しました',
         };
     }
 
@@ -197,9 +200,11 @@ export class AdminService {
         });
 
         return {
-            ...updatedCertificate,
             id: Number(updatedCertificate.id),
             pharmacistId: Number(updatedCertificate.pharmacistId),
+            verificationStatus: updatedCertificate.verificationStatus,
+            rejectionReason: updatedCertificate.rejectionReason,
+            message: '証明書を差し戻しました',
         };
     }
 

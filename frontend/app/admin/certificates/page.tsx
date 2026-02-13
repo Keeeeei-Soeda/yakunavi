@@ -97,10 +97,11 @@ export default function CertificatesPage() {
 
         try {
             setProcessing(true);
-            await approveCertificate(certificateId);
-            alert('証明書を承認しました');
+            const response = await approveCertificate(certificateId);
+            alert(response.message || '証明書を承認しました');
             setSelectedCertificate(null);
-            fetchCertificates();
+            setRejectionReason('');
+            await fetchCertificates();
         } catch (err: any) {
             console.error('Failed to approve certificate:', err);
             alert(err.response?.data?.error || '承認に失敗しました');
@@ -119,11 +120,11 @@ export default function CertificatesPage() {
 
         try {
             setProcessing(true);
-            await rejectCertificate(certificateId, rejectionReason);
-            alert('証明書を差し戻しました');
+            const response = await rejectCertificate(certificateId, rejectionReason);
+            alert(response.message || '証明書を差し戻しました');
             setSelectedCertificate(null);
             setRejectionReason('');
-            fetchCertificates();
+            await fetchCertificates();
         } catch (err: any) {
             console.error('Failed to reject certificate:', err);
             alert(err.response?.data?.error || '差し戻しに失敗しました');
@@ -426,13 +427,32 @@ export default function CertificatesPage() {
                                     )}
 
                                     {selectedCertificate.verificationStatus !== 'pending' && (
-                                        <div className="flex justify-end">
-                                            <button
-                                                onClick={() => setSelectedCertificate(null)}
-                                                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                                            >
-                                                閉じる
-                                            </button>
+                                        <div>
+                                            <div className="mb-4 p-4 bg-gray-100 rounded-lg">
+                                                {selectedCertificate.verificationStatus === 'verified' && (
+                                                    <p className="text-sm text-green-700">
+                                                        <CheckCircle className="inline h-4 w-4 mr-1" />
+                                                        この証明書は承認済みです
+                                                    </p>
+                                                )}
+                                                {selectedCertificate.verificationStatus === 'rejected' && (
+                                                    <p className="text-sm text-red-700">
+                                                        <XCircle className="inline h-4 w-4 mr-1" />
+                                                        この証明書は差し戻し済みです
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="flex justify-end">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedCertificate(null);
+                                                        setRejectionReason('');
+                                                    }}
+                                                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                                                >
+                                                    閉じる
+                                                </button>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
