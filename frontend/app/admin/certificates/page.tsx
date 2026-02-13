@@ -4,13 +4,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCertificates, approveCertificate, rejectCertificate, getCertificateFile } from '@/lib/api/admin';
 import { CheckCircle, XCircle, Clock, Search } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-// react-pdfはSSR非対応のため、動的インポートを使用
-const PDFViewer = dynamic(() => import('@/components/admin/PDFViewer').then(mod => ({ default: mod.PDFViewer })), {
-  ssr: false,
-  loading: () => <div className="flex items-center justify-center h-[600px] text-gray-500">読み込み中...</div>
-});
 
 interface Certificate {
     id: number;
@@ -41,7 +34,7 @@ export default function CertificatesPage() {
     const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
     const [rejectionReason, setRejectionReason] = useState('');
     const [processing, setProcessing] = useState(false);
-    const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
     const fetchCertificates = useCallback(async () => {
         try {
@@ -74,20 +67,28 @@ export default function CertificatesPage() {
         if (selectedCertificate) {
             loadCertificatePDF(selectedCertificate.id);
         } else {
-            // モーダルを閉じるときにBlobをクリーンアップ
-            setPdfBlob(null);
+            // モーダルを閉じるときにURLをクリーンアップ
+            if (pdfUrl) {
+                URL.revokeObjectURL(pdfUrl);
+                setPdfUrl(null);
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCertificate]);
 
     const loadCertificatePDF = async (certificateId: number) => {
         try {
+            // 前のURLがあればクリーンアップ
+            if (pdfUrl) {
+                URL.revokeObjectURL(pdfUrl);
+            }
+
             const blob = await getCertificateFile(certificateId);
-            setPdfBlob(blob);
+            const url = URL.createObjectURL(blob);
+            setPdfUrl(url);
         } catch (err) {
             console.error('Failed to load certificate file:', err);
             alert('証明書ファイルの読み込みに失敗しました');
-            setPdfBlob(null);
         }
     };
 
@@ -439,13 +440,30 @@ export default function CertificatesPage() {
                                 {/* 右側: PDFプレビュー */}
                                 <div>
                                     <h4 className="font-medium text-gray-900 mb-3">証明書プレビュー</h4>
-                                    {pdfBlob ? (
-                                        <PDFViewer file={pdfBlob} fileName={selectedCertificate.fileName} />
-                                    ) : (
-                                        <div className="flex items-center justify-center h-[600px] border border-gray-300 rounded-lg bg-gray-50 text-gray-500">
-                                            読み込み中...
-                                        </div>
-                                    )}
+                                    <div className="border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
+                                        {pdfUrl ? (
+                                            <iframe
+                                                src={pdfUrl}
+                                                className="w-full h-[600px]"
+                                                title="証明書プレビュー"
+                                            />
+                                        ) : (
+                                            <div className="flex items-center justify-center h-[600px] text-gray-500">
+                                                読み込み中...
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="mt-2 text-right">
+                                        {pdfUrl && (
+                                            <a
+                                                href={pdfUrl}
+                                                download={selectedCertificate.fileName}
+                                                className="text-sm text-blue-600 hover:text-blue-800"
+                                            >
+                                                ダウンロード →
+                                            </a>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
