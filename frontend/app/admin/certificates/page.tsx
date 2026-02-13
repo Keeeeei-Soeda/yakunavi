@@ -356,7 +356,7 @@ export default function CertificatesPage() {
                                 </button>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 gap-6">
                                 {/* 左側: 証明書情報 */}
                                 <div>
                                     <div className="mb-4 bg-gray-50 p-4 rounded-lg">
