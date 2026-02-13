@@ -41,7 +41,7 @@ export class PharmacistProfileService {
    */
   async getProfile(pharmacistId: bigint) {
     console.log(`[Service] Searching for pharmacist with id: ${pharmacistId}, type: ${typeof pharmacistId}`);
-    
+
     const pharmacist = await prisma.pharmacist.findUnique({
       where: { id: pharmacistId },
       include: {

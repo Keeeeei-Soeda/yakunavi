@@ -14,7 +14,7 @@ import { Upload, X, CheckCircle, Clock, XCircle } from 'lucide-react';
 
 export default function ProfilePage() {
     const user = useAuthStore((state) => state.user);
-    const pharmacistId = user?.relatedId || 1;
+    const pharmacistId = user?.relatedId!; // 必ず存在すると仮定（ProtectedRouteで保護されている）
 
     const [profile, setProfile] = useState<PharmacistProfile | null>(null);
     const [certificates, setCertificates] = useState<Certificate[]>([]);

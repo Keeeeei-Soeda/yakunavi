@@ -19,7 +19,15 @@ export default function JobDetailPage() {
   const router = useRouter();
   const jobId = Number(params.id);
   const user = useAuthStore((state) => state.user);
-  const pharmacistId = user?.relatedId || 1;
+  const pharmacistId = user?.relatedId;
+
+  // relatedIdがない場合はログインページにリダイレクト
+  useEffect(() => {
+    if (!pharmacistId) {
+      console.error('pharmacistId is not set. Redirecting to login.');
+      router.push('/pharmacist/login');
+    }
+  }, [pharmacistId, router]);
 
   const [job, setJob] = useState<JobPosting | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,6 +64,7 @@ export default function JobDetailPage() {
   };
 
   const fetchProfile = async () => {
+    if (!pharmacistId) return; // pharmacistIdがない場合は何もしない
     try {
       const response = await pharmacistProfileAPI.getProfile(pharmacistId);
       if (response.success && response.data) {
@@ -75,6 +84,7 @@ export default function JobDetailPage() {
   };
 
   const fetchCertificates = async () => {
+    if (!pharmacistId) return; // pharmacistIdがない場合は何もしない
     try {
       const response = await pharmacistProfileAPI.getCertificates(pharmacistId);
       if (response.success && response.data) {
@@ -86,6 +96,12 @@ export default function JobDetailPage() {
   };
 
   const handleApply = async () => {
+    if (!pharmacistId) {
+      alert('ログイン情報が取得できません。再度ログインしてください。');
+      router.push('/pharmacist/login');
+      return;
+    }
+
     // バリデーション
     if (!applicationForm.nearestStation.trim()) {
       alert('最寄駅を入力してください');
