@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { AdminService } from '../services/admin.service';
 import { AuthRequest } from '../middleware/auth';
 import prisma from '../utils/prisma';
+import fs from 'fs';
+import path from 'path';
 
 const adminService = new AdminService();
 
@@ -465,6 +467,78 @@ export class AdminController {
             return res.status(400).json({
                 success: false,
                 error: error.message || 'アカウントステータスの変更に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * 証明書ファイルを表示/ダウンロード
+     * GET /api/admin/certificates/:id/file
+     */
+    async getCertificateFile(req: Request, res: Response) {
+        try {
+            const certificateId = BigInt(req.params.id);
+
+            const certificate = await prisma.certificate.findUnique({
+                where: { id: certificateId },
+            });
+
+            if (!certificate) {
+                return res.status(404).json({
+                    success: false,
+                    error: '証明書が見つかりません',
+                });
+            }
+
+            // ファイルの絶対パスを取得
+            const filePath = path.isAbsolute(certificate.filePath)
+                ? certificate.filePath
+                : path.join(process.cwd(), certificate.filePath);
+
+            // ファイルが存在するか確認
+            if (!fs.existsSync(filePath)) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'ファイルが見つかりません',
+                });
+            }
+
+            // Content-Typeを設定
+            const ext = path.extname(filePath).toLowerCase();
+            let contentType = 'application/octet-stream';
+            if (ext === '.pdf') {
+                contentType = 'application/pdf';
+            } else if (ext === '.jpg' || ext === '.jpeg') {
+                contentType = 'image/jpeg';
+            } else if (ext === '.png') {
+                contentType = 'image/png';
+            }
+
+            // インライン表示（ブラウザで開く）
+            res.setHeader('Content-Type', contentType);
+            res.setHeader(
+                'Content-Disposition',
+                `inline; filename*=UTF-8''${encodeURIComponent(certificate.fileName)}`
+            );
+
+            // ファイルをストリームとして送信
+            const fileStream = fs.createReadStream(filePath);
+            fileStream.on('error', (error) => {
+                console.error('File stream error:', error);
+                if (!res.headersSent) {
+                    res.status(500).json({
+                        success: false,
+                        error: 'ファイルの読み込みに失敗しました',
+                    });
+                }
+            });
+            fileStream.pipe(res);
+            return;
+        } catch (error: any) {
+            console.error('Get certificate file error:', error);
+            return res.status(500).json({
+                success: false,
+                error: error.message || 'ファイルの取得に失敗しました',
             });
         }
     }

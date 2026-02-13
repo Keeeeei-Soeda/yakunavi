@@ -13,6 +13,7 @@ router.get('/dashboard/stats', (req, res) => adminController.getDashboardStats(r
 
 // 資格証明書管理
 router.get('/certificates', (req, res) => adminController.getCertificates(req, res));
+router.get('/certificates/:id/file', (req, res) => adminController.getCertificateFile(req, res));
 router.post('/certificates/:id/approve', (req, res) =>
     adminController.approveCertificate(req, res)
 );

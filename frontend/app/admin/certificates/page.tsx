@@ -306,85 +306,128 @@ export default function CertificatesPage() {
             {/* 詳細モーダル */}
             {selectedCertificate && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                    <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+                    <div className="relative top-10 mx-auto p-5 border w-11/12 max-w-6xl shadow-lg rounded-md bg-white mb-10">
                         <div className="mt-3">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">
-                                証明書詳細
-                            </h3>
-
-                            <div className="mb-4">
-                                <p className="text-sm text-gray-600">
-                                    薬剤師: {selectedCertificate.pharmacist.lastName}{' '}
-                                    {selectedCertificate.pharmacist.firstName}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    証明書種別: {getCertificateTypeName(selectedCertificate.certificateType)}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    ファイル名: {selectedCertificate.fileName}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    提出日: {new Date(selectedCertificate.uploadedAt).toLocaleString('ja-JP')}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                    ステータス: {getStatusBadge(selectedCertificate.verificationStatus)}
-                                </p>
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-medium text-gray-900">
+                                    証明書詳細
+                                </h3>
+                                <button
+                                    onClick={() => {
+                                        setSelectedCertificate(null);
+                                        setRejectionReason('');
+                                    }}
+                                    className="text-gray-400 hover:text-gray-600"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
                             </div>
 
-                            {selectedCertificate.verificationStatus === 'pending' && (
-                                <>
-                                    <div className="mb-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            差し戻し理由（差し戻す場合のみ）
-                                        </label>
-                                        <textarea
-                                            value={rejectionReason}
-                                            onChange={(e) => setRejectionReason(e.target.value)}
-                                            rows={3}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="差し戻す理由を入力してください"
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* 左側: 証明書情報 */}
+                                <div>
+                                    <div className="mb-4 bg-gray-50 p-4 rounded-lg">
+                                        <h4 className="font-medium text-gray-900 mb-3">基本情報</h4>
+                                        <div className="space-y-2">
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">薬剤師:</span> {selectedCertificate.pharmacist.lastName}{' '}
+                                                {selectedCertificate.pharmacist.firstName}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">証明書種別:</span> {getCertificateTypeName(selectedCertificate.certificateType)}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">ファイル名:</span> {selectedCertificate.fileName}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">提出日:</span> {new Date(selectedCertificate.uploadedAt).toLocaleString('ja-JP')}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">ステータス:</span> {getStatusBadge(selectedCertificate.verificationStatus)}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {selectedCertificate.verificationStatus === 'pending' && (
+                                        <>
+                                            <div className="mb-4">
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    差し戻し理由（差し戻す場合のみ）
+                                                </label>
+                                                <textarea
+                                                    value={rejectionReason}
+                                                    onChange={(e) => setRejectionReason(e.target.value)}
+                                                    rows={3}
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    placeholder="差し戻す理由を入力してください"
+                                                />
+                                            </div>
+
+                                            <div className="flex justify-end space-x-3">
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedCertificate(null);
+                                                        setRejectionReason('');
+                                                    }}
+                                                    disabled={processing}
+                                                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                                >
+                                                    キャンセル
+                                                </button>
+                                                <button
+                                                    onClick={() => handleReject(selectedCertificate.id)}
+                                                    disabled={processing}
+                                                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
+                                                >
+                                                    差し戻す
+                                                </button>
+                                                <button
+                                                    onClick={() => handleApprove(selectedCertificate.id)}
+                                                    disabled={processing}
+                                                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+                                                >
+                                                    承認する
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {selectedCertificate.verificationStatus !== 'pending' && (
+                                        <div className="flex justify-end">
+                                            <button
+                                                onClick={() => setSelectedCertificate(null)}
+                                                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                                            >
+                                                閉じる
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* 右側: PDFプレビュー */}
+                                <div>
+                                    <h4 className="font-medium text-gray-900 mb-3">証明書プレビュー</h4>
+                                    <div className="border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
+                                        <iframe
+                                            src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/admin/certificates/${selectedCertificate.id}/file`}
+                                            className="w-full h-[600px]"
+                                            title="証明書プレビュー"
                                         />
                                     </div>
-
-                                    <div className="flex justify-end space-x-3">
-                                        <button
-                                            onClick={() => {
-                                                setSelectedCertificate(null);
-                                                setRejectionReason('');
-                                            }}
-                                            disabled={processing}
-                                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                    <div className="mt-2 text-right">
+                                        <a
+                                            href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/admin/certificates/${selectedCertificate.id}/file`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-sm text-blue-600 hover:text-blue-800"
                                         >
-                                            キャンセル
-                                        </button>
-                                        <button
-                                            onClick={() => handleReject(selectedCertificate.id)}
-                                            disabled={processing}
-                                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
-                                        >
-                                            差し戻す
-                                        </button>
-                                        <button
-                                            onClick={() => handleApprove(selectedCertificate.id)}
-                                            disabled={processing}
-                                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
-                                        >
-                                            承認する
-                                        </button>
+                                            新しいタブで開く →
+                                        </a>
                                     </div>
-                                </>
-                            )}
-
-                            {selectedCertificate.verificationStatus !== 'pending' && (
-                                <div className="flex justify-end">
-                                    <button
-                                        onClick={() => setSelectedCertificate(null)}
-                                        className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                                    >
-                                        閉じる
-                                    </button>
                                 </div>
-                            )}
+                            </div>
                         </div>
                     </div>
                 </div>
