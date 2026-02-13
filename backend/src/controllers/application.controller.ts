@@ -21,12 +21,14 @@ export class ApplicationController {
         });
       }
 
-      const { jobPostingId, pharmacistId, coverLetter } = req.body;
+      const { jobPostingId, pharmacistId, coverLetter, nearestStation, workExperienceTypes } = req.body;
 
       const application = await this.applicationService.createApplication({
         jobPostingId: BigInt(jobPostingId),
         pharmacistId: BigInt(pharmacistId),
         coverLetter,
+        nearestStation,
+        workExperienceTypes,
       });
 
       return res.status(201).json({

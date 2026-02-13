@@ -67,8 +67,11 @@ export default function JobDetailPage() {
   const fetchProfile = async () => {
     if (!pharmacistId) return; // pharmacistIdがない場合は何もしない
     try {
+      console.log('[Debug] Fetching profile for pharmacistId:', pharmacistId);
       const response = await pharmacistProfileAPI.getProfile(pharmacistId);
+      console.log('[Debug] Profile response:', response);
       if (response.success && response.data) {
+        console.log('[Debug] Setting profile:', response.data);
         setProfile(response.data);
         // プロフィールの最寄駅をデフォルト値として設定
         const profileData = response.data;
@@ -78,6 +81,8 @@ export default function JobDetailPage() {
             nearestStation: profileData.nearestStation || '',
           }));
         }
+      } else {
+        console.log('[Debug] Profile response not successful or no data');
       }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
