@@ -59,15 +59,18 @@ export class PharmacistProfileService {
       throw new Error('薬剤師プロフィールが見つかりません');
     }
 
+    // BigInt を Number に変換し、Date オブジェクトを文字列に変換
+    const { id, userId, user, certificates, ...pharmacistData } = pharmacist;
+    
     return {
-      ...pharmacist,
-      id: Number(pharmacist.id),
-      userId: Number(pharmacist.userId),
+      ...pharmacistData,
+      id: Number(id),
+      userId: Number(userId),
       user: {
-        ...pharmacist.user,
-        id: Number(pharmacist.user.id),
+        ...user,
+        id: Number(user.id),
       },
-      certificates: pharmacist.certificates.map((cert: any) => ({
+      certificates: certificates.map((cert: any) => ({
         ...cert,
         id: Number(cert.id),
         pharmacistId: Number(cert.pharmacistId),
