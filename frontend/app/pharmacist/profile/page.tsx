@@ -177,12 +177,28 @@ export default function ProfilePage() {
                     {/* 証明書アップロード */}
                     <div className="bg-white rounded-lg shadow p-6">
                         <h2 className="text-xl font-semibold mb-4">📋 資格証明書</h2>
-                        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                            <p className="text-sm text-yellow-800">
-                                ⚠️ 薬剤師免許証と保険薬剤師登録票をアップロードしてください。
-                                運営が確認後、求人への応募が可能になります。
-                            </p>
-                        </div>
+                        {(() => {
+                            // 両方の証明書（薬剤師免許証と保険薬剤師登録票）が承認済みかチェック
+                            const licenseCert = certificates.find(c => c.certificateType === 'license');
+                            const registrationCert = certificates.find(c => c.certificateType === 'registration');
+                            const hasVerifiedLicense = licenseCert?.verificationStatus === 'verified';
+                            const hasVerifiedRegistration = registrationCert?.verificationStatus === 'verified';
+                            const hasBothVerified = hasVerifiedLicense && hasVerifiedRegistration;
+
+                            // 両方の証明書が承認済みの場合は警告を非表示
+                            if (hasBothVerified) {
+                                return null;
+                            }
+
+                            return (
+                                <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <p className="text-sm text-yellow-800">
+                                        ⚠️ 薬剤師免許証と保険薬剤師登録票をアップロードしてください。
+                                        運営が確認後、求人への応募が可能になります。
+                                    </p>
+                                </div>
+                            );
+                        })()}
 
                         <div className="space-y-6">
                             {/* 薬剤師免許証 */}

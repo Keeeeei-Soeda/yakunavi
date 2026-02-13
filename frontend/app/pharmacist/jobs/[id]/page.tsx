@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacistLayout } from '@/components/pharmacist/Layout';
@@ -44,12 +44,6 @@ export default function JobDetailPage() {
     coverLetter: '',
   });
 
-  useEffect(() => {
-    fetchJobDetail();
-    fetchProfile();
-    fetchCertificates();
-  }, [jobId]);
-
   const fetchJobDetail = async () => {
     setLoading(true);
     try {
@@ -64,7 +58,7 @@ export default function JobDetailPage() {
     }
   };
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     if (!pharmacistId) return; // pharmacistIdがない場合は何もしない
     try {
       console.log('[Debug] Fetching profile for pharmacistId:', pharmacistId);
@@ -87,9 +81,9 @@ export default function JobDetailPage() {
     } catch (error) {
       console.error('Failed to fetch profile:', error);
     }
-  };
+  }, [pharmacistId]);
 
-  const fetchCertificates = async () => {
+  const fetchCertificates = useCallback(async () => {
     if (!pharmacistId) return; // pharmacistIdがない場合は何もしない
     try {
       const response = await pharmacistProfileAPI.getCertificates(pharmacistId);
@@ -99,7 +93,18 @@ export default function JobDetailPage() {
     } catch (error) {
       console.error('Failed to fetch certificates:', error);
     }
-  };
+  }, [pharmacistId]);
+
+  useEffect(() => {
+    fetchJobDetail();
+  }, [jobId]);
+
+  useEffect(() => {
+    if (pharmacistId) {
+      fetchProfile();
+      fetchCertificates();
+    }
+  }, [pharmacistId, fetchProfile, fetchCertificates]);
 
   const handleApply = async () => {
     if (!pharmacistId) {
@@ -194,16 +199,19 @@ export default function JobDetailPage() {
     );
   }
 
-  // 薬剤師プロフィール自体のverificationStatusをチェック
-  const isPharmacistVerified = profile?.verificationStatus === 'verified';
-  // 証明書の確認状況もチェック（追加の情報として）
-  const verifiedCerts = certificates.filter(c => c.verificationStatus === 'verified');
-  const hasVerifiedCertificate = isPharmacistVerified || verifiedCerts.length > 0;
+  // 両方の証明書（薬剤師免許証と保険薬剤師登録票）が承認済みかチェック
+  const licenseCert = certificates.find(c => c.certificateType === 'license');
+  const registrationCert = certificates.find(c => c.certificateType === 'registration');
+  const hasVerifiedLicense = licenseCert?.verificationStatus === 'verified';
+  const hasVerifiedRegistration = registrationCert?.verificationStatus === 'verified';
+  const hasVerifiedCertificate = hasVerifiedLicense && hasVerifiedRegistration;
 
   console.log('[Debug] Profile verification:', {
     profile: profile ? { id: profile.id, verificationStatus: profile.verificationStatus } : null,
-    isPharmacistVerified,
-    verifiedCertsCount: verifiedCerts.length,
+    licenseCert: licenseCert ? { id: licenseCert.id, status: licenseCert.verificationStatus } : null,
+    registrationCert: registrationCert ? { id: registrationCert.id, status: registrationCert.verificationStatus } : null,
+    hasVerifiedLicense,
+    hasVerifiedRegistration,
     hasVerifiedCertificate,
   });
 
