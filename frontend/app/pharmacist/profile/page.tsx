@@ -925,54 +925,77 @@ export default function ProfilePage() {
                                 資格証明書
                             </h3>
                             <div className="grid grid-cols-2 gap-4">
-                                {certificates
-                                    .filter((c) => c.certificateType === 'license')
-                                    .map((cert) => (
-                                        <div key={cert.id} className="border border-gray-200 rounded-lg p-4">
+                                {/* 薬剤師免許証 */}
+                                {(() => {
+                                    const licenseCert = certificates.find((c) => c.certificateType === 'license');
+                                    let statusText = '要提出';
+                                    let statusColor = 'text-gray-600';
+                                    let icon = null;
+
+                                    if (licenseCert) {
+                                        if (licenseCert.verificationStatus === 'verified') {
+                                            statusText = '確認済';
+                                            statusColor = 'text-green-600';
+                                            icon = <CheckCircle className="w-5 h-5 text-green-500" />;
+                                        } else if (licenseCert.verificationStatus === 'pending') {
+                                            statusText = '提出済';
+                                            statusColor = 'text-yellow-600';
+                                            icon = <Clock className="w-5 h-5 text-yellow-500" />;
+                                        } else if (licenseCert.verificationStatus === 'rejected') {
+                                            statusText = '要提出';
+                                            statusColor = 'text-red-600';
+                                            icon = <XCircle className="w-5 h-5 text-red-500" />;
+                                        }
+                                    }
+
+                                    return (
+                                        <div className="border border-gray-200 rounded-lg p-4">
                                             <div className="flex items-center gap-2 mb-2">
-                                                {cert.verificationStatus === 'verified' && (
-                                                    <CheckCircle className="w-5 h-5 text-green-500" />
-                                                )}
-                                                {cert.verificationStatus === 'pending' && (
-                                                    <Clock className="w-5 h-5 text-yellow-500" />
-                                                )}
-                                                {cert.verificationStatus === 'rejected' && (
-                                                    <XCircle className="w-5 h-5 text-red-500" />
-                                                )}
+                                                {icon}
                                                 <span className="font-medium">薬剤師免許証</span>
                                             </div>
-                                            <p className="text-sm text-gray-600">{cert.fileName}</p>
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                {cert.verificationStatus === 'verified' && '✓ 確認済み'}
-                                                {cert.verificationStatus === 'pending' && '⏳ 確認待ち'}
-                                                {cert.verificationStatus === 'rejected' && '✗ 差し戻し'}
+                                            <p className={`text-sm font-medium ${statusColor} mt-2`}>
+                                                {statusText}
                                             </p>
                                         </div>
-                                    ))}
-                                {certificates
-                                    .filter((c) => c.certificateType === 'registration')
-                                    .map((cert) => (
-                                        <div key={cert.id} className="border border-gray-200 rounded-lg p-4">
+                                    );
+                                })()}
+
+                                {/* 保険薬剤師登録票 */}
+                                {(() => {
+                                    const registrationCert = certificates.find((c) => c.certificateType === 'registration');
+                                    let statusText = '要提出';
+                                    let statusColor = 'text-gray-600';
+                                    let icon = null;
+
+                                    if (registrationCert) {
+                                        if (registrationCert.verificationStatus === 'verified') {
+                                            statusText = '確認済';
+                                            statusColor = 'text-green-600';
+                                            icon = <CheckCircle className="w-5 h-5 text-green-500" />;
+                                        } else if (registrationCert.verificationStatus === 'pending') {
+                                            statusText = '提出済';
+                                            statusColor = 'text-yellow-600';
+                                            icon = <Clock className="w-5 h-5 text-yellow-500" />;
+                                        } else if (registrationCert.verificationStatus === 'rejected') {
+                                            statusText = '要提出';
+                                            statusColor = 'text-red-600';
+                                            icon = <XCircle className="w-5 h-5 text-red-500" />;
+                                        }
+                                    }
+
+                                    return (
+                                        <div className="border border-gray-200 rounded-lg p-4">
                                             <div className="flex items-center gap-2 mb-2">
-                                                {cert.verificationStatus === 'verified' && (
-                                                    <CheckCircle className="w-5 h-5 text-green-500" />
-                                                )}
-                                                {cert.verificationStatus === 'pending' && (
-                                                    <Clock className="w-5 h-5 text-yellow-500" />
-                                                )}
-                                                {cert.verificationStatus === 'rejected' && (
-                                                    <XCircle className="w-5 h-5 text-red-500" />
-                                                )}
+                                                {icon}
                                                 <span className="font-medium">保険薬剤師登録票</span>
                                             </div>
-                                            <p className="text-sm text-gray-600">{cert.fileName}</p>
-                                            <p className="text-xs text-gray-500 mt-1">
-                                                {cert.verificationStatus === 'verified' && '✓ 確認済み'}
-                                                {cert.verificationStatus === 'pending' && '⏳ 確認待ち'}
-                                                {cert.verificationStatus === 'rejected' && '✗ 差し戻し'}
+                                            <p className={`text-sm font-medium ${statusColor} mt-2`}>
+                                                {statusText}
                                             </p>
                                         </div>
-                                    ))}
+                                    );
+                                })()}
                             </div>
                         </div>
 
