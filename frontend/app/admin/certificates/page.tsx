@@ -329,7 +329,7 @@ export default function CertificatesPage() {
                                             onClick={() => setSelectedCertificate(cert)}
                                             className="text-blue-600 hover:text-blue-900"
                                         >
-                                            詳細
+                                            詳細を確認
                                         </button>
                                     </td>
                                 </tr>
