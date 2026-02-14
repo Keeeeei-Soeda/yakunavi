@@ -23,6 +23,15 @@ export interface JobPosting {
   closedAt?: string;
   createdAt: string;
   updatedAt: string;
+  pharmacy?: {
+    id: number;
+    pharmacyName?: string;
+    prefecture?: string;
+    address?: string;
+    nearestStation?: string;
+    phoneNumber?: string;
+    introduction?: string;
+  };
 }
 
 export interface CreateJobPostingInput {

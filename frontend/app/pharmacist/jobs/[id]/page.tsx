@@ -7,10 +7,11 @@ import { PharmacistLayout } from '@/components/pharmacist/Layout';
 import { jobPostingsAPI, JobPosting } from '@/lib/api/jobPostings';
 import { applicationsAPI } from '@/lib/api/applications';
 import { pharmacistProfileAPI } from '@/lib/api/pharmacist-profile';
+import { pharmacyAPI, PharmacyProfile } from '@/lib/api/pharmacy';
 import { useAuthStore } from '@/lib/store/authStore';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
-import { ArrowLeft, MapPin, DollarSign, Calendar, Clock, AlertCircle, Send } from 'lucide-react';
+import { ArrowLeft, MapPin, DollarSign, Calendar, Clock, AlertCircle, Send, Building2, Phone, Users, X, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { PREFECTURES } from '@/lib/constants/prefectures';
 
@@ -36,6 +37,9 @@ export default function JobDetailPage() {
   const [applying, setApplying] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [certificates, setCertificates] = useState<any[]>([]);
+  const [showPharmacyModal, setShowPharmacyModal] = useState(false);
+  const [pharmacyProfile, setPharmacyProfile] = useState<PharmacyProfile | null>(null);
+  const [loadingPharmacyProfile, setLoadingPharmacyProfile] = useState(false);
 
   // 応募フォーム
   const [applicationForm, setApplicationForm] = useState({
@@ -173,6 +177,45 @@ export default function JobDetailPage() {
         ? prev.workExperienceTypes.filter(t => t !== type)
         : [...prev.workExperienceTypes, type],
     }));
+  };
+
+  // 薬局プロフィールを取得
+  const handleViewPharmacyDetail = async () => {
+    if (!job?.pharmacyId) return;
+    
+    setLoadingPharmacyProfile(true);
+    setShowPharmacyModal(true);
+    try {
+      const response = await pharmacyAPI.getPublicProfile(job.pharmacyId);
+      if (response.success && response.data) {
+        setPharmacyProfile(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch pharmacy profile:', error);
+      alert('薬局情報の取得に失敗しました');
+    } finally {
+      setLoadingPharmacyProfile(false);
+    }
+  };
+
+  // 時刻フォーマット（HH:MM形式）
+  const formatTime = (timeString?: string) => {
+    if (!timeString) return '未設定';
+    // すでにHH:MM形式の場合はそのまま返す
+    if (typeof timeString === 'string' && /^\d{2}:\d{2}$/.test(timeString)) {
+      return timeString;
+    }
+    // DateTime形式の場合は変換
+    const date = new Date(timeString);
+    if (isNaN(date.getTime())) return '未設定';
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  };
+
+  // 日付フォーマット
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '未設定';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ja-JP');
   };
 
   if (loading) {
@@ -322,6 +365,37 @@ export default function JobDetailPage() {
               </div>
             </div>
           </div>
+
+          {/* 薬局情報 */}
+          {job.pharmacyId && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-semibold text-gray-900">🏥 薬局情報</h3>
+                <button
+                  onClick={handleViewPharmacyDetail}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                >
+                  <Building2 size={16} />
+                  薬局の詳細を見る
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+              {job.pharmacy && (
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-sm text-gray-600">薬局名</p>
+                    <p className="font-medium">{job.pharmacy.pharmacyName || '薬局情報なし'}</p>
+                  </div>
+                  {job.pharmacy.prefecture && (
+                    <div>
+                      <p className="text-sm text-gray-600">都道府県</p>
+                      <p className="font-medium">{job.pharmacy.prefecture}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* 求人詳細 */}
           {job.description && (
@@ -525,6 +599,179 @@ export default function JobDetailPage() {
                     {applying ? '応募中...' : '保存'}
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 薬局詳細モーダル */}
+        {showPharmacyModal && job.pharmacyId && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {pharmacyProfile?.pharmacyName || job.pharmacy?.pharmacyName || '薬局'} のプロフィール
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowPharmacyModal(false);
+                    setPharmacyProfile(null);
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6">
+                {loadingPharmacyProfile ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-gray-500">読み込み中...</div>
+                  </div>
+                ) : pharmacyProfile ? (
+                  <>
+                    {/* 連絡先情報 */}
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <h3 className="font-semibold text-gray-900 mb-3">連絡先情報</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        {pharmacyProfile.phoneNumber && (
+                          <div>
+                            <p className="text-sm text-gray-600">電話番号</p>
+                            <p className="font-medium">
+                              <a href={`tel:${pharmacyProfile.phoneNumber}`} className="text-blue-600 hover:underline">
+                                {pharmacyProfile.phoneNumber}
+                              </a>
+                            </p>
+                          </div>
+                        )}
+                        {pharmacyProfile.faxNumber && (
+                          <div>
+                            <p className="text-sm text-gray-600">FAX番号</p>
+                            <p className="font-medium">{pharmacyProfile.faxNumber}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 基本情報 */}
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-3">基本情報</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-600">薬局名</p>
+                          <p className="font-medium">{pharmacyProfile.pharmacyName}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">都道府県</p>
+                          <p className="font-medium">{pharmacyProfile.prefecture || '未記入'}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <p className="text-sm text-gray-600">住所</p>
+                          <p className="font-medium">{pharmacyProfile.address || '未記入'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">最寄駅</p>
+                          <p className="font-medium">{pharmacyProfile.nearestStation || '未記入'}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">設立日</p>
+                          <p className="font-medium">{formatDate(pharmacyProfile.establishedDate)}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 代表者情報 */}
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-3">代表者情報</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-600">代表者名</p>
+                          <p className="font-medium">
+                            {pharmacyProfile.representativeLastName} {pharmacyProfile.representativeFirstName}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 営業情報 */}
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-3">営業情報</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-600">営業時間</p>
+                          <p className="font-medium">
+                            {pharmacyProfile.businessHoursStart && pharmacyProfile.businessHoursEnd
+                              ? `${formatTime(pharmacyProfile.businessHoursStart)} - ${formatTime(pharmacyProfile.businessHoursEnd)}`
+                              : '未設定'}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">1日の処方箋数</p>
+                          <p className="font-medium">
+                            {pharmacyProfile.dailyPrescriptionCount
+                              ? `${pharmacyProfile.dailyPrescriptionCount}件`
+                              : '未記入'}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">スタッフ数</p>
+                          <p className="font-medium">
+                            {pharmacyProfile.staffCount ? `${pharmacyProfile.staffCount}人` : '未記入'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 薬局情報 */}
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-3">薬局情報</h3>
+                      <div className="space-y-3">
+                        {pharmacyProfile.introduction && (
+                          <div>
+                            <p className="text-sm text-gray-600 mb-1">紹介文</p>
+                            <p className="font-medium whitespace-pre-wrap">{pharmacyProfile.introduction}</p>
+                          </div>
+                        )}
+                        {pharmacyProfile.strengths && (
+                          <div>
+                            <p className="text-sm text-gray-600 mb-1">強み</p>
+                            <p className="font-medium whitespace-pre-wrap">{pharmacyProfile.strengths}</p>
+                          </div>
+                        )}
+                        {pharmacyProfile.equipmentSystems && (
+                          <div>
+                            <p className="text-sm text-gray-600 mb-1">設備・システム</p>
+                            <p className="font-medium whitespace-pre-wrap">{pharmacyProfile.equipmentSystems}</p>
+                          </div>
+                        )}
+                        {!pharmacyProfile.introduction &&
+                          !pharmacyProfile.strengths &&
+                          !pharmacyProfile.equipmentSystems && (
+                            <p className="text-sm text-gray-500">未記入</p>
+                          )}
+                      </div>
+                    </div>
+
+                    {/* 求人情報 */}
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h3 className="font-semibold text-gray-900 mb-3">求人情報</h3>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-gray-600">求人タイトル</p>
+                          <p className="font-medium">{job.title}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600">日給</p>
+                          <p className="font-medium">¥{job.dailyWage.toLocaleString()}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-gray-500">薬局情報の取得に失敗しました</div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
