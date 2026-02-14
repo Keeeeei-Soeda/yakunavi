@@ -10,7 +10,7 @@ import {
     Certificate,
 } from '@/lib/api/pharmacist-profile';
 import { PREFECTURES } from '@/lib/constants/prefectures';
-import { Upload, X, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { Upload, X, CheckCircle, Clock, XCircle, User, Award, Briefcase, GraduationCap, FileText } from 'lucide-react';
 
 export default function ProfilePage() {
     const user = useAuthStore((state) => state.user);
@@ -160,19 +160,63 @@ export default function ProfilePage() {
         );
     }
 
+    const [isEditing, setIsEditing] = useState(false);
+
+    const handleCancel = () => {
+        if (profile) {
+            setFormData({
+                ...profile,
+                workExperienceTypes: profile.workExperienceTypes || [],
+                mainDuties: profile.mainDuties || [],
+                specialtyAreas: profile.specialtyAreas || [],
+                pharmacySystems: profile.pharmacySystems || [],
+            });
+        }
+        setIsEditing(false);
+    };
+
+    const handleSaveAndExit = async () => {
+        await handleSave();
+        setIsEditing(false);
+    };
+
     return (
         <ProtectedRoute requiredUserType="pharmacist">
-            <PharmacistLayout title="プロフィール管理">
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                        >
-                            {saving ? '保存中...' : '保存する'}
-                        </button>
+            <PharmacistLayout
+                title={isEditing ? 'プロフィール編集' : 'プロフィール'}
+                rightAction={
+                    <div className="flex gap-2">
+                        {isEditing ? (
+                            <>
+                                <button
+                                    onClick={handleCancel}
+                                    disabled={saving}
+                                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors disabled:opacity-50"
+                                >
+                                    キャンセル
+                                </button>
+                                <button
+                                    onClick={handleSaveAndExit}
+                                    disabled={saving}
+                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                >
+                                    {saving ? '保存中...' : '保存'}
+                                </button>
+                            </>
+                        ) : (
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                            >
+                                編集
+                            </button>
+                        )}
                     </div>
+                }
+            >
+                {isEditing ? (
+                    /* 編集モード */
+                    <div className="space-y-6">
 
                     {/* 証明書アップロード */}
                     <div className="bg-white rounded-lg shadow p-6">
@@ -716,16 +760,248 @@ export default function ProfilePage() {
                         </div>
                     </div>
 
-                    <div className="flex justify-end">
-                        <button
-                            onClick={handleSave}
-                            disabled={saving}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                        >
-                            {saving ? '保存中...' : '保存する'}
-                        </button>
                     </div>
-                </div>
+                ) : (
+                    /* 表示モード */
+                    <div className="bg-white rounded-lg shadow p-8">
+                        <div className="flex items-start gap-6 mb-8">
+                            <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <User size={40} className="text-blue-600" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                                    {profile?.lastName} {profile?.firstName}
+                                </h2>
+                                <p className="text-gray-600">
+                                    {profile?.address || '住所未設定'}
+                                </p>
+                                {profile?.nearestStation && (
+                                    <p className="text-gray-600">
+                                        最寄駅: {profile.nearestStation}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* 基本情報 */}
+                        <div className="grid grid-cols-2 gap-8 mb-8">
+                            <div>
+                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                    <User size={18} />
+                                    基本情報
+                                </h3>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">電話番号:</span>
+                                        <span className="text-gray-900">{profile?.phoneNumber || '未設定'}</span>
+                                    </div>
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">年齢:</span>
+                                        <span className="text-gray-900">{profile?.age ? `${profile.age}歳` : '未設定'}</span>
+                                    </div>
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">生年月日:</span>
+                                        <span className="text-gray-900">
+                                            {profile?.birthDate
+                                                ? new Date(profile.birthDate).toLocaleDateString('ja-JP')
+                                                : '未設定'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                    <Award size={18} />
+                                    資格情報
+                                </h3>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">免許番号:</span>
+                                        <span className="text-gray-900">{profile?.licenseNumber || '未設定'}</span>
+                                    </div>
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">免許取得年:</span>
+                                        <span className="text-gray-900">
+                                            {profile?.licenseYear ? `${profile.licenseYear}年` : '未設定'}
+                                        </span>
+                                    </div>
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">認定薬剤師:</span>
+                                        <span className="text-gray-900">
+                                            {profile?.certifiedPharmacistLicense || '未設定'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                    <GraduationCap size={18} />
+                                    学歴
+                                </h3>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">出身大学:</span>
+                                        <span className="text-gray-900">{profile?.university || '未設定'}</span>
+                                    </div>
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">卒業年:</span>
+                                        <span className="text-gray-900">
+                                            {profile?.graduationYear ? `${profile.graduationYear}年` : '未設定'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                    <Briefcase size={18} />
+                                    経歴
+                                </h3>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex">
+                                        <span className="text-gray-500 w-32">実務経験:</span>
+                                        <span className="text-gray-900">
+                                            {profile?.workExperienceYears || profile?.workExperienceMonths
+                                                ? `${profile.workExperienceYears || 0}年${profile.workExperienceMonths || 0}ヶ月`
+                                                : '未設定'}
+                                        </span>
+                                    </div>
+                                    {profile?.workExperienceTypes && profile.workExperienceTypes.length > 0 && (
+                                        <div className="flex">
+                                            <span className="text-gray-500 w-32">経験業態:</span>
+                                            <span className="text-gray-900">
+                                                {profile.workExperienceTypes.join(', ')}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 資格証明書 */}
+                        <div className="mb-8">
+                            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                <FileText size={18} />
+                                資格証明書
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                {certificates
+                                    .filter((c) => c.certificateType === 'license')
+                                    .map((cert) => (
+                                        <div key={cert.id} className="border border-gray-200 rounded-lg p-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                {cert.verificationStatus === 'verified' && (
+                                                    <CheckCircle className="w-5 h-5 text-green-500" />
+                                                )}
+                                                {cert.verificationStatus === 'pending' && (
+                                                    <Clock className="w-5 h-5 text-yellow-500" />
+                                                )}
+                                                {cert.verificationStatus === 'rejected' && (
+                                                    <XCircle className="w-5 h-5 text-red-500" />
+                                                )}
+                                                <span className="font-medium">薬剤師免許証</span>
+                                            </div>
+                                            <p className="text-sm text-gray-600">{cert.fileName}</p>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                {cert.verificationStatus === 'verified' && '✓ 確認済み'}
+                                                {cert.verificationStatus === 'pending' && '⏳ 確認待ち'}
+                                                {cert.verificationStatus === 'rejected' && '✗ 差し戻し'}
+                                            </p>
+                                        </div>
+                                    ))}
+                                {certificates
+                                    .filter((c) => c.certificateType === 'registration')
+                                    .map((cert) => (
+                                        <div key={cert.id} className="border border-gray-200 rounded-lg p-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                {cert.verificationStatus === 'verified' && (
+                                                    <CheckCircle className="w-5 h-5 text-green-500" />
+                                                )}
+                                                {cert.verificationStatus === 'pending' && (
+                                                    <Clock className="w-5 h-5 text-yellow-500" />
+                                                )}
+                                                {cert.verificationStatus === 'rejected' && (
+                                                    <XCircle className="w-5 h-5 text-red-500" />
+                                                )}
+                                                <span className="font-medium">保険薬剤師登録票</span>
+                                            </div>
+                                            <p className="text-sm text-gray-600">{cert.fileName}</p>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                {cert.verificationStatus === 'verified' && '✓ 確認済み'}
+                                                {cert.verificationStatus === 'pending' && '⏳ 確認待ち'}
+                                                {cert.verificationStatus === 'rejected' && '✗ 差し戻し'}
+                                            </p>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+
+                        {/* スキル・専門分野 */}
+                        {(profile?.specialtyAreas && profile.specialtyAreas.length > 0) ||
+                        (profile?.pharmacySystems && profile.pharmacySystems.length > 0) ||
+                        profile?.specialNotes ? (
+                            <div className="mb-8">
+                                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                    <Award size={18} />
+                                    スキル・専門分野
+                                </h3>
+                                <div className="grid grid-cols-2 gap-8">
+                                    {profile?.specialtyAreas && profile.specialtyAreas.length > 0 && (
+                                        <div>
+                                            <h4 className="font-medium text-gray-700 mb-2">得意な診療科・疾患領域</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {profile.specialtyAreas.map((area, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm"
+                                                    >
+                                                        {area}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {profile?.pharmacySystems && profile.pharmacySystems.length > 0 && (
+                                        <div>
+                                            <h4 className="font-medium text-gray-700 mb-2">使用経験のある薬歴システム</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {profile.pharmacySystems.map((system, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm"
+                                                    >
+                                                        {system}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {profile?.specialNotes && (
+                                        <div className="col-span-2">
+                                            <h4 className="font-medium text-gray-700 mb-2">特記事項</h4>
+                                            <p className="text-gray-700 whitespace-pre-wrap">{profile.specialNotes}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ) : null}
+
+                        {/* 自己紹介 */}
+                        {profile?.selfIntroduction && (
+                            <div>
+                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                    <FileText size={18} />
+                                    自己紹介・アピールポイント
+                                </h3>
+                                <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-4">
+                                    {profile.selfIntroduction}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </PharmacistLayout>
         </ProtectedRoute>
     );

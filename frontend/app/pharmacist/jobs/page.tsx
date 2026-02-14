@@ -210,7 +210,7 @@ export default function JobSearchPage() {
                       className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 flex items-center gap-2"
                     >
                       <Send size={18} />
-                      {applying === job.id ? '応募中...' : '応募する'}
+                      {applying === job.id ? '応募中...' : '応募する⇒詳細を見る'}
                     </button>
                   </div>
                 </div>
