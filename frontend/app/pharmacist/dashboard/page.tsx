@@ -37,33 +37,40 @@ export default function PharmacistDashboard() {
       <PharmacistLayout
         title="ダッシュボード"
         rightAction={
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4">
             <button
               onClick={handleManualRefresh}
-              className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-1 md:gap-2 px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
               title="更新"
             >
-              <RefreshCw size={16} />
-              更新
+              <RefreshCw size={14} className="md:w-4 md:h-4" />
+              <span className="hidden md:inline">更新</span>
             </button>
-            <span className="text-sm text-gray-500">
-              最終更新: {lastUpdated.toLocaleString('ja-JP')}
+            <span className="text-xs md:text-sm text-gray-500 whitespace-nowrap">
+              <span className="hidden md:inline">最終更新: </span>
+              <span className="md:hidden">更新: </span>
+              {lastUpdated.toLocaleString('ja-JP', {
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
             </span>
           </div>
         }
       >
         {/* 統計カード */}
-        <div className="mb-8" key={`stats-${refreshKey}`}>
+        <div className="mb-6 md:mb-8" key={`stats-${refreshKey}`}>
           <DashboardStats pharmacistId={pharmacistId} />
         </div>
 
         {/* 通知セクション */}
-        <div className="mb-6" key={`notifications-${refreshKey}`}>
+        <div className="mb-4 md:mb-6" key={`notifications-${refreshKey}`}>
           <RecentNotifications />
         </div>
 
         {/* グリッドレイアウト: 進行中の応募と契約 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           <div key={`applications-${refreshKey}`}>
             <ActiveApplications pharmacistId={pharmacistId} />
           </div>
