@@ -121,6 +121,30 @@ export default function ProfilePage() {
             alert('薬剤師IDが取得できませんでした。再度ログインしてください。');
             return;
         }
+
+        // ファイル形式のバリデーション
+        const allowedTypes = [
+            'application/pdf',
+            'image/jpeg',
+            'image/png',
+            'image/heic',
+            'image/heif',
+            'image/webp',
+        ];
+        if (!allowedTypes.includes(file.type)) {
+            alert(
+                '許可されていないファイル形式です。\n対応形式: PDF、JPEG、PNG、HEIC、HEIF、WebP'
+            );
+            return;
+        }
+
+        // ファイルサイズのバリデーション（10MB）
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+            alert('ファイルサイズは10MB以下にしてください。');
+            return;
+        }
+
         setUploading(certificateType);
         try {
             const response = await pharmacistProfileAPI.uploadCertificate(
@@ -318,7 +342,7 @@ export default function ProfilePage() {
                                     <div className="mt-2">
                                         <input
                                             type="file"
-                                            accept="application/pdf"
+                                            accept="application/pdf,image/jpeg,image/png,image/heic,image/heif,image/webp"
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0];
                                                 if (file) handleFileUpload('license', file);
@@ -335,7 +359,7 @@ export default function ProfilePage() {
                                             {uploading === 'license' ? 'アップロード中...' : 'アップロード'}
                                         </label>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            PDF形式のみ対応（最大10MB）
+                                            PDF、JPEG、PNG、HEIC、HEIF、WebP形式に対応（最大10MB）
                                         </p>
                                     </div>
                                 </div>
@@ -376,7 +400,7 @@ export default function ProfilePage() {
                                     <div className="mt-2">
                                         <input
                                             type="file"
-                                            accept="application/pdf"
+                                            accept="application/pdf,image/jpeg,image/png,image/heic,image/heif,image/webp"
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0];
                                                 if (file) handleFileUpload('registration', file);
@@ -395,7 +419,7 @@ export default function ProfilePage() {
                                                 : 'アップロード'}
                                         </label>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            PDF形式のみ対応（最大10MB）
+                                            PDF、JPEG、PNG、HEIC、HEIF、WebP形式に対応（最大10MB）
                                         </p>
                                     </div>
                                 </div>

@@ -530,10 +530,15 @@ export class AdminController {
             let contentType = 'application/octet-stream';
             if (ext === '.pdf') {
                 contentType = 'application/pdf';
-            } else if (ext === '.jpg' || ext === '.jpeg') {
+            } else if (ext === '.jpg' || ext === '.jpeg' || ext === '.jpe' || ext === '.jfif') {
                 contentType = 'image/jpeg';
             } else if (ext === '.png') {
                 contentType = 'image/png';
+            } else if (ext === '.heic' || ext === '.heif') {
+                // HEIC/HEIFは変換済みのため、通常はJPEGとして扱われるが、念のため対応
+                contentType = 'image/jpeg';
+            } else if (ext === '.webp') {
+                contentType = 'image/webp';
             }
 
             // インライン表示（ブラウザで開く）

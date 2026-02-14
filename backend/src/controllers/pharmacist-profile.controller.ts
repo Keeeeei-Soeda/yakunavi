@@ -4,6 +4,7 @@ import { PharmacistProfileService } from '../services/pharmacist-profile.service
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { convertImageIfNeeded } from '../utils/image-converter';
 
 // アップロード設定
 const uploadDir = process.env.UPLOAD_DIR || './uploads/certificates';
@@ -24,14 +25,21 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
+    fileSize: 10 * 1024 * 1024, // 10MB
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/heic',
+      'image/heif',
+      'image/webp',
+      'application/pdf',
+    ];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('許可されていないファイル形式です'));
+      cb(new Error('許可されていないファイル形式です。対応形式: PDF、JPEG、PNG、HEIC、HEIF、WebP'));
     }
   },
 });
@@ -157,11 +165,15 @@ export class PharmacistProfileController {
         });
       }
 
+      // HEIC/HEIF形式の場合はJPEGに変換
+      const { filePath: finalFilePath, fileName: finalFileName } =
+        await convertImageIfNeeded(req.file.path, req.file.mimetype);
+
       const certificate = await this.profileService.uploadCertificate(
         pharmacistId,
         certificateType,
-        req.file.path,
-        req.file.originalname
+        finalFilePath,
+        finalFileName
       );
 
       return res.status(201).json({

@@ -35,6 +35,8 @@ export default function CertificatesPage() {
     const [rejectionReason, setRejectionReason] = useState('');
     const [processing, setProcessing] = useState(false);
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [fileType, setFileType] = useState<'pdf' | 'image' | null>(null);
 
     const fetchCertificates = useCallback(async () => {
         try {
@@ -62,30 +64,57 @@ export default function CertificatesPage() {
         fetchCertificates();
     }, [fetchCertificates]);
 
-    // 証明書が選択されたときにPDFを読み込む
+    // 証明書が選択されたときにファイルを読み込む
     useEffect(() => {
         if (selectedCertificate) {
-            loadCertificatePDF(selectedCertificate.id);
+            loadCertificateFile(selectedCertificate.id, selectedCertificate.fileName);
         } else {
             // モーダルを閉じるときにURLをクリーンアップ
             if (pdfUrl) {
                 URL.revokeObjectURL(pdfUrl);
                 setPdfUrl(null);
             }
+            if (imageUrl) {
+                URL.revokeObjectURL(imageUrl);
+                setImageUrl(null);
+            }
+            setFileType(null);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCertificate]);
 
-    const loadCertificatePDF = async (certificateId: number) => {
+    // ファイル形式を判定
+    const getFileType = (fileName: string): 'pdf' | 'image' => {
+        const ext = fileName.toLowerCase().split('.').pop();
+        if (ext === 'pdf') {
+            return 'pdf';
+        }
+        // 画像形式: jpg, jpeg, png, webp, heic, heif (HEIC/HEIFは変換済みのため通常はjpg)
+        return 'image';
+    };
+
+    const loadCertificateFile = async (certificateId: number, fileName: string) => {
         try {
             // 前のURLがあればクリーンアップ
             if (pdfUrl) {
                 URL.revokeObjectURL(pdfUrl);
+                setPdfUrl(null);
+            }
+            if (imageUrl) {
+                URL.revokeObjectURL(imageUrl);
+                setImageUrl(null);
             }
 
             const blob = await getCertificateFile(certificateId);
             const url = URL.createObjectURL(blob);
-            setPdfUrl(url);
+            const type = getFileType(fileName);
+
+            setFileType(type);
+            if (type === 'pdf') {
+                setPdfUrl(url);
+            } else {
+                setImageUrl(url);
+            }
         } catch (err) {
             console.error('Failed to load certificate file:', err);
             alert('証明書ファイルの読み込みに失敗しました');
@@ -457,16 +486,24 @@ export default function CertificatesPage() {
                                     )}
                                 </div>
 
-                                {/* 右側: PDFプレビュー */}
+                                {/* 右側: ファイルプレビュー */}
                                 <div>
                                     <h4 className="font-medium text-gray-900 mb-3">証明書プレビュー</h4>
                                     <div className="border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
-                                        {pdfUrl ? (
+                                        {fileType === 'pdf' && pdfUrl ? (
                                             <iframe
                                                 src={pdfUrl}
                                                 className="w-full h-[600px]"
                                                 title="証明書プレビュー"
                                             />
+                                        ) : fileType === 'image' && imageUrl ? (
+                                            <div className="flex items-center justify-center h-[600px] bg-gray-100 p-4">
+                                                <img
+                                                    src={imageUrl}
+                                                    alt="証明書プレビュー"
+                                                    className="max-w-full max-h-full object-contain"
+                                                />
+                                            </div>
                                         ) : (
                                             <div className="flex items-center justify-center h-[600px] text-gray-500">
                                                 読み込み中...
@@ -474,9 +511,9 @@ export default function CertificatesPage() {
                                         )}
                                     </div>
                                     <div className="mt-2 text-right">
-                                        {pdfUrl && (
+                                        {(pdfUrl || imageUrl) && (
                                             <a
-                                                href={pdfUrl}
+                                                href={pdfUrl || imageUrl || '#'}
                                                 download={selectedCertificate.fileName}
                                                 className="text-sm text-blue-600 hover:text-blue-800"
                                             >
