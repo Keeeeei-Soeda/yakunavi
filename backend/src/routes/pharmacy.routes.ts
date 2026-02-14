@@ -43,4 +43,10 @@ router.get(
     pharmacyController.getActiveJobPostings
 );
 
+// 薬局プロフィール取得（薬剤師側からもアクセス可能）
+router.get(
+    '/public-profile/:pharmacyId',
+    pharmacyController.getPublicProfile
+);
+
 export default router;

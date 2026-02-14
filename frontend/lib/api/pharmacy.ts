@@ -72,5 +72,12 @@ export const pharmacyAPI = {
       { params: { months } }
     );
   },
+
+  // 薬局プロフィール取得（薬剤師側からもアクセス可能）
+  getPublicProfile: async (pharmacyId: number) => {
+    return apiClient.get<APIResponse<PharmacyProfile>>(
+      `/pharmacy/public-profile/${pharmacyId}`
+    );
+  },
 };
 
