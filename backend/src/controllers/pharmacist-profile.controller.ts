@@ -57,6 +57,13 @@ export class PharmacistProfileController {
         });
       }
 
+      if (!req.params.pharmacistId || req.params.pharmacistId === 'undefined') {
+        return res.status(400).json({
+          success: false,
+          error: '薬剤師IDが指定されていません',
+        });
+      }
+
       const pharmacistId = BigInt(req.params.pharmacistId);
       console.log(`[Profile] Getting profile for pharmacistId: ${pharmacistId}, userId: ${req.user.id}`);
 
@@ -84,6 +91,13 @@ export class PharmacistProfileController {
         return res.status(403).json({
           success: false,
           error: '薬剤師アカウントのみアクセス可能です',
+        });
+      }
+
+      if (!req.params.pharmacistId || req.params.pharmacistId === 'undefined') {
+        return res.status(400).json({
+          success: false,
+          error: '薬剤師IDが指定されていません',
         });
       }
 
@@ -126,6 +140,13 @@ export class PharmacistProfileController {
         });
       }
 
+      if (!req.params.pharmacistId || req.params.pharmacistId === 'undefined') {
+        return res.status(400).json({
+          success: false,
+          error: '薬剤師IDが指定されていません',
+        });
+      }
+
       const pharmacistId = BigInt(req.params.pharmacistId);
       const { certificateType } = req.body;
 
@@ -162,6 +183,13 @@ export class PharmacistProfileController {
    */
   getCertificates = async (req: AuthRequest, res: Response) => {
     try {
+      if (!req.params.pharmacistId || req.params.pharmacistId === 'undefined') {
+        return res.status(400).json({
+          success: false,
+          error: '薬剤師IDが指定されていません',
+        });
+      }
+
       const pharmacistId = BigInt(req.params.pharmacistId);
       const certificates = await this.profileService.getCertificates(pharmacistId);
 
@@ -183,6 +211,20 @@ export class PharmacistProfileController {
    */
   deleteCertificate = async (req: AuthRequest, res: Response) => {
     try {
+      if (!req.params.pharmacistId || req.params.pharmacistId === 'undefined') {
+        return res.status(400).json({
+          success: false,
+          error: '薬剤師IDが指定されていません',
+        });
+      }
+
+      if (!req.params.certificateId || req.params.certificateId === 'undefined') {
+        return res.status(400).json({
+          success: false,
+          error: '証明書IDが指定されていません',
+        });
+      }
+
       const certificateId = BigInt(req.params.certificateId);
       const pharmacistId = BigInt(req.params.pharmacistId);
 
@@ -210,6 +252,13 @@ export class PharmacistProfileController {
    */
   getVerificationStatus = async (req: AuthRequest, res: Response) => {
     try {
+      if (!req.params.pharmacistId || req.params.pharmacistId === 'undefined') {
+        return res.status(400).json({
+          success: false,
+          error: '薬剤師IDが指定されていません',
+        });
+      }
+
       const pharmacistId = BigInt(req.params.pharmacistId);
       const status = await this.profileService.getVerificationStatus(pharmacistId);
 

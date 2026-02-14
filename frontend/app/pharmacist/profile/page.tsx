@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacistLayout } from '@/components/pharmacist/Layout';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -14,13 +14,14 @@ import { Upload, X, CheckCircle, Clock, XCircle, User, Award, Briefcase, Graduat
 
 export default function ProfilePage() {
     const user = useAuthStore((state) => state.user);
-    const pharmacistId = user?.relatedId!; // 必ず存在すると仮定（ProtectedRouteで保護されている）
+    const pharmacistId = user?.relatedId; // relatedIdがundefinedの可能性があるため、!を削除
 
     const [profile, setProfile] = useState<PharmacistProfile | null>(null);
     const [certificates, setCertificates] = useState<Certificate[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState<string | null>(null);
+    const [isEditing, setIsEditing] = useState(false); // 条件分岐の前に移動（React Hooksのルール）
 
     const [formData, setFormData] = useState<Partial<PharmacistProfile>>({
         workExperienceTypes: [],
@@ -29,12 +30,12 @@ export default function ProfilePage() {
         pharmacySystems: [],
     });
 
-    useEffect(() => {
-        fetchProfile();
-        fetchCertificates();
-    }, [pharmacistId]);
-
-    const fetchProfile = async () => {
+    const fetchProfile = useCallback(async () => {
+        if (!pharmacistId) {
+            console.error('pharmacistId is not available');
+            setLoading(false);
+            return;
+        }
         try {
             const response = await pharmacistProfileAPI.getProfile(pharmacistId);
             if (response.success && response.data) {
@@ -52,9 +53,13 @@ export default function ProfilePage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [pharmacistId]);
 
-    const fetchCertificates = async () => {
+    const fetchCertificates = useCallback(async () => {
+        if (!pharmacistId) {
+            console.error('pharmacistId is not available');
+            return;
+        }
         try {
             const response = await pharmacistProfileAPI.getCertificates(pharmacistId);
             if (response.success && response.data) {
@@ -63,9 +68,22 @@ export default function ProfilePage() {
         } catch (error) {
             console.error('Failed to fetch certificates:', error);
         }
-    };
+    }, [pharmacistId]);
+
+    useEffect(() => {
+        if (pharmacistId) {
+            fetchProfile();
+            fetchCertificates();
+        } else {
+            setLoading(false);
+        }
+    }, [pharmacistId, fetchProfile, fetchCertificates]);
 
     const handleSave = async () => {
+        if (!pharmacistId) {
+            alert('薬剤師IDが取得できませんでした。再度ログインしてください。');
+            return;
+        }
         setSaving(true);
         try {
             // 送信前に読み取り専用フィールドを除外
@@ -99,6 +117,10 @@ export default function ProfilePage() {
         certificateType: 'license' | 'registration',
         file: File
     ) => {
+        if (!pharmacistId) {
+            alert('薬剤師IDが取得できませんでした。再度ログインしてください。');
+            return;
+        }
         setUploading(certificateType);
         try {
             const response = await pharmacistProfileAPI.uploadCertificate(
@@ -121,6 +143,10 @@ export default function ProfilePage() {
     };
 
     const handleDeleteCertificate = async (certificateId: number) => {
+        if (!pharmacistId) {
+            alert('薬剤師IDが取得できませんでした。再度ログインしてください。');
+            return;
+        }
         if (!confirm('この証明書を削除しますか？')) return;
 
         try {
@@ -160,7 +186,19 @@ export default function ProfilePage() {
         );
     }
 
-    const [isEditing, setIsEditing] = useState(false);
+    if (!pharmacistId) {
+        return (
+            <ProtectedRoute requiredUserType="pharmacist">
+                <PharmacistLayout title="プロフィール管理">
+                    <div className="flex items-center justify-center h-64">
+                        <div className="text-red-500">
+                            エラー: 薬剤師IDが取得できませんでした。再度ログインしてください。
+                        </div>
+                    </div>
+                </PharmacistLayout>
+            </ProtectedRoute>
+        );
+    }
 
     const handleCancel = () => {
         if (profile) {
