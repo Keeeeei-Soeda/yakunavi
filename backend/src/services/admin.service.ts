@@ -446,6 +446,30 @@ export class AdminService {
     }
 
     /**
+     * 支払い詳細を取得（管理者用）
+     */
+    async getPaymentById(paymentId: bigint) {
+        const paymentService = new (await import('../services/payment.service')).PaymentService();
+        const payment = await paymentService.getPaymentById(paymentId);
+
+        // 薬局の詳細情報を取得
+        const pharmacy = await this.getPharmacyById(BigInt(payment.pharmacyId));
+
+        // 薬剤師の詳細情報を取得
+        const pharmacist = await this.getPharmacistById(BigInt(payment.contract.pharmacistId));
+
+        return {
+            ...payment,
+            pharmacy,
+            pharmacist: {
+                ...pharmacist,
+                // 支払い情報に含まれる薬剤師情報も保持
+                ...payment.contract.pharmacist,
+            },
+        };
+    }
+
+    /**
      * ペナルティを解除
      */
     async resolvePenalty(penaltyId: bigint, resolutionNote?: string) {

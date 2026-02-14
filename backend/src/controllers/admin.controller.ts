@@ -172,6 +172,28 @@ export class AdminController {
     }
 
     /**
+     * 支払い詳細を取得
+     * GET /api/admin/payments/:id
+     */
+    async getPaymentById(req: Request, res: Response) {
+        try {
+            const paymentId = BigInt(req.params.id);
+            const payment = await adminService.getPaymentById(paymentId);
+
+            return res.status(200).json({
+                success: true,
+                data: payment,
+            });
+        } catch (error: any) {
+            console.error('Get payment by id error:', error);
+            return res.status(404).json({
+                success: false,
+                error: error.message || '支払い情報の取得に失敗しました',
+            });
+        }
+    }
+
+    /**
      * 支払い確認
      * POST /api/admin/payments/:id/confirm
      */

@@ -26,6 +26,7 @@ router.get('/contracts', (req, res) => adminController.getContracts(req, res));
 
 // 支払い管理
 router.get('/payments', (req, res) => adminController.getPayments(req, res));
+router.get('/payments/:id', (req, res) => adminController.getPaymentById(req, res));
 router.post('/payments/:id/confirm', (req, res) => adminController.confirmPayment(req, res));
 
 // ペナルティ管理

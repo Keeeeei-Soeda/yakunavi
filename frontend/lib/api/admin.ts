@@ -77,6 +77,11 @@ export const getPayments = async (params?: {
     return response.data;
 };
 
+export const getPaymentById = async (paymentId: number) => {
+    const response = await adminApi.get(`/payments/${paymentId}`);
+    return response.data;
+};
+
 export const confirmPayment = async (paymentId: number) => {
     const response = await adminApi.post(`/payments/${paymentId}/confirm`);
     return response.data;
