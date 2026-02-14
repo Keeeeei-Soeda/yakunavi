@@ -302,6 +302,9 @@ export default function ProfilePage() {
                                         ⚠️ 薬剤師免許証と保険薬剤師登録票をアップロードしてください。
                                         運営が確認後、求人への応募が可能になります。
                                     </p>
+                                    <p className="text-xs text-yellow-700 mt-2">
+                                        📎 対応形式: PDF、JPEG、PNG、HEIC、HEIF、WebP（最大10MB）
+                                    </p>
                                 </div>
                             );
                         })()}
