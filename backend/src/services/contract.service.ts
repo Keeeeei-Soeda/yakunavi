@@ -660,7 +660,13 @@ export class ContractService {
             where: { applicationId },
             include: {
                 pharmacy: true,
-                pharmacist: true,
+                pharmacist: {
+                    include: {
+                        user: {
+                            select: { email: true },
+                        },
+                    },
+                },
                 jobPosting: true,
                 application: true,
                 payment: true,
@@ -688,6 +694,9 @@ export class ContractService {
                 ...contract.pharmacist,
                 id: Number(contract.pharmacist.id),
                 userId: Number(contract.pharmacist.userId),
+                user: contract.pharmacist.user
+                    ? { email: contract.pharmacist.user.email }
+                    : undefined,
             },
             jobPosting: {
                 ...contract.jobPosting,
@@ -726,7 +735,13 @@ export class ContractService {
             where: { id: contractId },
             include: {
                 pharmacy: true,
-                pharmacist: true,
+                pharmacist: {
+                    include: {
+                        user: {
+                            select: { email: true },
+                        },
+                    },
+                },
                 jobPosting: true,
                 application: true,
                 payment: true,
@@ -754,6 +769,9 @@ export class ContractService {
                 ...contract.pharmacist,
                 id: Number(contract.pharmacist.id),
                 userId: Number(contract.pharmacist.userId),
+                user: contract.pharmacist.user
+                    ? { email: contract.pharmacist.user.email }
+                    : undefined,
             },
             jobPosting: {
                 ...contract.jobPosting,
