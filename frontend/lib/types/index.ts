@@ -91,7 +91,8 @@ export interface Application {
     dailyWage?: number;
     desiredWorkDays?: number;
     pharmacy?: {
-      pharmacyName: string;
+      pharmacyName?: string;
+      companyName?: string;
     };
   };
   pharmacist?: {
