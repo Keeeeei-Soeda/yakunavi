@@ -33,5 +33,5 @@ Thumbs.db
 *~
 
 # Prisma
-prisma/migrations/
+# prisma/migrations/ はgit管理対象（本番デプロイに必要）
 
