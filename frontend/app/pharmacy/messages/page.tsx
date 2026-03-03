@@ -7,7 +7,7 @@ import { MessageSquare, CheckCircle, ExternalLink } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import { messagesAPI } from '@/lib/api/messages';
 import { contractsAPI, Contract } from '@/lib/api/contracts';
-import { format } from 'date-fns';
+import { format, addDays } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import Link from 'next/link';
 
@@ -700,17 +700,28 @@ export default function MessagesPage() {
                             <p className="text-sm text-gray-600 mb-2">
                                 薬剤師に提案する候補日を入力してください（最低1つ）
                             </p>
-                            <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                            <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg space-y-1">
                                 <p className="text-xs text-orange-800">
                                     ⚠️ <strong>提案は1回のみ</strong>可能です。慎重に候補日を選択してください。
                                 </p>
+                                <p className="text-xs text-orange-800">
+                                    ※掲載日から2週間後以降の日付を選択してください
+                                </p>
                             </div>
                             <div className="space-y-3 mb-4">
-                                {proposedDates.map((date, index) => (
+                                {proposedDates.map((date, index) => {
+                                    const selectedConv = conversations.find((c: any) => c.applicationId === selectedConversation);
+                                    const publishedAt = selectedConv?.jobPosting?.publishedAt;
+                                    const minDate = publishedAt
+                                        ? addDays(new Date(publishedAt), 14)
+                                        : addDays(new Date(), 14);
+                                    const minDateStr = format(minDate, 'yyyy-MM-dd');
+                                    return (
                                     <div key={index} className="flex gap-2">
                                         <input
                                             type="date"
                                             value={date}
+                                            min={minDateStr}
                                             onChange={(e) => updateDate(index, e.target.value)}
                                             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         />
@@ -723,7 +734,8 @@ export default function MessagesPage() {
                                             </button>
                                         )}
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                             <button
                                 onClick={addDateField}

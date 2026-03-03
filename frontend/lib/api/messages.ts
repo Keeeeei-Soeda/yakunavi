@@ -14,6 +14,7 @@ interface Conversation {
     jobPosting: {
         id: number;
         title: string;
+        publishedAt?: string | null;
     };
     contract?: {
         id: number;

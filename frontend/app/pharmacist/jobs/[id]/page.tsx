@@ -310,24 +310,24 @@ export default function JobDetailPage() {
                 <ArrowLeft size={24} />
               </Link>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleToggleFavorite}
                 disabled={togglingFavorite}
-                className={`flex items-center gap-2 px-4 py-3 rounded-lg border font-medium transition-colors disabled:opacity-50 ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors disabled:opacity-50 ${
                   isFavorite
                     ? 'border-red-400 bg-red-50 text-red-600 hover:bg-red-100'
                     : 'border-gray-300 bg-white text-gray-600 hover:border-red-300 hover:text-red-500'
                 }`}
               >
-                <Heart size={20} className={isFavorite ? 'fill-red-500 text-red-500' : ''} />
+                <Heart size={16} className={isFavorite ? 'fill-red-500 text-red-500' : ''} />
                 {isFavorite ? 'お気に入り済み' : 'お気に入り'}
               </button>
               <button
                 onClick={() => setShowApplicationDialog(true)}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5"
               >
-                <Send size={20} />
+                <Send size={16} />
                 応募する
               </button>
             </div>
@@ -355,7 +355,7 @@ export default function JobDetailPage() {
 
           {/* 基本情報 */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">{job.title}</h2>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-4">{job.title}</h2>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="flex items-center gap-2 text-gray-700">
@@ -624,7 +624,7 @@ export default function JobDetailPage() {
                   <h4 className="font-semibold text-yellow-900 mb-2">⚠️ 注意事項</h4>
                   <ul className="text-sm text-yellow-800 space-y-1">
                     <li>• 応募後、薬局からメッセージが届く場合があります</li>
-                    <li>• やむを得ずキャンセルが必要な場合は、運営（support@yakunavi.jp）までご連絡ください</li>
+                    <li>• やむを得ずキャンセルが必要な場合は、運営（info@yaku-navi.com）までご連絡ください</li>
                     <li>• 入力内容は薬局側に開示されます</li>
                     <li>• 虚偽の情報を記載した場合、契約が取り消される場合があります</li>
                   </ul>

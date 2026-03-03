@@ -44,6 +44,7 @@ export class MessageService {
                     select: {
                         id: true,
                         title: true,
+                        publishedAt: true,
                     },
                 },
                 contract: {
@@ -90,6 +91,7 @@ export class MessageService {
                 jobPosting: {
                     id: Number(app.jobPosting.id),
                     title: app.jobPosting.title,
+                    publishedAt: app.jobPosting.publishedAt,
                 },
                 contract: app.contract ? {
                     id: Number(app.contract.id),
@@ -310,6 +312,23 @@ export class MessageService {
 
         if (existingDateProposal) {
             throw new Error('初回出勤日の候補は既に提案済みです。提案は1回のみ可能です。');
+        }
+
+        // 掲載日から2週間後以降の日付のみ許可
+        const publishedAt = application.jobPosting.publishedAt;
+        const minDate = publishedAt
+            ? new Date(publishedAt)
+            : new Date(application.jobPosting.createdAt);
+        minDate.setDate(minDate.getDate() + 14);
+        const minDateStr = minDate.toISOString().slice(0, 10);
+
+        for (const d of proposedDates) {
+            const dateStr = typeof d === 'string' ? d : String(d);
+            if (dateStr < minDateStr) {
+                throw new Error(
+                    `初回出勤候補日は掲載日から2週間後以降を選択してください。最早日: ${minDateStr}`
+                );
+            }
         }
 
         // 提案メッセージを作成
