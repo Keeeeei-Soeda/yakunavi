@@ -139,9 +139,9 @@ export default function ApplicationsPage() {
                           {app.jobPosting?.title}
                         </h3>
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 ${statusInfo.color}`}
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1 shrink-0 whitespace-nowrap ${statusInfo.color}`}
                         >
-                          <Icon size={16} />
+                          <Icon size={14} />
                           {statusInfo.label}
                         </span>
                       </div>

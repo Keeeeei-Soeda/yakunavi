@@ -648,7 +648,7 @@ export default function JobDetailPage() {
                     hover:bg-blue-700 transition-colors disabled:bg-gray-300 
                     disabled:cursor-not-allowed font-medium"
                   >
-                    {applying ? '応募中...' : '保存'}
+                    {applying ? '応募中...' : '応募する'}
                   </button>
                 </div>
               </div>

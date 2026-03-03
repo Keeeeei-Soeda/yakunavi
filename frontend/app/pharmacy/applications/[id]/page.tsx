@@ -120,7 +120,7 @@ export default function ApplicationDetailPage() {
                     className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:bg-gray-100 flex items-center gap-2"
                   >
                     <XCircle size={20} />
-                    辞退する
+                    却下する
                   </button>
                   <button
                     onClick={handleAccept}

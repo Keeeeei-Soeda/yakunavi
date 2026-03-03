@@ -41,7 +41,7 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4">アクティブ求人</h3>
+        <h3 className="text-lg font-semibold mb-4">募集中の求人</h3>
         <LoadingSpinner className="py-8" />
       </div>
     );
@@ -50,7 +50,7 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
   if (error) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4">アクティブ求人</h3>
+        <h3 className="text-lg font-semibold mb-4">募集中の求人</h3>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
           {error}
         </div>
@@ -61,7 +61,7 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">アクティブ求人</h3>
+        <h3 className="text-lg font-semibold">募集中の求人</h3>
         <a
           href="/pharmacy/job-postings"
           className="text-sm text-primary-600 hover:text-primary-700 font-medium"

@@ -26,7 +26,7 @@ export default function PharmacyDashboard() {
           <DashboardStats pharmacyId={pharmacyId} />
         </div>
 
-        {/* グリッドレイアウト: 最近の応募とアクティブ求人 */}
+        {/* グリッドレイアウト: 最近の応募と募集中の求人 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <RecentApplications pharmacyId={pharmacyId} />
           <ActiveJobPostings pharmacyId={pharmacyId} />
