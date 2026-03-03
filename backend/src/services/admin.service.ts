@@ -171,10 +171,12 @@ export class AdminService {
         // 薬剤師への通知（メール＋DB）
         if (certificate.pharmacist?.user) {
             const { user } = certificate.pharmacist;
+            const pharmacistName =
+                `${certificate.pharmacist.lastName} ${certificate.pharmacist.firstName}`;
             await notificationService.notifyCertificateApproved({
                 pharmacistUserId: user.id,
                 pharmacistEmail: user.email,
-                pharmacistName: user.name || '薬剤師',
+                pharmacistName,
                 certificateType: certificate.certificateType,
             });
         }
@@ -217,10 +219,12 @@ export class AdminService {
         // 薬剤師への通知（メール＋DB）
         if (certificate?.pharmacist?.user) {
             const { user } = certificate.pharmacist;
+            const pharmacistName =
+                `${certificate.pharmacist.lastName} ${certificate.pharmacist.firstName}`;
             await notificationService.notifyCertificateRejected({
                 pharmacistUserId: user.id,
                 pharmacistEmail: user.email,
-                pharmacistName: user.name || '薬剤師',
+                pharmacistName,
                 certificateType: certificate.certificateType,
                 reason,
             });
