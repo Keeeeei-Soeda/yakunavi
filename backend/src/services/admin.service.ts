@@ -1,4 +1,7 @@
 import prisma from '../utils/prisma';
+import { NotificationService } from './notification.service';
+
+const notificationService = new NotificationService();
 
 interface PaginationParams {
     page?: number;
@@ -126,7 +129,7 @@ export class AdminService {
     async approveCertificate(certificateId: bigint, adminId: bigint, comment?: string) {
         const certificate = await prisma.certificate.findUnique({
             where: { id: certificateId },
-            include: { pharmacist: true },
+            include: { pharmacist: { include: { user: true } } },
         });
 
         if (!certificate) {
@@ -165,6 +168,17 @@ export class AdminService {
             });
         }
 
+        // 薬剤師への通知（メール＋DB）
+        if (certificate.pharmacist?.user) {
+            const { user } = certificate.pharmacist;
+            await notificationService.notifyCertificateApproved({
+                pharmacistUserId: user.id,
+                pharmacistEmail: user.email,
+                pharmacistName: user.name || '薬剤師',
+                certificateType: certificate.certificateType,
+            });
+        }
+
         // BigIntをNumberに変換してreturn
         return {
             id: Number(updatedCertificate.id),
@@ -181,6 +195,7 @@ export class AdminService {
     async rejectCertificate(certificateId: bigint, reason: string) {
         const certificate = await prisma.certificate.findUnique({
             where: { id: certificateId },
+            include: { pharmacist: { include: { user: true } } },
         });
 
         if (!certificate) {
@@ -198,6 +213,18 @@ export class AdminService {
                 rejectionReason: reason,
             },
         });
+
+        // 薬剤師への通知（メール＋DB）
+        if (certificate?.pharmacist?.user) {
+            const { user } = certificate.pharmacist;
+            await notificationService.notifyCertificateRejected({
+                pharmacistUserId: user.id,
+                pharmacistEmail: user.email,
+                pharmacistName: user.name || '薬剤師',
+                certificateType: certificate.certificateType,
+                reason,
+            });
+        }
 
         return {
             id: Number(updatedCertificate.id),

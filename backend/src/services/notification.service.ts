@@ -189,6 +189,90 @@ export class NotificationService {
     }
 
     /**
+     * 資格証明書 承認通知
+     * admin.service.ts の approveCertificate 内で呼び出す
+     */
+    async notifyCertificateApproved(params: {
+        pharmacistUserId: bigint;
+        pharmacistEmail: string;
+        pharmacistName: string;
+        certificateType: string; // 'license' | 'registration'
+    }) {
+        const { pharmacistUserId, pharmacistEmail, pharmacistName, certificateType } = params;
+        const certLabel = certificateType === 'license' ? '薬剤師免許証' : '保険薬剤師登録票';
+        const linkUrl = '/pharmacist/profile';
+
+        await this.createNotification({
+            userId: pharmacistUserId,
+            notificationType: 'certificate_approved',
+            title: `${certLabel}が承認されました`,
+            message: `提出された${certLabel}が確認・承認されました。`,
+            linkUrl,
+        });
+
+        const html = this.buildEmailHtml({
+            title: `✅ ${certLabel}が承認されました`,
+            recipientName: pharmacistName,
+            bodyHtml: `
+                <p>提出いただいた<strong>${certLabel}</strong>が確認・承認されました。</p>
+                <p>これで求人への応募が可能になります。</p>
+            `,
+            buttonUrl: `https://yaku-navi.com${linkUrl}`,
+            buttonText: 'プロフィールを確認する',
+            color: '#16a34a',
+        });
+
+        await this.sendEmail({
+            to: pharmacistEmail,
+            subject: `【薬ナビ】${certLabel}が承認されました`,
+            html,
+        });
+    }
+
+    /**
+     * 資格証明書 否認（差し戻し）通知
+     * admin.service.ts の rejectCertificate 内で呼び出す
+     */
+    async notifyCertificateRejected(params: {
+        pharmacistUserId: bigint;
+        pharmacistEmail: string;
+        pharmacistName: string;
+        certificateType: string;
+        reason?: string;
+    }) {
+        const { pharmacistUserId, pharmacistEmail, pharmacistName, certificateType, reason } = params;
+        const certLabel = certificateType === 'license' ? '薬剤師免許証' : '保険薬剤師登録票';
+        const linkUrl = '/pharmacist/profile';
+
+        await this.createNotification({
+            userId: pharmacistUserId,
+            notificationType: 'certificate_rejected',
+            title: `${certLabel}が差し戻されました`,
+            message: `提出された${certLabel}が差し戻されました。再提出をお願いします。${reason ? `（理由: ${reason}）` : ''}`,
+            linkUrl,
+        });
+
+        const html = this.buildEmailHtml({
+            title: `⚠️ ${certLabel}が差し戻されました`,
+            recipientName: pharmacistName,
+            bodyHtml: `
+                <p>提出いただいた<strong>${certLabel}</strong>が差し戻されました。</p>
+                ${reason ? `<p>差し戻し理由: <strong>${reason}</strong></p>` : ''}
+                <p>内容をご確認の上、再度アップロードをお願いいたします。</p>
+            `,
+            buttonUrl: `https://yaku-navi.com${linkUrl}`,
+            buttonText: 'プロフィールから再提出する',
+            color: '#dc2626',
+        });
+
+        await this.sendEmail({
+            to: pharmacistEmail,
+            subject: `【薬ナビ】${certLabel}が差し戻されました`,
+            html,
+        });
+    }
+
+    /**
      * 共通メールHTMLテンプレート
      */
     private buildEmailHtml(params: {

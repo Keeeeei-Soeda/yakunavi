@@ -11,6 +11,8 @@ import {
   Calendar,
   ChevronRight,
   CheckCheck,
+  ShieldCheck,
+  ShieldX,
 } from 'lucide-react';
 import { pharmacistAPI } from '@/lib/api/pharmacist';
 import { Notification } from '@/lib/types';
@@ -36,6 +38,18 @@ const NOTIFICATION_TYPE_CONFIG: Record<
     icon: <Calendar size={18} />,
     color: 'text-blue-600',
     bg: 'bg-blue-100',
+  },
+  certificate_approved: {
+    label: '書類承認',
+    icon: <ShieldCheck size={18} />,
+    color: 'text-green-700',
+    bg: 'bg-green-100',
+  },
+  certificate_rejected: {
+    label: '書類差し戻し',
+    icon: <ShieldX size={18} />,
+    color: 'text-red-600',
+    bg: 'bg-red-100',
   },
 };
 
