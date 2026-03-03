@@ -142,8 +142,9 @@ export default function MessagesPage() {
 
         const totalCompensation = offerData.dailyWage * offerData.workDays;
         const platformFee = Math.floor(totalCompensation * 0.4);
+        const platformFeeTaxInclusive = Math.floor(platformFee * 1.1);
 
-        if (!confirm(`以下の内容で正式オファーを送信しますか？\n\n初回出勤日: ${selectedDate}\n勤務日数: ${offerData.workDays}日\n報酬総額: ¥${totalCompensation.toLocaleString()}\nプラットフォーム手数料: ¥${platformFee.toLocaleString()}`)) {
+        if (!confirm(`以下の内容で正式オファーを送信しますか？\n\n初回出勤日: ${selectedDate}\n勤務日数: ${offerData.workDays}日\n報酬総額: ¥${totalCompensation.toLocaleString()}\nプラットフォーム手数料（税込）: ¥${platformFeeTaxInclusive.toLocaleString()}`)) {
             return;
         }
 
@@ -641,8 +642,9 @@ export default function MessagesPage() {
                                             <p className="text-xs text-gray-500 mt-1">※体験期間終了後に薬剤師へ直接お支払いください</p>
                                         </div>
                                         <div>
-                                            <label className="block text-sm text-gray-600 mb-1">プラットフォーム手数料（40%）</label>
-                                            <p className="font-medium text-lg text-orange-600">¥{Math.floor((offerData.dailyWage * offerData.workDays) * 0.4).toLocaleString()}</p>
+                                            <label className="block text-sm text-gray-600 mb-1">プラットフォーム手数料（40%・税込）</label>
+                                            <p className="font-medium text-lg text-orange-600">¥{Math.floor(Math.floor((offerData.dailyWage * offerData.workDays) * 0.4) * 1.1).toLocaleString()}</p>
+                                            <p className="text-xs text-gray-500 mt-1">※報酬の40%＋消費税10%</p>
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">勤務時間（目安）</label>

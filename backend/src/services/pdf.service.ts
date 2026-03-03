@@ -94,6 +94,7 @@ export class PDFService {
         // タイトル
         doc.fontSize(20).font(japaneseBoldFont).text('プラットフォーム手数料 請求書', { align: 'center' });
         doc.fontSize(10).font('Helvetica').text('Platform Fee Invoice', { align: 'center' });
+        doc.fontSize(9).font(japaneseFont).text('登録番号 T8120001241474', { align: 'center' });
         doc.moveDown(2);
 
         // 請求書番号と発行日
@@ -164,21 +165,23 @@ export class PDFService {
         // テーブル行
         doc.font(japaneseFont).fontSize(10);
 
-        // サービス利用料
+        const consumptionTax = Math.floor(data.platformFee * 0.1);
+
+        // プラットフォーム手数料（税抜）
         doc.rect(50, currentY, 495, 25).stroke('#cccccc');
-        doc.text('薬剤師紹介サービス利用料', 60, currentY + 8);
-        doc.font('Helvetica').text(this.formatCurrency(data.serviceCharge), 480, currentY + 8, { width: 55, align: 'right' });
+        doc.text('プラットフォーム手数料（報酬の40%・税抜）', 60, currentY + 8);
+        doc.font('Helvetica').text(this.formatCurrency(data.platformFee), 480, currentY + 8, { width: 55, align: 'right' });
         currentY += 25;
 
-        // プラットフォーム手数料
+        // 消費税（10%）
         doc.rect(50, currentY, 495, 25).stroke('#cccccc');
-        doc.font(japaneseFont).text('プラットフォーム手数料（40%）', 60, currentY + 8);
-        doc.font('Helvetica').text(this.formatCurrency(data.platformFee), 480, currentY + 8, { width: 55, align: 'right' });
+        doc.text('消費税（10%）', 60, currentY + 8);
+        doc.font('Helvetica').text(this.formatCurrency(consumptionTax), 480, currentY + 8, { width: 55, align: 'right' });
         currentY += 25;
 
         doc.moveDown(1);
 
-        // 合計金額
+        // 合計金額（税込）
         currentY = doc.y;
         doc.rect(50, currentY, 495, 35).fill('#e6f2ff');
         doc.fillColor('#000000');
@@ -254,7 +257,7 @@ export class PDFService {
         doc.moveDown(2);
         doc.fontSize(12).font(japaneseBoldFont).text('ヤクナビ運営事務局', { align: 'center' });
         doc.fontSize(9).font(japaneseFont);
-        doc.text('お問い合わせ: support@yakunavi.jp', { align: 'center' });
+        doc.text('お問い合わせ: info@yaku-navi.com', { align: 'center' });
         doc.font('Helvetica').text('TEL: 0120-XXX-XXXX（平日 9:00-18:00）', { align: 'center' });
 
         doc.end();

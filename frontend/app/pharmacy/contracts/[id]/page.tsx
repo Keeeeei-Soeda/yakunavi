@@ -219,13 +219,13 @@ export default function ContractDetailPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  プラットフォーム手数料
+                  プラットフォーム手数料（税込）
                 </label>
                 <div className="flex items-center space-x-2">
                   <DollarSign className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-900">¥{contract.platformFee.toLocaleString()}</span>
+                  <span className="text-gray-900">¥{Math.floor(contract.platformFee * 1.1).toLocaleString()}</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">（報酬総額の40%）</p>
+                <p className="text-xs text-gray-500 mt-1">（報酬総額の40%＋消費税10%）</p>
               </div>
 
               <div>

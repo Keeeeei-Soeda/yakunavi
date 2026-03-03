@@ -171,7 +171,7 @@ export default function ContractsPage() {
                           <div className="flex items-center space-x-2 text-sm text-gray-600">
                             <DollarSign className="w-4 h-4" />
                             <span>
-                              プラットフォーム手数料: ¥{contract.platformFee.toLocaleString()}
+                              プラットフォーム手数料（税込）: ¥{Math.floor(contract.platformFee * 1.1).toLocaleString()}
                             </span>
                           </div>
                         </div>

@@ -238,12 +238,13 @@ export class ContractService {
             },
         });
 
-        // 支払いレコードを作成
+        // 手数料税込額（報酬×40%×1.1）で支払いレコードを作成
+        const platformFeeTaxInclusive = Math.floor(contract.platformFee * 1.1);
         const payment = await prisma.payment.create({
             data: {
                 contractId,
                 pharmacyId: contract.pharmacyId,
-                amount: contract.platformFee,
+                amount: platformFeeTaxInclusive,
                 paymentType: 'platform_fee',
                 paymentStatus: 'pending',
             },
@@ -266,7 +267,7 @@ export class ContractService {
                 initialWorkDate: new Date(contract.initialWorkDate),
                 serviceCharge: contract.totalCompensation,
                 platformFee: contract.platformFee,
-                totalAmount: contract.platformFee,
+                totalAmount: platformFeeTaxInclusive,
                 paymentDeadline: new Date(contract.paymentDeadline),
             });
 

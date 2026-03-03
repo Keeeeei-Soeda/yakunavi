@@ -204,9 +204,8 @@ export default function PaymentDetailPage() {
             <h1 className="text-3xl font-bold text-center mb-2">
               プラットフォーム手数料 請求書
             </h1>
-            <p className="text-center text-gray-600 mb-6">
-              Platform Fee Invoice
-            </p>
+            <p className="text-center text-gray-600 mb-1">Platform Fee Invoice</p>
+            <p className="text-center text-xs text-gray-500 mb-6">登録番号 T8120001241474</p>
             <div className="flex justify-between items-start mb-6">
               <div>
                 <p className="text-sm text-gray-600 mb-1">請求書番号</p>
@@ -263,12 +262,31 @@ export default function PaymentDetailPage() {
             <h2 className="text-lg font-semibold mb-4 screen-only">請求内容</h2>
             <h2 className="text-xl font-bold mb-4 hidden print-only">請求内訳</h2>
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b-2 border-gray-400">
-                <span className="text-lg font-semibold text-gray-900">請求額</span>
-                <span className="text-3xl font-bold text-gray-900 invoice-amount">
-                  ¥{payment.amount.toLocaleString()}
-                </span>
-              </div>
+              {payment.contract?.platformFee != null ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                    <span className="text-gray-700">プラットフォーム手数料（報酬の40%・税抜）</span>
+                    <span className="font-medium">¥{payment.contract.platformFee.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                    <span className="text-gray-700">消費税（10%）</span>
+                    <span className="font-medium">¥{Math.floor(payment.contract.platformFee * 0.1).toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-4 pt-2 border-b-2 border-gray-400">
+                    <span className="text-lg font-semibold text-gray-900">お支払い金額（税込）</span>
+                    <span className="text-3xl font-bold text-gray-900 invoice-amount">
+                      ¥{Math.floor(payment.contract.platformFee * 1.1).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between pb-4 border-b-2 border-gray-400">
+                  <span className="text-lg font-semibold text-gray-900">請求額</span>
+                  <span className="text-3xl font-bold text-gray-900 invoice-amount">
+                    ¥{payment.amount.toLocaleString()}
+                  </span>
+                </div>
+              )}
 
               {payment.contract && (
                 <>
@@ -350,10 +368,10 @@ export default function PaymentDetailPage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        プラットフォーム手数料 (40%)
+                        プラットフォーム手数料 (40%・税込)
                       </label>
                       <span className="text-gray-900">
-                        ¥{payment.contract.platformFee.toLocaleString()}
+                        ¥{Math.floor(payment.contract.platformFee * 1.1).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -526,7 +544,7 @@ export default function PaymentDetailPage() {
           {/* 印刷用フッター */}
           <div className="hidden print-only mt-12 pt-6 border-t border-gray-300 text-center text-sm text-gray-600">
             <p className="font-semibold mb-2">ヤクナビ運営事務局</p>
-            <p>お問い合わせ: support@yakunavi.jp</p>
+            <p>お問い合わせ: info@yaku-navi.com</p>
             <p>TEL: 0120-XXX-XXXX（平日 9:00-18:00）</p>
           </div>
         </div>

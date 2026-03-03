@@ -828,20 +828,20 @@ export default function ProfilePage() {
                     </div>
                 ) : (
                     /* 表示モード */
-                    <div className="bg-white rounded-lg shadow p-8">
-                        <div className="flex items-start gap-6 mb-8">
-                            <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <User size={40} className="text-blue-600" />
+                    <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+                        <div className="flex items-start gap-4 mb-6">
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <User size={32} className="text-blue-600" />
                             </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                            <div className="min-w-0 flex-1">
+                                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 truncate">
                                     {profile?.lastName} {profile?.firstName}
                                 </h2>
-                                <p className="text-gray-600">
+                                <p className="text-xs sm:text-sm text-gray-600 truncate">
                                     {profile?.address || '住所未設定'}
                                 </p>
                                 {profile?.nearestStation && (
-                                    <p className="text-gray-600">
+                                    <p className="text-xs sm:text-sm text-gray-600 truncate">
                                         最寄駅: {profile.nearestStation}
                                     </p>
                                 )}
@@ -849,24 +849,24 @@ export default function ProfilePage() {
                         </div>
 
                         {/* 基本情報 */}
-                        <div className="grid grid-cols-2 gap-8 mb-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                                    <User size={18} />
+                                <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                    <User size={16} />
                                     基本情報
                                 </h3>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">電話番号:</span>
-                                        <span className="text-gray-900">{profile?.phoneNumber || '未設定'}</span>
+                                <div className="space-y-1.5 text-xs">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">電話番号:</span>
+                                        <span className="text-gray-900 truncate">{profile?.phoneNumber || '未設定'}</span>
                                     </div>
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">年齢:</span>
-                                        <span className="text-gray-900">{profile?.age ? `${profile.age}歳` : '未設定'}</span>
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">年齢:</span>
+                                        <span className="text-gray-900 truncate">{profile?.age ? `${profile.age}歳` : '未設定'}</span>
                                     </div>
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">生年月日:</span>
-                                        <span className="text-gray-900">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">生年月日:</span>
+                                        <span className="text-gray-900 truncate">
                                             {profile?.birthDate
                                                 ? new Date(profile.birthDate).toLocaleDateString('ja-JP')
                                                 : '未設定'}
@@ -876,24 +876,24 @@ export default function ProfilePage() {
                             </div>
 
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                                    <Award size={18} />
+                                <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                    <Award size={16} />
                                     資格情報
                                 </h3>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">免許番号:</span>
-                                        <span className="text-gray-900">{profile?.licenseNumber || '未設定'}</span>
+                                <div className="space-y-1.5 text-xs">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">免許番号:</span>
+                                        <span className="text-gray-900 truncate">{profile?.licenseNumber || '未設定'}</span>
                                     </div>
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">免許取得年:</span>
-                                        <span className="text-gray-900">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">免許取得年:</span>
+                                        <span className="text-gray-900 truncate">
                                             {profile?.licenseYear ? `${profile.licenseYear}年` : '未設定'}
                                         </span>
                                     </div>
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">認定薬剤師:</span>
-                                        <span className="text-gray-900">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">認定薬剤師:</span>
+                                        <span className="text-gray-900 truncate">
                                             {profile?.certifiedPharmacistLicense || '未設定'}
                                         </span>
                                     </div>
@@ -901,18 +901,18 @@ export default function ProfilePage() {
                             </div>
 
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                                    <GraduationCap size={18} />
+                                <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                    <GraduationCap size={16} />
                                     学歴
                                 </h3>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">出身大学:</span>
-                                        <span className="text-gray-900">{profile?.university || '未設定'}</span>
+                                <div className="space-y-1.5 text-xs">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">出身大学:</span>
+                                        <span className="text-gray-900 truncate">{profile?.university || '未設定'}</span>
                                     </div>
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">卒業年:</span>
-                                        <span className="text-gray-900">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">卒業年:</span>
+                                        <span className="text-gray-900 truncate">
                                             {profile?.graduationYear ? `${profile.graduationYear}年` : '未設定'}
                                         </span>
                                     </div>
@@ -920,23 +920,23 @@ export default function ProfilePage() {
                             </div>
 
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                                    <Briefcase size={18} />
+                                <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                    <Briefcase size={16} />
                                     経歴
                                 </h3>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex">
-                                        <span className="text-gray-500 w-32">実務経験:</span>
-                                        <span className="text-gray-900">
+                                <div className="space-y-1.5 text-xs">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <span className="text-gray-500 flex-shrink-0 w-20">実務経験:</span>
+                                        <span className="text-gray-900 truncate">
                                             {profile?.workExperienceYears || profile?.workExperienceMonths
                                                 ? `${profile.workExperienceYears || 0}年${profile.workExperienceMonths || 0}ヶ月`
                                                 : '未設定'}
                                         </span>
                                     </div>
                                     {profile?.workExperienceTypes && profile.workExperienceTypes.length > 0 && (
-                                        <div className="flex">
-                                            <span className="text-gray-500 w-32">経験業態:</span>
-                                            <span className="text-gray-900">
+                                        <div className="flex items-center gap-2 min-w-0">
+                                            <span className="text-gray-500 flex-shrink-0 w-20">経験業態:</span>
+                                            <span className="text-gray-900 truncate">
                                                 {profile.workExperienceTypes.join(', ')}
                                             </span>
                                         </div>
@@ -947,11 +947,11 @@ export default function ProfilePage() {
 
                         {/* 資格証明書 */}
                         <div className="mb-8">
-                            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                <FileText size={18} />
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                <FileText size={16} />
                                 資格証明書
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {/* 薬剤師免許証 */}
                                 {(() => {
                                     const licenseCert = certificates.find((c) => c.certificateType === 'license');
@@ -963,25 +963,25 @@ export default function ProfilePage() {
                                         if (licenseCert.verificationStatus === 'verified') {
                                             statusText = '確認済';
                                             statusColor = 'text-green-600';
-                                            icon = <CheckCircle className="w-5 h-5 text-green-500" />;
+                                            icon = <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />;
                                         } else if (licenseCert.verificationStatus === 'pending') {
                                             statusText = '提出済';
                                             statusColor = 'text-yellow-600';
-                                            icon = <Clock className="w-5 h-5 text-yellow-500" />;
+                                            icon = <Clock className="w-4 h-4 text-yellow-500 flex-shrink-0" />;
                                         } else if (licenseCert.verificationStatus === 'rejected') {
                                             statusText = '要提出';
                                             statusColor = 'text-red-600';
-                                            icon = <XCircle className="w-5 h-5 text-red-500" />;
+                                            icon = <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />;
                                         }
                                     }
 
                                     return (
-                                        <div className="border border-gray-200 rounded-lg p-4">
-                                            <div className="flex items-center gap-2 mb-2">
+                                        <div className="border border-gray-200 rounded-lg p-3">
+                                            <div className="flex items-center gap-2 mb-1 min-w-0">
                                                 {icon}
-                                                <span className="font-medium">薬剤師免許証</span>
+                                                <span className="text-xs font-medium whitespace-nowrap">薬剤師免許証</span>
                                             </div>
-                                            <p className={`text-sm font-medium ${statusColor} mt-2`}>
+                                            <p className={`text-xs font-medium ${statusColor}`}>
                                                 {statusText}
                                             </p>
                                         </div>
@@ -999,25 +999,25 @@ export default function ProfilePage() {
                                         if (registrationCert.verificationStatus === 'verified') {
                                             statusText = '確認済';
                                             statusColor = 'text-green-600';
-                                            icon = <CheckCircle className="w-5 h-5 text-green-500" />;
+                                            icon = <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />;
                                         } else if (registrationCert.verificationStatus === 'pending') {
                                             statusText = '提出済';
                                             statusColor = 'text-yellow-600';
-                                            icon = <Clock className="w-5 h-5 text-yellow-500" />;
+                                            icon = <Clock className="w-4 h-4 text-yellow-500 flex-shrink-0" />;
                                         } else if (registrationCert.verificationStatus === 'rejected') {
                                             statusText = '要提出';
                                             statusColor = 'text-red-600';
-                                            icon = <XCircle className="w-5 h-5 text-red-500" />;
+                                            icon = <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />;
                                         }
                                     }
 
                                     return (
-                                        <div className="border border-gray-200 rounded-lg p-4">
-                                            <div className="flex items-center gap-2 mb-2">
+                                        <div className="border border-gray-200 rounded-lg p-3">
+                                            <div className="flex items-center gap-2 mb-1 min-w-0">
                                                 {icon}
-                                                <span className="font-medium">保険薬剤師登録票</span>
+                                                <span className="text-xs font-medium">保険薬剤師登録票</span>
                                             </div>
-                                            <p className={`text-sm font-medium ${statusColor} mt-2`}>
+                                            <p className={`text-xs font-medium ${statusColor}`}>
                                                 {statusText}
                                             </p>
                                         </div>
@@ -1031,19 +1031,19 @@ export default function ProfilePage() {
                         (profile?.pharmacySystems && profile.pharmacySystems.length > 0) ||
                         profile?.specialNotes ? (
                             <div className="mb-8">
-                                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                    <Award size={18} />
+                                <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                    <Award size={16} />
                                     スキル・専門分野
                                 </h3>
                                 <div className="grid grid-cols-2 gap-8">
                                     {profile?.specialtyAreas && profile.specialtyAreas.length > 0 && (
                                         <div>
-                                            <h4 className="font-medium text-gray-700 mb-2">得意な診療科・疾患領域</h4>
-                                            <div className="flex flex-wrap gap-2">
+                                            <h4 className="text-xs font-medium text-gray-700 mb-2">得意な診療科・疾患領域</h4>
+                                            <div className="flex flex-wrap gap-1.5">
                                                 {profile.specialtyAreas.map((area, index) => (
                                                     <span
                                                         key={index}
-                                                        className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm"
+                                                        className="px-2 py-0.5 bg-green-50 text-green-700 rounded-full text-xs"
                                                     >
                                                         {area}
                                                     </span>
@@ -1053,12 +1053,12 @@ export default function ProfilePage() {
                                     )}
                                     {profile?.pharmacySystems && profile.pharmacySystems.length > 0 && (
                                         <div>
-                                            <h4 className="font-medium text-gray-700 mb-2">使用経験のある薬歴システム</h4>
-                                            <div className="flex flex-wrap gap-2">
+                                            <h4 className="text-xs font-medium text-gray-700 mb-2">使用経験のある薬歴システム</h4>
+                                            <div className="flex flex-wrap gap-1.5">
                                                 {profile.pharmacySystems.map((system, index) => (
                                                     <span
                                                         key={index}
-                                                        className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm"
+                                                        className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs"
                                                     >
                                                         {system}
                                                     </span>
@@ -1068,8 +1068,8 @@ export default function ProfilePage() {
                                     )}
                                     {profile?.specialNotes && (
                                         <div className="col-span-2">
-                                            <h4 className="font-medium text-gray-700 mb-2">特記事項</h4>
-                                            <p className="text-gray-700 whitespace-pre-wrap">{profile.specialNotes}</p>
+                                            <h4 className="text-xs font-medium text-gray-700 mb-2">特記事項</h4>
+                                            <p className="text-xs text-gray-700 whitespace-pre-wrap">{profile.specialNotes}</p>
                                         </div>
                                     )}
                                 </div>
@@ -1079,11 +1079,11 @@ export default function ProfilePage() {
                         {/* 自己紹介 */}
                         {profile?.selfIntroduction && (
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                                    <FileText size={18} />
+                                <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                    <FileText size={16} />
                                     自己紹介・アピールポイント
                                 </h3>
-                                <p className="text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-4">
+                                <p className="text-xs sm:text-sm text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-4">
                                     {profile.selfIntroduction}
                                 </p>
                             </div>

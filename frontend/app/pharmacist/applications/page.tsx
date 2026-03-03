@@ -40,7 +40,7 @@ export default function ApplicationsPage() {
 
   // ⚠️ 応募取り下げ機能は廃止されました
   // 一度応募したら、基本的に取り下げはできません
-  // やむを得ない場合は運営（support@yakunavi.jp）までご連絡ください
+  // やむを得ない場合は運営（info@yaku-navi.com）までご連絡ください
   // const handleWithdraw = async (id: number) => {
   //   if (!confirm('この応募を取り下げますか？')) return;
 
@@ -92,49 +92,28 @@ export default function ApplicationsPage() {
   return (
     <ProtectedRoute requiredUserType="pharmacist">
       <PharmacistLayout title="応募管理">
-        {/* フィルター */}
-        <div className="mb-6 bg-white rounded-lg shadow p-4">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setFilterStatus('')}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                filterStatus === ''
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              すべて
-            </button>
-            <button
-              onClick={() => setFilterStatus('applied')}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                filterStatus === 'applied'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              応募済み
-            </button>
-            <button
-              onClick={() => setFilterStatus('accepted')}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                filterStatus === 'accepted'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              承認済み
-            </button>
-            <button
-              onClick={() => setFilterStatus('rejected')}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                filterStatus === 'rejected'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              却下
-            </button>
+        {/* フィルター（契約管理と同一スタイル） */}
+        <div className="mb-6 bg-white rounded-lg shadow px-4 pt-3 pb-4">
+          <p className="text-xs font-medium text-gray-500 mb-2">ステータス</p>
+          <div className="flex gap-1.5">
+            {[
+              { value: '', label: 'すべて' },
+              { value: 'applied', label: '応募済み' },
+              { value: 'accepted', label: '承認済み' },
+              { value: 'rejected', label: '却下' },
+            ].map((option) => (
+              <button
+                key={option.value || 'all'}
+                onClick={() => setFilterStatus(option.value)}
+                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors ${
+                  filterStatus === option.value
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
         </div>
 
