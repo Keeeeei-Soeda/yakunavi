@@ -19,6 +19,7 @@ interface JobPosting {
   pharmacy: {
     id: number;
     pharmacyName: string;
+    companyName?: string;
     email: string;
   };
 }

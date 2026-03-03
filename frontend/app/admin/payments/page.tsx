@@ -17,6 +17,7 @@ interface Payment {
   confirmedAt: string;
   pharmacy: {
     pharmacyName: string;
+    companyName?: string;
   };
   contract: {
     pharmacist: {

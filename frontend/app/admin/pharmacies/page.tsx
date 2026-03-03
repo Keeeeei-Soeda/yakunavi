@@ -9,6 +9,7 @@ interface Pharmacy {
   id: number;
   userId: number;
   pharmacyName: string;
+  companyName?: string;
   representativeLastName: string;
   representativeFirstName: string;
   email: string;

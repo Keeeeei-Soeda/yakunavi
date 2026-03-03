@@ -17,6 +17,7 @@ interface Penalty {
   resolutionNote: string;
   pharmacy: {
     pharmacyName: string;
+    companyName?: string;
     representativeLastName: string;
     representativeFirstName: string;
   };
