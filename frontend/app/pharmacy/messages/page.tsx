@@ -33,6 +33,7 @@ export default function MessagesPage() {
         workHours: '9:00-18:00',
     });
     const [sendingOffer, setSendingOffer] = useState(false);
+    const [isEditingOffer, setIsEditingOffer] = useState(false);
 
     // 会話リストを取得
     useEffect(() => {
@@ -490,26 +491,107 @@ export default function MessagesPage() {
                                 ) : canSendOffer ? (
                                     <>
                                         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                                            <h4 className="font-semibold text-blue-900 mb-2">📋 契約条件</h4>
-                                            <div className="space-y-1 text-sm text-blue-800">
-                                                <p>• 初回出勤日: {selectedDate && new Date(selectedDate).toLocaleDateString('ja-JP')}</p>
-                                                <p>• 勤務日数: {offerData.workDays}日（募集要項通り）</p>
-                                                <p>• 報酬総額: ¥{(offerData.dailyWage * offerData.workDays).toLocaleString()}</p>
-                                                <p className="text-xs text-blue-600 ml-4">※薬局から薬剤師への支払いは体験期間終了後</p>
-                                                <p>• 勤務時間: {offerData.workHours}（募集要項の希望時間）</p>
-                                                <p className="text-xs text-blue-600 ml-4">※具体的な勤務曜日・スケジュールは双方の合意のもと後から決定</p>
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h4 className="font-semibold text-blue-900">📋 契約条件</h4>
+                                                {!isEditingOffer ? (
+                                                    <button
+                                                        onClick={() => setIsEditingOffer(true)}
+                                                        className="text-xs px-3 py-1 border border-blue-400 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                                                    >
+                                                        編集する
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => setIsEditingOffer(false)}
+                                                        className="text-xs px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                                    >
+                                                        編集を完了
+                                                    </button>
+                                                )}
                                             </div>
+
+                                            {isEditingOffer ? (
+                                                /* 編集モード */
+                                                <div className="space-y-3 text-sm">
+                                                    <div>
+                                                        <p className="text-blue-800 mb-1">• 初回出勤日（薬剤師が選択・変更不可）</p>
+                                                        <p className="font-medium text-blue-900 ml-3">{selectedDate && new Date(selectedDate).toLocaleDateString('ja-JP')}</p>
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-blue-800 mb-1 block">• 勤務日数</label>
+                                                        <div className="flex items-center gap-2 ml-3">
+                                                            <input
+                                                                type="number"
+                                                                min={1}
+                                                                max={90}
+                                                                value={offerData.workDays}
+                                                                onChange={(e) => setOfferData({ ...offerData, workDays: Number(e.target.value) })}
+                                                                className="w-24 px-3 py-1.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+                                                            />
+                                                            <span className="text-blue-800">日</span>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-blue-800 mb-1 block">• 日給</label>
+                                                        <div className="flex items-center gap-2 ml-3">
+                                                            <span className="text-blue-800">¥</span>
+                                                            <input
+                                                                type="number"
+                                                                min={20000}
+                                                                step={1000}
+                                                                value={offerData.dailyWage}
+                                                                onChange={(e) => setOfferData({ ...offerData, dailyWage: Number(e.target.value) })}
+                                                                className="w-32 px-3 py-1.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-blue-800 mb-1">• 報酬総額（自動計算）</p>
+                                                        <p className="font-semibold text-blue-900 ml-3">¥{(offerData.dailyWage * offerData.workDays).toLocaleString()}</p>
+                                                        <p className="text-xs text-blue-600 ml-3">※薬局から薬剤師への支払いは体験期間終了後</p>
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-blue-800 mb-1 block">• 勤務時間</label>
+                                                        <input
+                                                            type="text"
+                                                            value={offerData.workHours}
+                                                            onChange={(e) => setOfferData({ ...offerData, workHours: e.target.value })}
+                                                            placeholder="例: 9:00-18:00"
+                                                            className="w-full ml-3 px-3 py-1.5 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+                                                            style={{ width: 'calc(100% - 12px)' }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                /* 表示モード */
+                                                <div className="space-y-1 text-sm text-blue-800">
+                                                    <p>• 初回出勤日: {selectedDate && new Date(selectedDate).toLocaleDateString('ja-JP')}</p>
+                                                    <p>• 勤務日数: {offerData.workDays}日</p>
+                                                    <p>• 日給: ¥{offerData.dailyWage.toLocaleString()}</p>
+                                                    <p>• 報酬総額: ¥{(offerData.dailyWage * offerData.workDays).toLocaleString()}</p>
+                                                    <p className="text-xs text-blue-600 ml-4">※薬局から薬剤師への支払いは体験期間終了後</p>
+                                                    <p>• 勤務時間: {offerData.workHours}</p>
+                                                    <p className="text-xs text-blue-600 ml-4">※具体的な勤務曜日・スケジュールは双方の合意のもと後から決定</p>
+                                                </div>
+                                            )}
                                         </div>
                                         <button
                                             onClick={() => setShowOfferDialog(true)}
-                                            disabled={!selectedConversation}
+                                            disabled={!selectedConversation || isEditingOffer}
                                             className="mt-4 w-full bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                         >
                                             📄 正式オファーを送信
                                         </button>
-                                        <p className="text-xs text-gray-500 mt-2 text-center">
-                                            この内容で問題なければ、正式オファーをお送りください
-                                        </p>
+                                        {isEditingOffer && (
+                                            <p className="text-xs text-orange-600 mt-2 text-center">
+                                                ⚠️ 「編集を完了」してからオファーを送信してください
+                                            </p>
+                                        )}
+                                        {!isEditingOffer && (
+                                            <p className="text-xs text-gray-500 mt-2 text-center">
+                                                この内容で問題なければ、正式オファーをお送りください
+                                            </p>
+                                        )}
                                     </>
                                 ) : null}
                             </div>
@@ -548,12 +630,10 @@ export default function MessagesPage() {
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">勤務日数</label>
                                             <p className="font-medium">{offerData.workDays}日</p>
-                                            <p className="text-xs text-gray-500 mt-1">※募集要項に基づく</p>
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">日給</label>
                                             <p className="font-medium">¥{offerData.dailyWage.toLocaleString()}</p>
-                                            <p className="text-xs text-gray-500 mt-1">※募集要項に基づく</p>
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">報酬総額（自動計算）</label>

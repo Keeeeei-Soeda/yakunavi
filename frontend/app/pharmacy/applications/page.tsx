@@ -5,7 +5,7 @@ import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { useAuthStore } from '@/lib/store/authStore';
 import { applicationsAPI, Application } from '@/lib/api/applications';
-import { Check, X, MessageSquare } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import Link from 'next/link';
@@ -156,38 +156,35 @@ export default function ApplicationsPage() {
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {app.status === 'applied' && (
                         <>
                           <button
                             onClick={() => handleAccept(app.id)}
-                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                            title="承認"
+                            className="px-3 py-1.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
                           >
-                            <Check size={20} />
+                            承認
                           </button>
                           <button
                             onClick={() => handleReject(app.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="却下"
+                            className="px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
                           >
-                            <X size={20} />
+                            却下
                           </button>
                         </>
                       )}
                       <Link
                         href={`/pharmacy/applications/${app.id}`}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="詳細を見る"
+                        className="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-300 hover:bg-blue-50 rounded-lg transition-colors"
                       >
-                        👁
+                        詳細
                       </Link>
                       <Link
                         href={`/pharmacy/messages?applicationId=${app.id}`}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="メッセージ"
+                        className="px-3 py-1.5 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-1"
                       >
-                        <MessageSquare size={20} />
+                        <MessageSquare size={14} />
+                        メッセージ
                       </Link>
                     </div>
                   </div>
