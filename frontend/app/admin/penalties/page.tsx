@@ -239,7 +239,7 @@ export default function PenaltiesPage() {
                           onClick={() => router.push(`/admin/penalties/${penalty.id}`)}
                           className="text-blue-600 hover:text-blue-900"
                         >
-                          👁 詳細
+                          詳細
                         </button>
                         {penalty.penaltyStatus === 'active' && (
                           <button

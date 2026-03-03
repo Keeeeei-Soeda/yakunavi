@@ -6,7 +6,7 @@ import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { useAuthStore } from '@/lib/store/authStore';
 import { jobPostingsAPI, JobPosting } from '@/lib/api/jobPostings';
-import { Plus, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Send } from 'lucide-react';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -131,15 +131,15 @@ export default function JobPostingsPage() {
                         className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                         title="公開"
                       >
-                        <Eye size={20} />
+                        <Send size={20} />
                       </button>
                     ) : (
                       <Link
                         href={`/pharmacy/job-postings/${job.id}`}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-300 hover:bg-blue-50 rounded-lg transition-colors"
                         title="詳細を見る"
                       >
-                        <Eye size={20} />
+                        詳細
                       </Link>
                     )}
                     <Link

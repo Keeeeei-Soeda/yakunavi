@@ -2,25 +2,35 @@
 
 import React from 'react';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
+import { ProtectedRoute } from '@/components/common/ProtectedRoute';
+import { useAuthStore } from '@/lib/store/authStore';
 
 export default function SettingsPage() {
+  const user = useAuthStore((state) => state.user);
+
   return (
-    <PharmacyLayout title="設定">
-      <div className="bg-white rounded-lg shadow p-8 max-w-2xl">
-        <h3 className="text-lg font-semibold mb-6">アカウント設定</h3>
-        
-        <div className="space-y-6">
-          {/* メールアドレス */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              メールアドレス
-            </label>
-            <input
-              type="email"
-              defaultValue="pharmacy@example.com"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+    <ProtectedRoute requiredUserType="pharmacy">
+      <PharmacyLayout title="設定">
+        <div className="bg-white rounded-lg shadow p-8 max-w-2xl">
+          <h3 className="text-lg font-semibold mb-6">アカウント設定</h3>
+
+          <div className="space-y-6">
+            {/* メールアドレス（登録時に設定したアカウントのメールアドレス） */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                メールアドレス
+              </label>
+              <input
+                type="email"
+                value={user?.email ?? ''}
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 focus:outline-none cursor-not-allowed"
+                aria-readonly
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                アカウント登録時のメールアドレスです
+              </p>
+            </div>
 
           {/* パスワード変更 */}
           <div>
@@ -70,6 +80,7 @@ export default function SettingsPage() {
         </div>
       </div>
     </PharmacyLayout>
+    </ProtectedRoute>
   );
 }
 

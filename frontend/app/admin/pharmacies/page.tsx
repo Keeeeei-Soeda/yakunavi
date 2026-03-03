@@ -224,7 +224,7 @@ export default function PharmaciesPage() {
                         onClick={() => router.push(`/admin/pharmacies/${pharmacy.id}`)}
                         className="text-blue-600 hover:text-blue-900"
                       >
-                        👁 詳細
+                        詳細
                       </button>
                       <button
                         onClick={() => handleToggleStatus(pharmacy.userId, pharmacy.isActive)}

@@ -46,7 +46,7 @@ export default function PharmacyDashboard() {
               href="/pharmacy/applications"
               className="bg-white border-2 border-blue-600 text-blue-600 px-6 py-4 rounded-lg hover:bg-blue-50 transition-colors text-center font-medium"
             >
-              👁 応募を確認
+              応募を確認
             </a>
             <a
               href="/pharmacy/contracts"

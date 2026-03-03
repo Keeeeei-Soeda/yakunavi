@@ -231,7 +231,7 @@ export default function PharmacistsPage() {
                         onClick={() => router.push(`/admin/pharmacists/${pharmacist.id}`)}
                         className="text-blue-600 hover:text-blue-900"
                       >
-                        👁 詳細
+                        詳細
                       </button>
                       <button
                         onClick={() => handleToggleStatus(pharmacist.userId, pharmacist.isActive)}
