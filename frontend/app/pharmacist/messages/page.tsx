@@ -518,7 +518,8 @@ export default function MessagesPage() {
               }}
               placeholder="メッセージを入力..."
               disabled={!selectedConversation || sending}
-              className="flex-1 px-3 py-2.5 text-sm border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100"
+              className="flex-1 px-3 py-2.5 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100"
+              style={{ fontSize: '16px' }}
             />
             <button
               onClick={handleSendMessage}

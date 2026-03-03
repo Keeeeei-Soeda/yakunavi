@@ -41,7 +41,17 @@ export class PharmacistDashboardService {
       orderBy: { createdAt: 'desc' },
       take: limit,
     });
-    return notifications;
+    return notifications.map((n) => ({
+      id: Number(n.id),
+      userId: Number(n.userId),
+      notificationType: n.notificationType,
+      title: n.title,
+      message: n.message,
+      linkUrl: n.linkUrl,
+      isRead: n.isRead,
+      readAt: n.readAt,
+      createdAt: n.createdAt,
+    }));
   }
 
   /**
@@ -52,7 +62,17 @@ export class PharmacistDashboardService {
       where: { userId },
       orderBy: { createdAt: 'desc' },
     });
-    return notifications;
+    return notifications.map((n) => ({
+      id: Number(n.id),
+      userId: Number(n.userId),
+      notificationType: n.notificationType,
+      title: n.title,
+      message: n.message,
+      linkUrl: n.linkUrl,
+      isRead: n.isRead,
+      readAt: n.readAt,
+      createdAt: n.createdAt,
+    }));
   }
 
   /**
