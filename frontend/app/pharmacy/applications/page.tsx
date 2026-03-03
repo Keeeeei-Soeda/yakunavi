@@ -39,19 +39,6 @@ export default function ApplicationsPage() {
     }
   };
 
-  const handleAccept = async (id: number) => {
-    if (!confirm('この応募を承認しますか？')) return;
-
-    try {
-      await applicationsAPI.updateStatus(id, 'accepted');
-      alert('応募を承認しました');
-      fetchApplications();
-    } catch (error) {
-      console.error('Failed to accept:', error);
-      alert('承認に失敗しました');
-    }
-  };
-
   const handleReject = async (id: number) => {
     const reason = prompt('却下理由を入力してください（任意）:');
     if (reason === null) return;
@@ -157,28 +144,6 @@ export default function ApplicationsPage() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {app.status === 'applied' && (
-                        <>
-                          <button
-                            onClick={() => handleAccept(app.id)}
-                            className="px-3 py-1.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
-                          >
-                            承認
-                          </button>
-                          <button
-                            onClick={() => handleReject(app.id)}
-                            className="px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
-                          >
-                            却下
-                          </button>
-                        </>
-                      )}
-                      <Link
-                        href={`/pharmacy/applications/${app.id}`}
-                        className="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-300 hover:bg-blue-50 rounded-lg transition-colors"
-                      >
-                        詳細
-                      </Link>
                       <Link
                         href={`/pharmacy/messages?applicationId=${app.id}`}
                         className="px-3 py-1.5 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-1"
@@ -186,6 +151,20 @@ export default function ApplicationsPage() {
                         <MessageSquare size={14} />
                         メッセージ
                       </Link>
+                      <Link
+                        href={`/pharmacy/applications/${app.id}`}
+                        className="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-300 hover:bg-blue-50 rounded-lg transition-colors"
+                      >
+                        詳細
+                      </Link>
+                      {app.status === 'applied' && (
+                        <button
+                          onClick={() => handleReject(app.id)}
+                          className="px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+                        >
+                          却下
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -7,7 +7,7 @@ import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { applicationsAPI } from '@/lib/api/applications';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
-import { ArrowLeft, MessageSquare, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, MessageSquare, XCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ApplicationDetailPage() {
@@ -34,22 +34,6 @@ export default function ApplicationDetailPage() {
       console.error('Failed to fetch application detail:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleAccept = async () => {
-    if (!confirm('この応募を承認しますか？')) return;
-
-    setProcessing(true);
-    try {
-      await applicationsAPI.updateStatus(applicationId, 'accepted');
-      alert('応募を承認しました');
-      router.push('/pharmacy/applications');
-    } catch (error: any) {
-      console.error('Failed to accept:', error);
-      alert(error.response?.data?.error || '承認に失敗しました');
-    } finally {
-      setProcessing(false);
     }
   };
 
@@ -112,26 +96,6 @@ export default function ApplicationDetailPage() {
               <h1 className="text-2xl font-bold text-gray-900">応募者詳細</h1>
             </div>
             <div className="flex gap-2">
-              {application.status === 'applied' && (
-                <>
-                  <button
-                    onClick={handleReject}
-                    disabled={processing}
-                    className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:bg-gray-100 flex items-center gap-2"
-                  >
-                    <XCircle size={20} />
-                    却下する
-                  </button>
-                  <button
-                    onClick={handleAccept}
-                    disabled={processing}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-300 flex items-center gap-2"
-                  >
-                    <CheckCircle size={20} />
-                    承認する
-                  </button>
-                </>
-              )}
               <Link
                 href={`/pharmacy/messages?applicationId=${applicationId}`}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
@@ -139,6 +103,16 @@ export default function ApplicationDetailPage() {
                 <MessageSquare size={20} />
                 メッセージ
               </Link>
+              {application.status === 'applied' && (
+                <button
+                  onClick={handleReject}
+                  disabled={processing}
+                  className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:bg-gray-100 flex items-center gap-2"
+                >
+                  <XCircle size={20} />
+                  却下する
+                </button>
+              )}
             </div>
           </div>
 
