@@ -151,6 +151,7 @@ export class JobPostingService {
         pharmacy: {
           select: {
             id: true,
+            companyName: true,
             pharmacyName: true,
             prefecture: true,
             address: true,
@@ -268,7 +269,8 @@ export class JobPostingService {
           pharmacy: {
             select: {
               id: true,
-              pharmacyName: true,
+              companyName: true,
+            pharmacyName: true,
               prefecture: true,
               address: true,
             },

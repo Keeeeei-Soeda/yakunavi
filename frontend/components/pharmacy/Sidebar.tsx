@@ -96,7 +96,7 @@ export const PharmacySidebar: React.FC = () => {
             <div className="p-6 border-b border-gray-200">
                 <h1 className="text-xl font-bold text-gray-900">薬局管理システム</h1>
                 <p className="text-sm text-gray-500 mt-1">
-                  {pharmacyProfile?.pharmacyName || '読み込み中...'}
+                  {pharmacyProfile?.pharmacyName || pharmacyProfile?.companyName || '読み込み中...'}
                 </p>
             </div>
 

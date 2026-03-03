@@ -211,7 +211,7 @@ export default function PaymentsPage() {
                       #{payment.contractId}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {payment.pharmacy.pharmacyName}
+                      {payment.pharmacy.pharmacyName || payment.pharmacy.companyName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                       {payment.contract.pharmacist.lastName} {payment.contract.pharmacist.firstName}

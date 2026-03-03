@@ -98,6 +98,7 @@ export class ApplicationService {
             pharmacy: {
               select: {
                 id: true,
+                companyName: true,
                 pharmacyName: true,
               },
             },
@@ -162,6 +163,7 @@ export class ApplicationService {
             pharmacy: {
               select: {
                 id: true,
+                companyName: true,
                 pharmacyName: true,
                 prefecture: true,
                 address: true,
@@ -343,6 +345,7 @@ export class ApplicationService {
             pharmacy: {
               select: {
                 id: true,
+                companyName: true,
                 pharmacyName: true,
               },
             },

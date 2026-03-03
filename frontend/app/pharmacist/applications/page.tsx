@@ -168,7 +168,7 @@ export default function ApplicationsPage() {
                       </div>
                       <div className="space-y-1 text-sm text-gray-600">
                         <p>
-                          🏥 薬局: {app.jobPosting?.pharmacy?.pharmacyName}
+                          🏥 薬局: {app.jobPosting?.pharmacy?.pharmacyName || app.jobPosting?.pharmacy?.companyName}
                         </p>
                         <p>
                           📍 {app.jobPosting?.prefecture} {app.jobPosting?.city}

@@ -16,7 +16,7 @@ export default function PharmacyRegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    pharmacyName: '',
+    companyName: '',
     representativeLastName: '',
     representativeFirstName: '',
     termsAgreed: false,
@@ -54,7 +54,7 @@ export default function PharmacyRegisterPage() {
         email: formData.email,
         password: formData.password,
         userType: 'pharmacy',
-        pharmacyName: formData.pharmacyName,
+        companyName: formData.companyName,
         representativeLastName: formData.representativeLastName,
         representativeFirstName: formData.representativeFirstName,
       });
@@ -95,16 +95,17 @@ export default function PharmacyRegisterPage() {
         {/* 登録フォーム */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="pharmacyName" className="block text-sm font-medium text-gray-700 mb-1">
-              薬局名 *
+            <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
+              法人名 *
             </label>
             <input
-              id="pharmacyName"
+              id="companyName"
               type="text"
               required
-              value={formData.pharmacyName}
-              onChange={(e) => setFormData({ ...formData, pharmacyName: e.target.value })}
+              value={formData.companyName}
+              onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="例：株式会社〇〇"
             />
           </div>
 

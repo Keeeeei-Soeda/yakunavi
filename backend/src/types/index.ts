@@ -6,6 +6,7 @@ export interface JWTPayload {
   id: number;
   email: string;
   userType: UserType;
+  relatedId?: number;
 }
 
 // APIレスポンス
@@ -53,6 +54,7 @@ export interface PharmacistDashboardStats {
   activeApplications: number;
   activeContracts: number;
   unreadMessages: number;
+  favoriteJobs: number;
 }
 
 // 求人検索フィルター

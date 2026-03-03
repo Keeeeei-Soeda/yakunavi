@@ -10,6 +10,7 @@ export class PharmacyService {
       select: {
         id: true,
         userId: true,
+        companyName: true,
         pharmacyName: true,
         representativeLastName: true,
         representativeFirstName: true,
@@ -18,6 +19,8 @@ export class PharmacyService {
         prefecture: true,
         address: true,
         nearestStation: true,
+        minutesFromStation: true,
+        carCommuteAvailable: true,
         establishedDate: true,
         dailyPrescriptionCount: true,
         staffCount: true,
@@ -47,6 +50,7 @@ export class PharmacyService {
     const updateData: any = {};
 
     // 更新可能なフィールドのみを抽出
+    if (data.companyName !== undefined) updateData.companyName = data.companyName;
     if (data.pharmacyName !== undefined) updateData.pharmacyName = data.pharmacyName;
     if (data.representativeLastName !== undefined) updateData.representativeLastName = data.representativeLastName;
     if (data.representativeFirstName !== undefined) updateData.representativeFirstName = data.representativeFirstName;
@@ -55,6 +59,8 @@ export class PharmacyService {
     if (data.prefecture !== undefined) updateData.prefecture = data.prefecture;
     if (data.address !== undefined) updateData.address = data.address;
     if (data.nearestStation !== undefined) updateData.nearestStation = data.nearestStation;
+    if (data.minutesFromStation !== undefined) updateData.minutesFromStation = data.minutesFromStation;
+    if (data.carCommuteAvailable !== undefined) updateData.carCommuteAvailable = data.carCommuteAvailable;
     if (data.establishedDate !== undefined) {
       updateData.establishedDate = data.establishedDate ? new Date(data.establishedDate) : null;
     }

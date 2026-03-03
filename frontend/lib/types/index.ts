@@ -20,13 +20,15 @@ export interface PharmacistDashboardStats {
   activeApplications: number;
   activeContracts: number;
   unreadMessages: number;
+  favoriteJobs: number;
 }
 
 // 薬局
 export interface Pharmacy {
   id: number;
   userId: number;
-  pharmacyName: string;
+  companyName?: string;
+  pharmacyName?: string;
   representativeLastName: string;
   representativeFirstName: string;
   phoneNumber?: string;
@@ -66,7 +68,8 @@ export interface JobPosting {
   applicationCount: number;
   publishedAt?: string;
   pharmacy?: {
-    pharmacyName: string;
+    companyName?: string;
+    pharmacyName?: string;
   };
   _count?: {
     applications: number;
@@ -114,7 +117,8 @@ export interface Contract {
   platformFee: number;
   status: string;
   pharmacy?: {
-    pharmacyName: string;
+    companyName?: string;
+    pharmacyName?: string;
   };
   jobPosting?: {
     title: string;

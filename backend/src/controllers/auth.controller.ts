@@ -31,6 +31,24 @@ export class AuthController {
                 });
             }
 
+            if (userType === 'pharmacy') {
+                if (!additionalData.companyName || !additionalData.representativeLastName || !additionalData.representativeFirstName) {
+                    return res.status(400).json({
+                        success: false,
+                        error: '法人名、代表者姓、代表者名は必須です',
+                    });
+                }
+            }
+
+            if (userType === 'pharmacist') {
+                if (!additionalData.lastName || !additionalData.firstName) {
+                    return res.status(400).json({
+                        success: false,
+                        error: '姓、名は必須です',
+                    });
+                }
+            }
+
             const result = await this.authService.register({
                 email,
                 password,

@@ -122,6 +122,7 @@ export class MessageService {
                         pharmacy: {
                             select: {
                                 id: true,
+                                companyName: true,
                                 pharmacyName: true,
                             },
                         },

@@ -216,7 +216,7 @@ export default function PenaltiesPage() {
                         #{penalty.id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {penalty.pharmacy.pharmacyName}
+                        {penalty.pharmacy.pharmacyName || penalty.pharmacy.companyName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         {penalty.pharmacy.representativeLastName} {penalty.pharmacy.representativeFirstName}

@@ -35,7 +35,8 @@ model User {
 model Pharmacy {
   id                      BigInt       @id @default(autoincrement())
   userId                  BigInt       @unique @map("user_id")
-  pharmacyName            String       @map("pharmacy_name") @db.VarChar(255)
+  companyName             String       @map("company_name") @db.VarChar(255)
+  pharmacyName            String?      @map("pharmacy_name") @db.VarChar(255)
   representativeLastName  String       @map("representative_last_name") @db.VarChar(100)
   representativeFirstName String       @map("representative_first_name") @db.VarChar(100)
   phoneNumber             String?      @map("phone_number") @db.VarChar(20)
@@ -43,6 +44,8 @@ model Pharmacy {
   prefecture              String?      @db.VarChar(50)
   address                 String?
   nearestStation          String?      @map("nearest_station") @db.VarChar(255)
+  minutesFromStation      Int?         @map("minutes_from_station")
+  carCommuteAvailable     Boolean?     @map("car_commute_available")
   establishedDate         DateTime?    @map("established_date") @db.Date
   dailyPrescriptionCount  Int?         @map("daily_prescription_count")
   staffCount              Int?         @map("staff_count")
@@ -63,6 +66,20 @@ model Pharmacy {
   @@index([userId], map: "idx_pharmacies_user_id")
   @@index([prefecture], map: "idx_pharmacies_prefecture")
   @@map("pharmacies")
+}
+
+model FavoriteJob {
+  id           BigInt     @id @default(autoincrement())
+  pharmacistId BigInt     @map("pharmacist_id")
+  jobPostingId BigInt     @map("job_posting_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  pharmacist   Pharmacist @relation(fields: [pharmacistId], references: [id], onDelete: Cascade)
+  jobPosting   JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+
+  @@unique([pharmacistId, jobPostingId])
+  @@index([pharmacistId], map: "idx_favorite_jobs_pharmacist_id")
+  @@index([jobPostingId], map: "idx_favorite_jobs_job_posting_id")
+  @@map("favorite_jobs")
 }
 
 model Pharmacist {
@@ -99,6 +116,7 @@ model Pharmacist {
   certificates               Certificate[]
   contracts                  Contract[]
   documents                  Document[]
+  favoriteJobs               FavoriteJob[]
   user                       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId], map: "idx_pharmacists_user_id")
@@ -132,6 +150,7 @@ model JobPosting {
   updatedAt           DateTime      @updatedAt @map("updated_at")
   applications        Application[]
   contracts           Contract[]
+  favoriteJobs        FavoriteJob[]
   pharmacy            Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
 
   @@index([pharmacyId], map: "idx_job_postings_pharmacy_id")

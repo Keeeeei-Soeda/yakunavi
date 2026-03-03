@@ -8,7 +8,8 @@ import {
 
 export interface PharmacyProfile {
   id: number;
-  pharmacyName: string;
+  companyName: string;
+  pharmacyName?: string;
   representativeLastName: string;
   representativeFirstName: string;
   phoneNumber?: string;
@@ -16,6 +17,8 @@ export interface PharmacyProfile {
   prefecture?: string;
   address?: string;
   nearestStation?: string;
+  minutesFromStation?: number;
+  carCommuteAvailable?: boolean;
   establishedDate?: string;
   dailyPrescriptionCount?: number;
   staffCount?: number;

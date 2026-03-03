@@ -11,9 +11,10 @@ import { pharmacyAPI, PharmacyProfile } from '@/lib/api/pharmacy';
 import { useAuthStore } from '@/lib/store/authStore';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
-import { ArrowLeft, MapPin, DollarSign, Calendar, Clock, AlertCircle, Send, Building2, Phone, Users, X, ChevronRight } from 'lucide-react';
+import { ArrowLeft, MapPin, DollarSign, Calendar, Clock, AlertCircle, Send, Building2, Phone, Users, X, ChevronRight, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { PREFECTURES } from '@/lib/constants/prefectures';
+import { favoritesAPI } from '@/lib/api/favorites';
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -33,6 +34,8 @@ export default function JobDetailPage() {
 
   const [job, setJob] = useState<JobPosting | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [togglingFavorite, setTogglingFavorite] = useState(false);
   const [showApplicationDialog, setShowApplicationDialog] = useState(false);
   const [applying, setApplying] = useState(false);
   const [profile, setProfile] = useState<any>(null);
@@ -71,14 +74,19 @@ export default function JobDetailPage() {
       if (response.success && response.data) {
         console.log('[Debug] Setting profile:', response.data);
         setProfile(response.data);
-        // プロフィールの最寄駅をデフォルト値として設定
+        // プロフィールの情報を応募フォームのデフォルト値として設定
         const profileData = response.data;
-        if (profileData.nearestStation) {
-          setApplicationForm(prev => ({
-            ...prev,
-            nearestStation: profileData.nearestStation || '',
-          }));
-        }
+        setApplicationForm(prev => ({
+          ...prev,
+          // 最寄駅
+          nearestStation: profileData.nearestStation || prev.nearestStation,
+          // 勤務経験のある業態（プロフィールに値がある場合のみ設定）
+          workExperienceTypes: profileData.workExperienceTypes && profileData.workExperienceTypes.length > 0
+            ? profileData.workExperienceTypes
+            : prev.workExperienceTypes,
+          // 自己紹介（プロフィールのselfIntroductionをcoverLetterに設定）
+          coverLetter: profileData.selfIntroduction || prev.coverLetter,
+        }));
       } else {
         console.log('[Debug] Profile response not successful or no data');
       }
@@ -101,7 +109,37 @@ export default function JobDetailPage() {
 
   useEffect(() => {
     fetchJobDetail();
+    checkFavoriteStatus();
   }, [jobId]);
+
+  const checkFavoriteStatus = async () => {
+    try {
+      const response = await favoritesAPI.checkFavorite(jobId);
+      if (response.success && response.data) {
+        setIsFavorite(response.data.isFavorite);
+      }
+    } catch (error) {
+      console.error('Failed to check favorite status:', error);
+    }
+  };
+
+  const handleToggleFavorite = async () => {
+    if (togglingFavorite) return;
+    setTogglingFavorite(true);
+    try {
+      if (isFavorite) {
+        await favoritesAPI.removeFavorite(jobId);
+        setIsFavorite(false);
+      } else {
+        await favoritesAPI.addFavorite(jobId);
+        setIsFavorite(true);
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    } finally {
+      setTogglingFavorite(false);
+    }
+  };
 
   useEffect(() => {
     if (pharmacistId) {
@@ -272,13 +310,27 @@ export default function JobDetailPage() {
                 <ArrowLeft size={24} />
               </Link>
             </div>
-            <button
-              onClick={() => setShowApplicationDialog(true)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
-            >
-              <Send size={20} />
-              応募する
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleToggleFavorite}
+                disabled={togglingFavorite}
+                className={`flex items-center gap-2 px-4 py-3 rounded-lg border font-medium transition-colors disabled:opacity-50 ${
+                  isFavorite
+                    ? 'border-red-400 bg-red-50 text-red-600 hover:bg-red-100'
+                    : 'border-gray-300 bg-white text-gray-600 hover:border-red-300 hover:text-red-500'
+                }`}
+              >
+                <Heart size={20} className={isFavorite ? 'fill-red-500 text-red-500' : ''} />
+                {isFavorite ? 'お気に入り済み' : 'お気に入り'}
+              </button>
+              <button
+                onClick={() => setShowApplicationDialog(true)}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+              >
+                <Send size={20} />
+                応募する
+              </button>
+            </div>
           </div>
 
           {/* 資格証明書の警告 */}
@@ -384,7 +436,7 @@ export default function JobDetailPage() {
                 <div className="space-y-2">
                   <div>
                     <p className="text-sm text-gray-600">薬局名</p>
-                    <p className="font-medium">{job.pharmacy.pharmacyName || '薬局情報なし'}</p>
+                    <p className="font-medium">{job.pharmacy.pharmacyName || job.pharmacy.companyName || '薬局情報なし'}</p>
                   </div>
                   {job.pharmacy.prefecture && (
                     <div>
@@ -659,7 +711,7 @@ export default function JobDetailPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <p className="text-sm text-gray-600">薬局名</p>
-                          <p className="font-medium">{pharmacyProfile.pharmacyName}</p>
+                          <p className="font-medium">{pharmacyProfile.pharmacyName || pharmacyProfile.companyName}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-600">都道府県</p>

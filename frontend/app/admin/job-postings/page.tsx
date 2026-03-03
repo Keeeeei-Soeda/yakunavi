@@ -225,7 +225,7 @@ export default function JobPostingsPage() {
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900 flex items-center">
                       <Building2 className="h-4 w-4 mr-1 text-gray-400" />
-                      {job.pharmacy.pharmacyName}
+                      {job.pharmacy.pharmacyName || job.pharmacy.companyName}
                     </div>
                     <div className="text-sm text-gray-500">{job.pharmacy.email}</div>
                   </td>

@@ -47,7 +47,7 @@ export default function ContractsPage() {
         icon: <AlertCircle size={16} />,
       },
       pending_payment: {
-        label: '手数料支払い待ち',
+        label: '手続き中',
         className: 'bg-orange-100 text-orange-800',
         icon: <DollarSign size={16} />,
       },
@@ -103,7 +103,7 @@ export default function ContractsPage() {
               {[
                 { value: 'all', label: 'すべて' },
                 { value: 'pending_approval', label: '承認待ち' },
-                { value: 'pending_payment', label: '手数料支払い待ち' },
+                { value: 'pending_payment', label: '手続き中' },
                 { value: 'active', label: '契約成立' },
                 { value: 'completed', label: '完了' },
               ].map((option) => (
@@ -189,7 +189,7 @@ export default function ContractsPage() {
                         <DollarSign className="w-5 h-5 text-orange-600 mt-0.5" />
                         <div>
                           <p className="text-sm font-semibold text-orange-900">
-                            薬局の手数料支払い待ち
+                            手続き中
                           </p>
                           <p className="text-sm text-orange-700 mt-1">
                             支払い期限: {format(new Date(contract.paymentDeadline), 'yyyy/MM/dd', { locale: ja })}

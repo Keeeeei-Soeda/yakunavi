@@ -114,7 +114,7 @@ export const ActiveContracts: React.FC<ActiveContractsProps> = ({
                   </h4>
                   <div className="flex items-center gap-1 text-sm text-gray-600">
                     <Building2 size={14} />
-                    <span>{contract.pharmacy?.pharmacyName}</span>
+                    <span>{contract.pharmacy?.pharmacyName || contract.pharmacy?.companyName}</span>
                   </div>
                 </div>
                 {getStatusBadge(contract.status)}

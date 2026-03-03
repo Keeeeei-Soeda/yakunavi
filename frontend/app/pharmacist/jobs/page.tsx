@@ -5,9 +5,10 @@ import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacistLayout } from '@/components/pharmacist/Layout';
 import { jobPostingsAPI, JobPosting } from '@/lib/api/jobPostings';
 import { applicationsAPI } from '@/lib/api/applications';
+import { favoritesAPI } from '@/lib/api/favorites';
 import { useAuthStore } from '@/lib/store/authStore';
 import { PREFECTURES } from '@/lib/constants/prefectures';
-import { Search, MapPin, Clock, DollarSign, Send } from 'lucide-react';
+import { Search, MapPin, Clock, DollarSign, Send, Heart } from 'lucide-react';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -18,6 +19,8 @@ export default function JobSearchPage() {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
   const [loading, setLoading] = useState(false);
   const [applying, setApplying] = useState<number | null>(null);
+  const [favoriteIds, setFavoriteIds] = useState<Set<number>>(new Set());
+  const [togglingFavorite, setTogglingFavorite] = useState<number | null>(null);
 
   // フィルター
   const [filters, setFilters] = useState({
@@ -29,7 +32,38 @@ export default function JobSearchPage() {
 
   useEffect(() => {
     searchJobs();
+    loadFavoriteIds();
   }, []);
+
+  const loadFavoriteIds = async () => {
+    try {
+      const response = await favoritesAPI.getFavorites();
+      if (response.success && response.data) {
+        setFavoriteIds(new Set(response.data.map((f) => f.jobPostingId)));
+      }
+    } catch (error) {
+      console.error('Failed to load favorites:', error);
+    }
+  };
+
+  const handleToggleFavorite = async (e: React.MouseEvent, jobId: number) => {
+    e.stopPropagation();
+    if (togglingFavorite === jobId) return;
+    setTogglingFavorite(jobId);
+    try {
+      if (favoriteIds.has(jobId)) {
+        await favoritesAPI.removeFavorite(jobId);
+        setFavoriteIds((prev) => { const next = new Set(prev); next.delete(jobId); return next; });
+      } else {
+        await favoritesAPI.addFavorite(jobId);
+        setFavoriteIds((prev) => new Set(prev).add(jobId));
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    } finally {
+      setTogglingFavorite(null);
+    }
+  };
 
   const searchJobs = async () => {
     setLoading(true);
@@ -203,7 +237,22 @@ export default function JobSearchPage() {
                       )}
                     </div>
                   </div>
-                  <div className="ml-4">
+                  <div className="ml-4 flex flex-col items-end gap-2">
+                    <button
+                      onClick={(e) => handleToggleFavorite(e, job.id)}
+                      disabled={togglingFavorite === job.id}
+                      className={`p-2 rounded-full border transition-colors ${
+                        favoriteIds.has(job.id)
+                          ? 'border-red-300 bg-red-50 text-red-500 hover:bg-red-100'
+                          : 'border-gray-300 bg-white text-gray-400 hover:border-red-300 hover:text-red-400'
+                      } disabled:opacity-50`}
+                      title={favoriteIds.has(job.id) ? 'お気に入りを解除' : 'お気に入りに追加'}
+                    >
+                      <Heart
+                        size={18}
+                        className={favoriteIds.has(job.id) ? 'fill-red-500' : ''}
+                      />
+                    </button>
                     <button
                       onClick={() => handleApply(job.id)}
                       disabled={applying === job.id}

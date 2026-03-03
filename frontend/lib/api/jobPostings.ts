@@ -25,6 +25,7 @@ export interface JobPosting {
   updatedAt: string;
   pharmacy?: {
     id: number;
+    companyName?: string;
     pharmacyName?: string;
     prefecture?: string;
     address?: string;

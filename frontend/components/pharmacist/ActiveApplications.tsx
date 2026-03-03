@@ -71,7 +71,7 @@ export const ActiveApplications: React.FC<ActiveApplicationsProps> = ({
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4">進行中の応募</h3>
+        <h3 className="text-lg font-semibold mb-4">応募中</h3>
         <LoadingSpinner className="py-8" />
       </div>
     );
@@ -80,7 +80,7 @@ export const ActiveApplications: React.FC<ActiveApplicationsProps> = ({
   if (error) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4">進行中の応募</h3>
+        <h3 className="text-lg font-semibold mb-4">応募中</h3>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
           {error}
         </div>
@@ -91,7 +91,7 @@ export const ActiveApplications: React.FC<ActiveApplicationsProps> = ({
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">進行中の応募</h3>
+        <h3 className="text-lg font-semibold">応募中</h3>
         <a
           href="/pharmacist/applications"
           className="text-sm text-primary-600 hover:text-primary-700 font-medium"
@@ -102,7 +102,7 @@ export const ActiveApplications: React.FC<ActiveApplicationsProps> = ({
 
       {applications.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500 mb-4">進行中の応募がありません</p>
+          <p className="text-gray-500 mb-4">応募はありません</p>
           <a
             href="/pharmacist/jobs"
             className="inline-block bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
@@ -124,7 +124,7 @@ export const ActiveApplications: React.FC<ActiveApplicationsProps> = ({
                   </h4>
                   <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
                     <Building2 size={14} />
-                    <span>{application.jobPosting.pharmacy?.pharmacyName}</span>
+                    <span>{application.jobPosting.pharmacy?.pharmacyName || application.jobPosting.pharmacy?.companyName}</span>
                   </div>
                 </div>
                 {getStatusBadge(application.status)}

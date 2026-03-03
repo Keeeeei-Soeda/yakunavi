@@ -39,6 +39,7 @@ async function main() {
     const pharmacy1 = await prisma.pharmacy.create({
         data: {
             userId: pharmacyUser1.id,
+            companyName: '株式会社羽曳野',
             pharmacyName: '羽曳野薬局',
             representativeLastName: '山田',
             representativeFirstName: '太郎',
@@ -47,6 +48,8 @@ async function main() {
             prefecture: '大阪府',
             address: '大阪府羽曳野市羽曳野1-2-3',
             nearestStation: '古市駅（近鉄南大阪線）',
+            minutesFromStation: 5,
+            carCommuteAvailable: true,
             establishedDate: new Date('2010-04-01'),
             dailyPrescriptionCount: 80,
             staffCount: 5,
@@ -75,6 +78,7 @@ async function main() {
     const pharmacy2 = await prisma.pharmacy.create({
         data: {
             userId: pharmacyUser2.id,
+            companyName: '株式会社テストドラッグ',
             pharmacyName: 'テスト薬局 新宿店',
             representativeLastName: '佐藤',
             representativeFirstName: '花子',
@@ -83,6 +87,8 @@ async function main() {
             prefecture: '東京都',
             address: '東京都新宿区新宿1-1-1',
             nearestStation: '新宿駅',
+            minutesFromStation: 3,
+            carCommuteAvailable: false,
             establishedDate: new Date('2015-06-01'),
             dailyPrescriptionCount: 150,
             staffCount: 8,
@@ -111,6 +117,7 @@ async function main() {
     const pharmacy3 = await prisma.pharmacy.create({
         data: {
             userId: pharmacyUser3.id,
+            companyName: '株式会社サンプル',
             pharmacyName: 'サンプル薬局 渋谷店',
             representativeLastName: '鈴木',
             representativeFirstName: '一郎',
@@ -119,6 +126,8 @@ async function main() {
             prefecture: '東京都',
             address: '東京都渋谷区渋谷2-2-2',
             nearestStation: '渋谷駅',
+            minutesFromStation: 3,
+            carCommuteAvailable: false,
             establishedDate: new Date('2018-03-15'),
             dailyPrescriptionCount: 200,
             staffCount: 10,

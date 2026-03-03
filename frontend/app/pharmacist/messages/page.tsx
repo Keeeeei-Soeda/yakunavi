@@ -407,7 +407,7 @@ export default function MessagesPage() {
                     <CheckCircle className="w-5 h-5 text-green-600" />
                     <p className="text-sm text-green-800 font-semibold">
                       {contract.status === 'pending_payment'
-                        ? '契約成立：薬局の手数料支払い待ち'
+                        ? '手続き中'
                         : contract.status === 'active'
                           ? '契約成立：勤務中'
                           : '契約成立'}

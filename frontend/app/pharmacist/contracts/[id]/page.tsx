@@ -159,7 +159,7 @@ export default function ContractDetailPage() {
                   <AlertCircle className="w-6 h-6 text-orange-600 mt-0.5" />
                   <div>
                     <p className="text-lg font-semibold text-orange-900">
-                      薬局の手数料支払い待ち
+                      手続き中
                     </p>
                     <p className="text-sm text-orange-700 mt-2">
                       支払い期限: {format(new Date(contract.paymentDeadline), 'yyyy年MM月dd日（E）', { locale: ja })}
@@ -270,7 +270,7 @@ export default function ContractDetailPage() {
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-600">薬局名</p>
-                  <p className="font-medium text-lg">{contract.pharmacy.name || contract.pharmacy.pharmacyName}</p>
+                  <p className="font-medium text-lg">{contract.pharmacy.name || contract.pharmacy.pharmacyName || contract.pharmacy.companyName}</p>
                 </div>
                 {contract.pharmacy.phoneNumber && (
                   <div>
@@ -376,7 +376,7 @@ export default function ContractDetailPage() {
             <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-gray-900">
-                  {pharmacyProfile?.pharmacyName || contract.pharmacy.pharmacyName || contract.pharmacy.name} のプロフィール
+                  {pharmacyProfile?.pharmacyName || pharmacyProfile?.companyName || contract.pharmacy.pharmacyName || contract.pharmacy.companyName || contract.pharmacy.name} のプロフィール
                 </h2>
                 <button
                   onClick={() => {
@@ -425,7 +425,7 @@ export default function ContractDetailPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <p className="text-sm text-gray-600">薬局名</p>
-                          <p className="font-medium">{pharmacyProfile.pharmacyName}</p>
+                          <p className="font-medium">{pharmacyProfile.pharmacyName || pharmacyProfile.companyName}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-600">都道府県</p>

@@ -202,11 +202,11 @@ export class PDFService {
         doc.fontSize(10).font(japaneseFont);
         currentY += 10;
         doc.text('銀行名:', 60, currentY);
-        doc.text('三菱UFJ銀行', 150, currentY);
+        doc.text('GMO青空ネット銀行', 150, currentY);
         currentY += 20;
 
         doc.text('支店名:', 60, currentY);
-        doc.text('渋谷支店', 150, currentY);
+        doc.text('法人営業部（101）', 150, currentY);
         currentY += 20;
 
         doc.text('口座種別:', 60, currentY);
@@ -214,11 +214,11 @@ export class PDFService {
         currentY += 20;
 
         doc.text('口座番号:', 60, currentY);
-        doc.font('Helvetica-Bold').text('1234567', 150, currentY);
+        doc.font('Helvetica-Bold').text('2523006', 150, currentY);
         currentY += 20;
 
         doc.font(japaneseFont).text('口座名義:', 60, currentY);
-        doc.text('カ）ヤクナビ', 150, currentY);
+        doc.text('カ）トレスクーレ', 150, currentY);
         currentY += 20;
 
         doc.text('お支払い期限:', 60, currentY);

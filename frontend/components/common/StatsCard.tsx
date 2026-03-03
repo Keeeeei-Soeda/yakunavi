@@ -6,6 +6,7 @@ interface StatsCardProps {
   value: number | string;
   icon: LucideIcon;
   iconColor?: string;
+  onClick?: () => void;
   trend?: {
     value: number;
     isPositive: boolean;
@@ -17,10 +18,14 @@ export const StatsCard: React.FC<StatsCardProps> = ({
   value,
   icon: Icon,
   iconColor = 'text-primary-600',
+  onClick,
   trend,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+    <div
+      className={`bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow ${onClick ? 'cursor-pointer' : ''}`}
+      onClick={onClick}
+    >
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>

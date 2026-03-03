@@ -5,7 +5,7 @@ interface RegisterInput {
     email: string;
     password: string;
     userType: 'pharmacy' | 'pharmacist';
-    pharmacyName?: string;
+    companyName?: string;
     representativeLastName?: string;
     representativeFirstName?: string;
     lastName?: string;

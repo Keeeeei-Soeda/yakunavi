@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacistLayout } from '@/components/pharmacist/Layout';
 import { DashboardStats } from '@/components/pharmacist/DashboardStats';
 import { RecentNotifications } from '@/components/pharmacist/RecentNotifications';
 import { ActiveApplications } from '@/components/pharmacist/ActiveApplications';
 import { ActiveContracts } from '@/components/pharmacist/ActiveContracts';
+import { FavoriteJobs } from '@/components/pharmacist/FavoriteJobs';
 import { useAuthStore } from '@/lib/store/authStore';
 import { RefreshCw } from 'lucide-react';
 
@@ -15,6 +16,11 @@ export default function PharmacistDashboard() {
   const pharmacistId = user?.relatedId || 1;
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [refreshKey, setRefreshKey] = useState(0);
+  const favoriteRef = useRef<HTMLDivElement>(null);
+
+  const scrollToFavorites = () => {
+    favoriteRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   // ページフォーカス時に自動更新
   useEffect(() => {
@@ -61,7 +67,7 @@ export default function PharmacistDashboard() {
       >
         {/* 統計カード */}
         <div className="mb-6 md:mb-8" key={`stats-${refreshKey}`}>
-          <DashboardStats pharmacistId={pharmacistId} />
+          <DashboardStats pharmacistId={pharmacistId} onFavoriteClick={scrollToFavorites} />
         </div>
 
         {/* 通知セクション */}
@@ -69,14 +75,19 @@ export default function PharmacistDashboard() {
           <RecentNotifications />
         </div>
 
-        {/* グリッドレイアウト: 進行中の応募と契約 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        {/* グリッドレイアウト: 応募中と契約中 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
           <div key={`applications-${refreshKey}`}>
             <ActiveApplications pharmacistId={pharmacistId} />
           </div>
           <div key={`contracts-${refreshKey}`}>
             <ActiveContracts pharmacistId={pharmacistId} />
           </div>
+        </div>
+
+        {/* お気に入り求人 */}
+        <div key={`favorites-${refreshKey}`}>
+          <FavoriteJobs ref={favoriteRef} refreshKey={refreshKey} />
         </div>
       </PharmacistLayout>
     </ProtectedRoute>

@@ -175,7 +175,7 @@ export default function LaborConditionsNoticePage() {
                       雇用主
                     </td>
                     <td className="p-3">
-                      {pharmacy?.pharmacyName || pharmacy?.name || '薬局名'}
+                      {pharmacy?.pharmacyName || pharmacy?.companyName || pharmacy?.name || '薬局名'}
                       {pharmacy?.representativeLastName && pharmacy?.representativeFirstName && (
                         <span className="ml-2">
                           (代表取締役: {pharmacy.representativeLastName} {pharmacy.representativeFirstName})
@@ -315,7 +315,7 @@ export default function LaborConditionsNoticePage() {
                 <div>
                   <p className="text-gray-600 mb-1">会社名</p>
                   <p className="font-medium">
-                    {pharmacy?.pharmacyName || pharmacy?.name || '薬局名'}
+                    {pharmacy?.pharmacyName || pharmacy?.companyName || pharmacy?.name || '薬局名'}
                   </p>
                 </div>
                 <div>

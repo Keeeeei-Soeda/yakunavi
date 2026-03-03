@@ -302,7 +302,7 @@ export default function PaymentDetailPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">薬局名</label>
-              <p className="text-gray-900 font-semibold text-lg">{payment.pharmacy.pharmacyName}</p>
+              <p className="text-gray-900 font-semibold text-lg">{payment.pharmacy.pharmacyName || payment.pharmacy.companyName}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">代表者</label>
@@ -489,4 +489,6 @@ export default function PaymentDetailPage() {
     </div>
   );
 }
+
+
 

@@ -227,7 +227,7 @@ export default function PaymentDetailPage() {
               <div className="mb-6 p-4 border-2 border-gray-400">
                 <h3 className="font-semibold text-lg mb-3">請求先</h3>
                 <p className="text-xl font-bold mb-2">
-                  {payment.contract.pharmacy?.pharmacyName || payment.contract.pharmacy?.name || '薬局名'} 御中
+                  {payment.contract.pharmacy?.pharmacyName || payment.contract.pharmacy?.companyName || payment.contract.pharmacy?.name || '薬局名'} 御中
                 </p>
                 {(payment.contract.pharmacy?.address || payment.contract.pharmacy?.prefecture) && (
                   <p className="text-sm mb-1">
@@ -368,11 +368,11 @@ export default function PaymentDetailPage() {
             <div className="space-y-3 text-sm">
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">銀行名:</span>
-                <span className="text-gray-900">paypay銀行</span>
+                <span className="text-gray-900">GMO青空ネット銀行</span>
               </div>
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">支店名:</span>
-                <span className="text-gray-900">ビジネス営業部（005）</span>
+                <span className="text-gray-900">法人営業部（101）</span>
               </div>
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">口座種別:</span>
@@ -380,11 +380,11 @@ export default function PaymentDetailPage() {
               </div>
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">口座番号:</span>
-                <span className="text-gray-900 font-bold">7555812</span>
+                <span className="text-gray-900 font-bold">2523006</span>
               </div>
               <div className="flex">
                 <span className="w-32 font-medium text-gray-700">口座名義:</span>
-                <span className="text-gray-900">ｶ) ﾄﾚｽｸｰﾚ</span>
+                <span className="text-gray-900">カ）トレスクーレ</span>
               </div>
             </div>
           </div>

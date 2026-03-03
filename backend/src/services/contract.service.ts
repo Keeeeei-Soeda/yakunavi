@@ -160,7 +160,7 @@ export class ContractService {
                     pharmacy: contract.application.jobPosting.pharmacy ? {
                         id: Number(contract.application.jobPosting.pharmacy.id),
                         userId: Number(contract.application.jobPosting.pharmacy.userId),
-                        pharmacyName: contract.application.jobPosting.pharmacy.pharmacyName,
+                        pharmacyName: contract.application.jobPosting.pharmacy.pharmacyName || contract.application.jobPosting.pharmacy.companyName,
                         representativeLastName: contract.application.jobPosting.pharmacy.representativeLastName,
                         representativeFirstName: contract.application.jobPosting.pharmacy.representativeFirstName,
                         address: contract.application.jobPosting.pharmacy.address,
@@ -257,7 +257,7 @@ export class ContractService {
             const pdfStream = this.pdfService.generateInvoice({
                 invoiceNumber,
                 issueDate: new Date(),
-                pharmacyName: contract.pharmacy.pharmacyName,
+                pharmacyName: contract.pharmacy.pharmacyName || contract.pharmacy.companyName,
                 pharmacyAddress: contract.pharmacy.address || '住所未登録',
                 pharmacyPhone: contract.pharmacy.phoneNumber || '電話番号未登録',
                 contractNumber,
@@ -596,6 +596,7 @@ export class ContractService {
                 pharmacy: {
                     select: {
                         id: true,
+                        companyName: true,
                         pharmacyName: true,
                         address: true,
                         phoneNumber: true,

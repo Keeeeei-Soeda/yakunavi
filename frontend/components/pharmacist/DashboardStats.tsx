@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Briefcase, FileText, Bell } from 'lucide-react';
+import { Briefcase, FileText, Bell, Heart } from 'lucide-react';
 import { StatsCard } from '../common/StatsCard';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { pharmacistAPI } from '@/lib/api/pharmacist';
@@ -9,10 +9,12 @@ import { PharmacistDashboardStats } from '@/lib/types';
 
 interface DashboardStatsProps {
   pharmacistId: number;
+  onFavoriteClick?: () => void;
 }
 
 export const DashboardStats: React.FC<DashboardStatsProps> = ({
   pharmacistId,
+  onFavoriteClick,
 }) => {
   const [stats, setStats] = useState<PharmacistDashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,8 +41,8 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[...Array(3)].map((_, i) => (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
           <div
             key={i}
             className="bg-white rounded-lg shadow-md p-6 animate-pulse"
@@ -65,15 +67,15 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
       <StatsCard
-        title="進行中の応募"
+        title="応募中"
         value={stats.activeApplications}
         icon={Briefcase}
         iconColor="text-blue-600"
       />
       <StatsCard
-        title="アクティブ契約"
+        title="契約中"
         value={stats.activeContracts}
         icon={FileText}
         iconColor="text-green-600"
@@ -83,6 +85,13 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
         value={stats.unreadMessages}
         icon={Bell}
         iconColor="text-orange-600"
+      />
+      <StatsCard
+        title="お気に入り"
+        value={stats.favoriteJobs ?? 0}
+        icon={Heart}
+        iconColor="text-red-500"
+        onClick={onFavoriteClick}
       />
     </div>
   );

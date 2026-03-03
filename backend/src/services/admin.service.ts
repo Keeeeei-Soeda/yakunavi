@@ -405,6 +405,7 @@ export class AdminService {
                             pharmacy: {
                                 select: {
                                     id: true,
+                                    companyName: true,
                                     pharmacyName: true,
                                 },
                             },
@@ -788,6 +789,7 @@ export class AdminService {
                 id: Number(pharmacy.id),
                 userId: Number(pharmacy.userId),
                 pharmacyName: pharmacy.pharmacyName,
+                companyName: pharmacy.companyName,
                 representativeName: `${pharmacy.representativeLastName} ${pharmacy.representativeFirstName}`,
                 email: pharmacy.user.email,
                 phoneNumber: pharmacy.phoneNumber,
@@ -829,6 +831,7 @@ export class AdminService {
             id: Number(pharmacy.id),
             userId: Number(pharmacy.userId),
             pharmacyName: pharmacy.pharmacyName,
+            companyName: pharmacy.companyName,
             representativeLastName: pharmacy.representativeLastName,
             representativeFirstName: pharmacy.representativeFirstName,
             email: pharmacy.user.email,

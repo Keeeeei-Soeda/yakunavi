@@ -6,42 +6,30 @@ export class PharmacistDashboardService {
    * 薬剤師ダッシュボードの統計データを取得
    */
   async getDashboardStats(pharmacistId: bigint): Promise<PharmacistDashboardStats> {
-    // アクティブな応募数
-    const activeApplications = await prisma.application.count({
-      where: {
-        pharmacistId,
-        status: {
-          in: ['pending', 'under_review', 'interview_scheduled']
+    const [activeApplications, activeContracts, unreadMessages, favoriteJobs] = await Promise.all([
+      prisma.application.count({
+        where: {
+          pharmacistId,
+          status: { in: ['pending', 'under_review', 'interview_scheduled'] }
         }
-      }
-    });
-
-    // アクティブな契約数
-    const activeContracts = await prisma.contract.count({
-      where: {
-        pharmacistId,
-        status: {
-          in: ['active', 'in_progress']
+      }),
+      prisma.contract.count({
+        where: {
+          pharmacistId,
+          status: { in: ['active', 'in_progress'] }
         }
-      }
-    });
+      }),
+      prisma.message.count({
+        where: {
+          application: { pharmacistId },
+          senderType: 'pharmacy',
+          isRead: false
+        }
+      }),
+      prisma.favoriteJob.count({ where: { pharmacistId } }),
+    ]);
 
-    // 未読メッセージ数
-    const unreadMessages = await prisma.message.count({
-      where: {
-        application: {
-          pharmacistId
-        },
-        senderType: 'pharmacy',
-        isRead: false
-      }
-    });
-
-    return {
-      activeApplications,
-      activeContracts,
-      unreadMessages
-    };
+    return { activeApplications, activeContracts, unreadMessages, favoriteJobs };
   }
 
   /**
@@ -82,6 +70,7 @@ export class PharmacistDashboardService {
             desiredWorkDays: true,
             pharmacy: {
               select: {
+                companyName: true,
                 pharmacyName: true,
                 id: true,
               }
@@ -126,7 +115,8 @@ export class PharmacistDashboardService {
       include: {
         pharmacy: {
           select: {
-            pharmacyName: true,
+            companyName: true,
+                pharmacyName: true,
             id: true,
           }
         },

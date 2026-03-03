@@ -79,7 +79,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
         iconColor="text-green-600"
       />
       <StatsCard
-        title="アクティブ契約"
+        title="契約中"
         value={stats.activeContracts}
         icon={FileText}
         iconColor="text-purple-600"

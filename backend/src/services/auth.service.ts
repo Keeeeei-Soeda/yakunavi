@@ -7,8 +7,8 @@ interface RegisterInput {
     email: string;
     password: string;
     userType: UserType;
-    // 薬局情報
-    pharmacyName?: string;
+    // 薬局情報（法人名・代表者名で登録、薬局名はプロフィールで登録）
+    companyName?: string;
     representativeLastName?: string;
     representativeFirstName?: string;
     // 薬剤師情報
@@ -56,9 +56,10 @@ export class AuthService {
             const pharmacy = await prisma.pharmacy.create({
                 data: {
                     userId: user.id,
-                    pharmacyName: input.pharmacyName || '未設定',
+                    companyName: input.companyName || '未設定',
                     representativeLastName: input.representativeLastName || '未設定',
                     representativeFirstName: input.representativeFirstName || '未設定',
+                    pharmacyName: null, // プロフィールで登録
                 },
             });
             relatedId = Number(pharmacy.id);

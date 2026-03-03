@@ -142,6 +142,7 @@ async function addDummyAccounts() {
         const pharmacy = await prisma.pharmacy.create({
             data: {
                 userId: pharmacyUser.id,
+                companyName: `株式会社${pharmacyNames[i - 1]}`,
                 pharmacyName,
                 representativeLastName: lastName,
                 representativeFirstName: firstName,

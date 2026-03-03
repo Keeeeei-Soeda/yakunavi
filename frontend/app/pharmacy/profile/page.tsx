@@ -178,13 +178,26 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      薬局名 *
+                      法人名 *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.companyName || ''}
+                      onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="例：株式会社〇〇"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      薬局名
                     </label>
                     <input
                       type="text"
                       value={formData.pharmacyName || ''}
                       onChange={(e) => setFormData({ ...formData, pharmacyName: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="例：〇〇薬局 新宿店"
                     />
                   </div>
                   <div>
@@ -318,6 +331,36 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
+                      最寄り駅からの徒歩
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={formData.minutesFromStation ?? ''}
+                      onChange={(e) => setFormData({ ...formData, minutesFromStation: e.target.value ? parseInt(e.target.value) : undefined })}
+                      placeholder="分"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      車通勤
+                    </label>
+                    <select
+                      value={formData.carCommuteAvailable === undefined ? '' : formData.carCommuteAvailable ? 'yes' : 'no'}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        carCommuteAvailable: e.target.value === '' ? undefined : e.target.value === 'yes',
+                      })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">未選択</option>
+                      <option value="yes">可能</option>
+                      <option value="no">不可</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       設立日
                     </label>
                     <input
@@ -408,7 +451,7 @@ export default function ProfilePage() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                  {profile?.pharmacyName || '未設定'}
+                  {profile?.pharmacyName || profile?.companyName || '未設定'}
                 </h2>
                 <p className="text-gray-600">
                   {profile?.prefecture || ''}{profile?.address ? ` ${profile.address}` : ''}
@@ -467,6 +510,18 @@ export default function ProfilePage() {
                   <div className="flex">
                     <span className="text-gray-500 w-32">最寄り駅:</span>
                     <span className="text-gray-900">{profile?.nearestStation || '未設定'}</span>
+                  </div>
+                  <div className="flex">
+                    <span className="text-gray-500 w-32">徒歩:</span>
+                    <span className="text-gray-900">
+                      {profile?.minutesFromStation != null ? `徒歩${profile.minutesFromStation}分` : '未設定'}
+                    </span>
+                  </div>
+                  <div className="flex">
+                    <span className="text-gray-500 w-32">車通勤:</span>
+                    <span className="text-gray-900">
+                      {profile?.carCommuteAvailable === true ? '可能' : profile?.carCommuteAvailable === false ? '不可' : '未設定'}
+                    </span>
                   </div>
                 </div>
               </div>
