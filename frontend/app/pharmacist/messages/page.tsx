@@ -32,10 +32,17 @@ export default function MessagesPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // レスポンシブ判定
+  // レスポンシブ判定（幅が変化した時のみ更新。キーボード開閉による高さ変化では発火させない）
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 900);
-    checkMobile();
+    let prevWidth = window.innerWidth;
+    setIsMobile(prevWidth < 900);
+    const checkMobile = () => {
+      const currentWidth = window.innerWidth;
+      if (currentWidth !== prevWidth) {
+        prevWidth = currentWidth;
+        setIsMobile(currentWidth < 900);
+      }
+    };
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
@@ -516,23 +523,25 @@ export default function MessagesPage() {
         title="メッセージ管理"
         offerNotification={!isMobile ? offerNotification : undefined}
       >
-        {/* ========== スマホ: 1画面ずつ切り替え ========== */}
-        {isMobile ? (
-          <div className="h-[calc(100vh-64px)]">
-            {selectedConversation === null ? (
-              // スマホ: 会話一覧
-              <div className="h-full rounded-lg shadow overflow-hidden">
-                <ConversationList />
-              </div>
-            ) : (
-              // スマホ: チャット画面
-              <div className="h-full rounded-lg shadow overflow-hidden">
-                <ChatPanel />
-              </div>
-            )}
+        {/* ========== スマホ: 会話一覧（通常フロー） ========== */}
+        {isMobile && selectedConversation === null && (
+          <div className="rounded-lg shadow overflow-hidden bg-white" style={{ minHeight: 'calc(100dvh - 120px)' }}>
+            <ConversationList />
           </div>
-        ) : (
-          /* ========== PC: 左右2カラム ========== */
+        )}
+
+        {/* ========== スマホ: チャット画面（fixed オーバーレイ。100vh非依存でキーボード影響を受けない） ========== */}
+        {isMobile && selectedConversation !== null && (
+          <div
+            className="fixed inset-0 z-40 bg-white flex flex-col"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            <ChatPanel />
+          </div>
+        )}
+
+        {/* ========== PC: 左右2カラム ========== */}
+        {!isMobile && (
           <div className="grid grid-cols-3 gap-6 h-[calc(100vh-180px)]">
             <div className="col-span-1 rounded-lg shadow overflow-hidden">
               <ConversationList />

@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   description: '薬剤師と薬局のマッチングプラットフォーム',
 }
 
+// スマホのソフトキーボードが開いてもビューポートを変更しない（iOS Safari対応）
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  interactiveWidget: 'resizes-content',
+}
+
 export default function RootLayout({
   children,
 }: {
