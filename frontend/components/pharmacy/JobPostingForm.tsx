@@ -296,36 +296,18 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               希望勤務開始日 *
             </label>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <input
-                  type="date"
-                  required
-                  min={getDefaultWorkStartDate()}
-                  value={formData.workStartPeriodFrom}
-                  onChange={(e) =>
-                    setFormData({ ...formData, workStartPeriodFrom: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <p className="text-xs text-gray-500 mt-1">開始日</p>
-              </div>
-              <div>
-                <input
-                  type="date"
-                  min={formData.workStartPeriodFrom}
-                  value={formData.workStartPeriodTo || ''}
-                  onChange={(e) =>
-                    setFormData({ ...formData, workStartPeriodTo: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <p className="text-xs text-gray-500 mt-1">終了日（任意）</p>
-              </div>
-            </div>
+            <input
+              type="date"
+              required
+              min={getDefaultWorkStartDate()}
+              value={formData.workStartPeriodFrom}
+              onChange={(e) =>
+                setFormData({ ...formData, workStartPeriodFrom: e.target.value })
+              }
+              className="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
             <p className="text-xs text-gray-600 bg-gray-50 p-3 rounded mt-2">
               ※今日から2週間後以降の日付を選択してください<br />
-              ※終了日を空欄にすると、開始日から2週間の範囲が自動設定されます<br />
               ※薬剤師と相談の上、初回勤務日を決定します
             </p>
           </div>

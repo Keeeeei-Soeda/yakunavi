@@ -144,7 +144,7 @@ export class MessageService {
             applicationId: Number(app.id),
             pharmacy: {
                 id: Number(app.jobPosting.pharmacy.id),
-                name: app.jobPosting.pharmacy.pharmacyName,
+                name: app.jobPosting.pharmacy.pharmacyName || app.jobPosting.pharmacy.companyName || '薬局名未設定',
             },
             jobPosting: {
                 id: Number(app.jobPosting.id),
