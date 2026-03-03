@@ -96,30 +96,28 @@ export default function ContractsPage() {
         }
       >
         {/* フィルター */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-gray-700">ステータス:</span>
-            <div className="flex gap-2">
-              {[
-                { value: 'all', label: 'すべて' },
-                { value: 'pending_approval', label: '承認待ち' },
-                { value: 'pending_payment', label: '手続き中' },
-                { value: 'active', label: '契約成立' },
-                { value: 'completed', label: '完了' },
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => setFilter(option.value)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    filter === option.value
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
+        <div className="bg-white rounded-lg shadow px-4 pt-3 pb-4 mb-6">
+          <p className="text-xs font-medium text-gray-500 mb-2">ステータス</p>
+          <div className="flex gap-1.5">
+            {[
+              { value: 'all', label: 'すべて' },
+              { value: 'pending_approval', label: '承認待ち' },
+              { value: 'pending_payment', label: '手続き中' },
+              { value: 'active', label: '契約成立' },
+              { value: 'completed', label: '完了' },
+            ].map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setFilter(option.value)}
+                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors ${
+                  filter === option.value
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
         </div>
 
