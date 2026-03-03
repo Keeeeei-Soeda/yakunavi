@@ -105,9 +105,9 @@ export default function JobSearchPage() {
     <ProtectedRoute requiredUserType="pharmacist">
       <PharmacistLayout title="求人検索">
         {/* 検索フィルター */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-white rounded-lg shadow p-4 md:p-6 mb-4 md:mb-6">
           <h2 className="text-lg font-semibold mb-4">検索条件</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 都道府県
@@ -196,73 +196,74 @@ export default function JobSearchPage() {
         ) : (
           <div className="space-y-4">
             {jobPostings.map((job) => (
-              <div key={job.id} className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      {job.title}
-                    </h3>
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <MapPin size={16} />
-                        <span>{job.workLocation}</span>
-                      </div>
-                      {job.desiredWorkDays && (
-                        <div className="flex items-center gap-2">
-                          <Clock size={16} />
-                          <span>勤務日数: {job.desiredWorkDays}日</span>
-                        </div>
-                      )}
-                      {job.desiredWorkHours && (
-                        <div className="flex items-center gap-2">
-                          <Clock size={16} />
-                          <span>{job.desiredWorkHours}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <DollarSign size={16} />
-                        <span className="font-semibold text-green-600">
-                          日給: ¥{job.dailyWage.toLocaleString()}
-                        </span>
-                        {job.totalCompensation && (
-                          <span className="text-gray-500">
-                            （報酬総額: ¥{job.totalCompensation.toLocaleString()}）
-                          </span>
-                        )}
-                      </div>
-                      {job.description && (
-                        <p className="mt-3 text-gray-700 line-clamp-2">
-                          {job.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="ml-4 flex flex-col items-end gap-2">
-                    <button
-                      onClick={(e) => handleToggleFavorite(e, job.id)}
-                      disabled={togglingFavorite === job.id}
-                      className={`p-2 rounded-full border transition-colors ${
-                        favoriteIds.has(job.id)
-                          ? 'border-red-300 bg-red-50 text-red-500 hover:bg-red-100'
-                          : 'border-gray-300 bg-white text-gray-400 hover:border-red-300 hover:text-red-400'
-                      } disabled:opacity-50`}
-                      title={favoriteIds.has(job.id) ? 'お気に入りを解除' : 'お気に入りに追加'}
-                    >
-                      <Heart
-                        size={18}
-                        className={favoriteIds.has(job.id) ? 'fill-red-500' : ''}
-                      />
-                    </button>
-                    <button
-                      onClick={() => handleApply(job.id)}
-                      disabled={applying === job.id}
-                      className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 flex items-center gap-2"
-                    >
-                      <Send size={18} />
-                      {applying === job.id ? '応募中...' : '詳細を見る'}
-                    </button>
-                  </div>
+              <div key={job.id} className="bg-white rounded-lg shadow p-4 md:p-6">
+                {/* モバイル: タイトル行にハートボタンを右端に配置 */}
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <h3 className="text-base md:text-xl font-semibold text-gray-900 min-w-0 break-words">
+                    {job.title}
+                  </h3>
+                  <button
+                    onClick={(e) => handleToggleFavorite(e, job.id)}
+                    disabled={togglingFavorite === job.id}
+                    className={`flex-shrink-0 p-2 rounded-full border transition-colors ${
+                      favoriteIds.has(job.id)
+                        ? 'border-red-300 bg-red-50 text-red-500 hover:bg-red-100'
+                        : 'border-gray-300 bg-white text-gray-400 hover:border-red-300 hover:text-red-400'
+                    } disabled:opacity-50`}
+                    title={favoriteIds.has(job.id) ? 'お気に入りを解除' : 'お気に入りに追加'}
+                  >
+                    <Heart
+                      size={18}
+                      className={favoriteIds.has(job.id) ? 'fill-red-500' : ''}
+                    />
+                  </button>
                 </div>
+
+                {/* 求人詳細情報 */}
+                <div className="space-y-1.5 text-sm text-gray-600 mb-4">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={15} className="flex-shrink-0" />
+                    <span className="break-all">{job.workLocation}</span>
+                  </div>
+                  {job.desiredWorkDays && (
+                    <div className="flex items-center gap-2">
+                      <Clock size={15} className="flex-shrink-0" />
+                      <span>勤務日数: {job.desiredWorkDays}日</span>
+                    </div>
+                  )}
+                  {job.desiredWorkHours && (
+                    <div className="flex items-center gap-2">
+                      <Clock size={15} className="flex-shrink-0" />
+                      <span>{job.desiredWorkHours}</span>
+                    </div>
+                  )}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <DollarSign size={15} className="flex-shrink-0" />
+                    <span className="font-semibold text-green-600">
+                      日給: ¥{job.dailyWage.toLocaleString()}
+                    </span>
+                    {job.totalCompensation && (
+                      <span className="text-gray-500 text-xs">
+                        （報酬総額: ¥{job.totalCompensation.toLocaleString()}）
+                      </span>
+                    )}
+                  </div>
+                  {job.description && (
+                    <p className="mt-2 text-gray-700 line-clamp-2 break-words">
+                      {job.description}
+                    </p>
+                  )}
+                </div>
+
+                {/* 詳細ボタン: スマホでは全幅 */}
+                <button
+                  onClick={() => handleApply(job.id)}
+                  disabled={applying === job.id}
+                  className="w-full md:w-auto bg-green-600 text-white px-6 py-2.5 rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 flex items-center justify-center gap-2"
+                >
+                  <Send size={16} />
+                  {applying === job.id ? '応募中...' : '詳細を見る'}
+                </button>
               </div>
             ))}
           </div>

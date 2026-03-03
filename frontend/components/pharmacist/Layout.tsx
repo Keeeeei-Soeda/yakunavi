@@ -42,7 +42,7 @@ export const PharmacistLayout: React.FC<PharmacistLayoutProps> = ({
         />
       )}
       <div
-        className={`flex-1 ${
+        className={`flex-1 min-w-0 overflow-x-hidden ${
           hideSidebar
             ? 'w-full'
             : isMobile
