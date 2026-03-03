@@ -1,4 +1,5 @@
 import prisma from '../utils/prisma';
+import { NotificationService } from './notification.service';
 
 interface ReportPaymentInput {
   paymentDate: Date | string;
@@ -7,6 +8,12 @@ interface ReportPaymentInput {
 }
 
 export class PaymentService {
+  private notificationService: NotificationService;
+
+  constructor() {
+    this.notificationService = new NotificationService();
+  }
+
   /**
    * 支払い報告（薬局側）
    */
@@ -55,7 +62,18 @@ export class PaymentService {
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
       include: {
-        contract: true,
+        contract: {
+          include: {
+            pharmacy: true,
+            pharmacist: {
+              include: {
+                user: {
+                  select: { id: true, email: true },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -84,6 +102,23 @@ export class PaymentService {
         paymentConfirmedAt: new Date(),
       },
     });
+
+    // 薬剤師へ契約成立通知を送信
+    if (payment.contract?.pharmacist?.user) {
+      const pharmacyName =
+        payment.contract.pharmacy?.pharmacyName ||
+        payment.contract.pharmacy?.companyName ||
+        '薬局';
+      const pharmacist = payment.contract.pharmacist;
+      const pharmacistName = `${pharmacist.lastName} ${pharmacist.firstName}`;
+      this.notificationService.notifyContractActivated({
+        pharmacistUserId: pharmacist.user!.id,
+        pharmacistEmail: pharmacist.user!.email,
+        pharmacistName,
+        pharmacyName,
+        contractId: Number(payment.contractId),
+      }).catch((err: Error) => console.error('Contract activated notification error:', err));
+    }
 
     return {
       ...updatedPayment,

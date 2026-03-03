@@ -1,5 +1,6 @@
 import prisma from '../utils/prisma';
 import { PDFService } from './pdf.service';
+import { NotificationService } from './notification.service';
 import fs from 'fs';
 import path from 'path';
 
@@ -13,9 +14,11 @@ interface CreateContractInput {
 
 export class ContractService {
     private pdfService: PDFService;
+    private notificationService: NotificationService;
 
     constructor() {
         this.pdfService = new PDFService();
+        this.notificationService = new NotificationService();
 
         // uploadsディレクトリが存在しない場合は作成
         const uploadsDir = path.join(process.cwd(), 'uploads', 'invoices');
@@ -39,7 +42,13 @@ export class ContractService {
                         pharmacy: true,
                     },
                 },
-                pharmacist: true,
+                pharmacist: {
+                    include: {
+                        user: {
+                            select: { id: true, email: true },
+                        },
+                    },
+                },
             },
         });
 
@@ -103,6 +112,20 @@ export class ContractService {
                 offeredAt: new Date(),
             },
         });
+
+        // 薬剤師へオファー到着通知を送信
+        if (application.pharmacist.user) {
+            const pharmacyName = application.jobPosting.pharmacy.pharmacyName || '薬局';
+            const pharmacistName =
+                `${application.pharmacist.lastName} ${application.pharmacist.firstName}`;
+            this.notificationService.notifyOffer({
+                pharmacistUserId: application.pharmacist.user.id,
+                pharmacistEmail: application.pharmacist.user.email,
+                pharmacistName,
+                pharmacyName,
+                applicationId: Number(applicationId),
+            }).catch((err: Error) => console.error('Offer notification error:', err));
+        }
 
         // 請求書は薬剤師承認後（approveContract）に生成されます
 

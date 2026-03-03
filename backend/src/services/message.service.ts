@@ -1,4 +1,5 @@
 import prisma from '../utils/prisma';
+import { NotificationService } from './notification.service';
 
 interface SendMessageInput {
     applicationId: bigint;
@@ -15,6 +16,12 @@ interface ProposeDatesInput {
 }
 
 export class MessageService {
+    private notificationService: NotificationService;
+
+    constructor() {
+        this.notificationService = new NotificationService();
+    }
+
     /**
      * 会話リストを取得（薬局側）
      */
@@ -270,7 +277,18 @@ export class MessageService {
         const application = await prisma.application.findUnique({
             where: { id: applicationId },
             include: {
-                jobPosting: true,
+                jobPosting: {
+                    include: {
+                        pharmacy: true,
+                    },
+                },
+                pharmacist: {
+                    include: {
+                        user: {
+                            select: { id: true, email: true },
+                        },
+                    },
+                },
             },
         });
 
@@ -315,6 +333,23 @@ export class MessageService {
             where: { id: applicationId },
             data: { updatedAt: new Date() },
         });
+
+        // 薬剤師へ候補日提案通知を送信
+        if (application.pharmacist.user) {
+            const pharmacyName =
+                application.jobPosting.pharmacy.pharmacyName ||
+                application.jobPosting.pharmacy.companyName ||
+                '薬局';
+            const pharmacistName =
+                `${application.pharmacist.lastName} ${application.pharmacist.firstName}`;
+            this.notificationService.notifyDateProposal({
+                pharmacistUserId: application.pharmacist.user.id,
+                pharmacistEmail: application.pharmacist.user.email,
+                pharmacistName,
+                pharmacyName,
+                applicationId: Number(applicationId),
+            }).catch((err: Error) => console.error('Date proposal notification error:', err));
+        }
 
         return {
             id: Number(message.id),

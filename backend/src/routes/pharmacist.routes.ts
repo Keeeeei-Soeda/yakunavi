@@ -13,6 +13,10 @@ router.use(authenticate, requireUserType('pharmacist'));
 // ダッシュボード
 router.get('/dashboard/:pharmacistId/stats', dashboardController.getDashboardStats);
 router.get('/dashboard/notifications', dashboardController.getRecentNotifications);
+router.get('/dashboard/notifications/all', dashboardController.getAllNotifications);
+router.get('/dashboard/notifications/unread-count', dashboardController.getUnreadCount);
+router.patch('/dashboard/notifications/read-all', dashboardController.markAllNotificationsRead);
+router.patch('/dashboard/notifications/:notificationId/read', dashboardController.markNotificationRead);
 router.get('/dashboard/:pharmacistId/active-applications', dashboardController.getActiveApplications);
 router.get('/dashboard/:pharmacistId/active-contracts', dashboardController.getActiveContracts);
 router.get('/dashboard/:pharmacistId/application-history', dashboardController.getApplicationHistory);

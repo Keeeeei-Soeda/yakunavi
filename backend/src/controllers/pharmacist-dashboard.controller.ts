@@ -130,6 +130,75 @@ export class PharmacistDashboardController {
   };
 
   /**
+   * 全通知取得
+   */
+  getAllNotifications = async (req: AuthRequest, res: Response) => {
+    try {
+      if (req.user?.userType !== 'pharmacist') {
+        return res.status(403).json({ error: 'Forbidden', message: '薬剤師アカウントでのみアクセス可能です' });
+      }
+      const userId = BigInt(req.user!.id);
+      const notifications = await this.dashboardService.getAllNotifications(userId);
+      return res.status(200).json({ success: true, data: notifications });
+    } catch (error) {
+      console.error('Error fetching all notifications:', error);
+      return res.status(500).json({ error: 'Internal Server Error', message: '通知の取得に失敗しました' });
+    }
+  };
+
+  /**
+   * 通知を既読にする
+   */
+  markNotificationRead = async (req: AuthRequest, res: Response) => {
+    try {
+      if (req.user?.userType !== 'pharmacist') {
+        return res.status(403).json({ error: 'Forbidden', message: '薬剤師アカウントでのみアクセス可能です' });
+      }
+      const userId = BigInt(req.user!.id);
+      const notificationId = BigInt(req.params.notificationId);
+      await this.dashboardService.markNotificationRead(notificationId, userId);
+      return res.status(200).json({ success: true });
+    } catch (error) {
+      console.error('Error marking notification read:', error);
+      return res.status(500).json({ error: 'Internal Server Error', message: '通知の更新に失敗しました' });
+    }
+  };
+
+  /**
+   * 全通知を既読にする
+   */
+  markAllNotificationsRead = async (req: AuthRequest, res: Response) => {
+    try {
+      if (req.user?.userType !== 'pharmacist') {
+        return res.status(403).json({ error: 'Forbidden', message: '薬剤師アカウントでのみアクセス可能です' });
+      }
+      const userId = BigInt(req.user!.id);
+      await this.dashboardService.markAllNotificationsRead(userId);
+      return res.status(200).json({ success: true });
+    } catch (error) {
+      console.error('Error marking all notifications read:', error);
+      return res.status(500).json({ error: 'Internal Server Error', message: '通知の更新に失敗しました' });
+    }
+  };
+
+  /**
+   * 未読通知数取得
+   */
+  getUnreadCount = async (req: AuthRequest, res: Response) => {
+    try {
+      if (req.user?.userType !== 'pharmacist') {
+        return res.status(403).json({ error: 'Forbidden', message: '薬剤師アカウントでのみアクセス可能です' });
+      }
+      const userId = BigInt(req.user!.id);
+      const count = await this.dashboardService.getUnreadCount(userId);
+      return res.status(200).json({ success: true, data: { count } });
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+      return res.status(500).json({ error: 'Internal Server Error', message: '未読数の取得に失敗しました' });
+    }
+  };
+
+  /**
    * 応募履歴統計取得
    */
   getApplicationHistory = async (req: AuthRequest, res: Response) => {

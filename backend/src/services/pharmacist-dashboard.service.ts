@@ -37,16 +37,57 @@ export class PharmacistDashboardService {
    */
   async getRecentNotifications(userId: bigint, limit: number = 5) {
     const notifications = await prisma.notification.findMany({
-      where: {
-        userId
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      take: limit
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
     });
-
     return notifications;
+  }
+
+  /**
+   * 全通知を取得
+   */
+  async getAllNotifications(userId: bigint) {
+    const notifications = await prisma.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+    return notifications;
+  }
+
+  /**
+   * 通知を既読にする
+   */
+  async markNotificationRead(notificationId: bigint, userId: bigint) {
+    const notification = await prisma.notification.findUnique({
+      where: { id: notificationId },
+    });
+    if (!notification || notification.userId !== userId) {
+      throw new Error('通知が見つかりません');
+    }
+    await prisma.notification.update({
+      where: { id: notificationId },
+      data: { isRead: true, readAt: new Date() },
+    });
+  }
+
+  /**
+   * 全通知を既読にする
+   */
+  async markAllNotificationsRead(userId: bigint) {
+    await prisma.notification.updateMany({
+      where: { userId, isRead: false },
+      data: { isRead: true, readAt: new Date() },
+    });
+  }
+
+  /**
+   * 未読通知数を取得
+   */
+  async getUnreadCount(userId: bigint) {
+    return prisma.notification.count({
+      where: { userId, isRead: false },
+    });
   }
 
   /**
