@@ -526,17 +526,17 @@ export default function MessagesPage() {
         {/* ========== スマホ: 会話一覧（通常フロー） ========== */}
         {isMobile && selectedConversation === null && (
           <div className="rounded-lg shadow overflow-hidden bg-white" style={{ minHeight: 'calc(100dvh - 120px)' }}>
-            <ConversationList />
+            {ConversationList()}
           </div>
         )}
 
-        {/* ========== スマホ: チャット画面（fixed オーバーレイ。100vh非依存でキーボード影響を受けない） ========== */}
+        {/* ========== スマホ: チャット画面（fixed オーバーレイ。再マウント無し・キーボード維持） ========== */}
         {isMobile && selectedConversation !== null && (
           <div
             className="fixed inset-0 z-40 bg-white flex flex-col"
             style={{ WebkitOverflowScrolling: 'touch' }}
           >
-            <ChatPanel />
+            {ChatPanel()}
           </div>
         )}
 
@@ -544,10 +544,10 @@ export default function MessagesPage() {
         {!isMobile && (
           <div className="grid grid-cols-3 gap-6 h-[calc(100vh-180px)]">
             <div className="col-span-1 rounded-lg shadow overflow-hidden">
-              <ConversationList />
+              {ConversationList()}
             </div>
             <div className="col-span-2 rounded-lg shadow overflow-hidden">
-              <ChatPanel />
+              {ChatPanel()}
             </div>
           </div>
         )}
