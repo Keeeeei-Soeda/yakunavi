@@ -128,6 +128,12 @@ export class MessageService {
                         },
                     },
                 },
+                contract: {
+                    select: {
+                        id: true,
+                        status: true,
+                    },
+                },
                 messages: {
                     orderBy: {
                         createdAt: 'desc',
@@ -150,6 +156,10 @@ export class MessageService {
                 id: Number(app.jobPosting.id),
                 title: app.jobPosting.title,
             },
+            contract: app.contract ? {
+                id: Number(app.contract.id),
+                status: app.contract.status,
+            } : null,
             lastMessage: app.messages[0]
                 ? {
                     content: app.messages[0].messageContent || '',

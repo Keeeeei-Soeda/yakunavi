@@ -15,6 +15,10 @@ interface Conversation {
         id: number;
         title: string;
     };
+    contract?: {
+        id: number;
+        status: string;
+    } | null;
     lastMessage: {
         content: string;
         timestamp: string;

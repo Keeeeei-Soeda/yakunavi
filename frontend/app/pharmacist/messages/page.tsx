@@ -304,44 +304,65 @@ export default function MessagesPage() {
             <p className="text-sm">メッセージはまだありません</p>
           </div>
         ) : (
-          conversations.map((conversation) => (
-            <button
-              key={conversation.applicationId}
-              onClick={() => setSelectedConversation(conversation.applicationId)}
-              className={`w-full p-4 border-b border-gray-100 text-left hover:bg-gray-50 active:bg-gray-100 transition-colors ${
-                selectedConversation === conversation.applicationId ? 'bg-green-50' : ''
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <MessageSquare size={18} className="text-green-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <h4 className="font-semibold text-gray-900 truncate text-sm sm:text-base">
-                      {conversation.pharmacy?.name || '薬局名未設定'}
-                    </h4>
-                    {conversation.lastMessage?.timestamp && (
-                      <span className="text-xs text-gray-400 flex-shrink-0">
-                        {format(new Date(conversation.lastMessage.timestamp), 'MM/dd', { locale: ja })}
+          conversations.map((conversation) => {
+            const hasPendingOffer = conversation.contract?.status === 'pending_approval';
+            return (
+              <button
+                key={conversation.applicationId}
+                onClick={() => setSelectedConversation(conversation.applicationId)}
+                className={`w-full p-4 border-b border-gray-100 text-left hover:bg-gray-50 active:bg-gray-100 transition-colors ${
+                  selectedConversation === conversation.applicationId ? 'bg-green-50' : ''
+                } ${hasPendingOffer ? 'border-l-4 border-l-orange-400' : ''}`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${hasPendingOffer ? 'bg-orange-100' : 'bg-green-100'}`}>
+                    {hasPendingOffer ? (
+                      <FileText size={18} className="text-orange-600" />
+                    ) : (
+                      <MessageSquare size={18} className="text-green-600" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className="font-semibold text-gray-900 truncate text-sm sm:text-base">
+                        {conversation.pharmacy?.name || '薬局名未設定'}
+                      </h4>
+                      {conversation.lastMessage?.timestamp && (
+                        <span className="text-xs text-gray-400 flex-shrink-0">
+                          {format(new Date(conversation.lastMessage.timestamp), 'MM/dd', { locale: ja })}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 truncate mt-0.5">
+                      {conversation.jobPosting?.title}
+                    </p>
+                    {hasPendingOffer ? (
+                      <p className="text-xs font-semibold text-orange-600 mt-1 flex items-center gap-1">
+                        <FileText size={11} />
+                        正式オファーが届いています
+                      </p>
+                    ) : (
+                      <p className="text-sm text-gray-500 truncate mt-1">
+                        {conversation.lastMessage?.content || '新しい会話'}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                    {hasPendingOffer && (
+                      <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                        要確認
+                      </span>
+                    )}
+                    {conversation.unreadCount > 0 && (
+                      <span className="bg-green-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                        {conversation.unreadCount}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 truncate mt-0.5">
-                    {conversation.jobPosting?.title}
-                  </p>
-                  <p className="text-sm text-gray-500 truncate mt-1">
-                    {conversation.lastMessage?.content || '新しい会話'}
-                  </p>
                 </div>
-                {conversation.unreadCount > 0 && (
-                  <span className="flex-shrink-0 bg-green-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                    {conversation.unreadCount}
-                  </span>
-                )}
-              </div>
-            </button>
-          ))
+              </button>
+            );
+          })
         )}
       </div>
     </div>
