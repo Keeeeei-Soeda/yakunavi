@@ -18,6 +18,7 @@ interface Contract {
     pharmacy: {
         id: number;
         pharmacyName: string;
+        companyName?: string;
         email: string;
     };
     pharmacist: {
