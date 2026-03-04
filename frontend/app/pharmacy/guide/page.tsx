@@ -156,7 +156,7 @@ const sections: Section[] = [
               <span className="text-gray-700">薬剤師とメッセージでやり取りを始めます。まずはここからスタートします。</span>
             </div>
             <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
-              <span className="font-semibold text-red-700 w-20 flex-shrink-0">却下する</span>
+              <span className="font-semibold text-red-700 w-20 flex-shrink-0">却下</span>
               <span className="text-gray-700">応募を却下します。却下後は元に戻せません。</span>
             </div>
           </div>
@@ -169,7 +169,7 @@ const sections: Section[] = [
     step: 4,
     icon: <MessageSquare size={20} />,
     title: 'メッセージ・オファー送信',
-    description: '薬剤師とのやり取りと正式オファーの送信',
+    description: '薬剤師とのやり取り、初回出勤日候補の送付、正式オファー',
     content: (
       <div className="space-y-6">
         <div>
@@ -179,7 +179,25 @@ const sections: Section[] = [
             'やり取りしたい薬剤師を選択します',
             'テキストを入力して「送信」ボタンを押します',
           ]} />
-          <ImagePlaceholder label="スクリーンショット：メッセージ画面" />
+          <img src="/guide/pharmacy/messages.png" alt="メッセージ画面" className="w-full rounded-xl border border-gray-200 my-4" />
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-800 mb-2">初回出勤日候補の送付</h4>
+          <StepList steps={[
+            'メッセージ画面で「初回出勤日の候補を提案」ボタンを押します',
+            '候補日を入力します（掲載日から2週間後以降の日付のみ選択可）',
+            '候補日を選択後「提案する」ボタンを押します',
+            '「候補日を提案しますか？」の確認メッセージが表示されるので「OK」を押すと薬剤師に候補日が届きます',
+          ]} />
+          <p className="text-xs text-gray-500 mt-2 mb-1">① 初回出勤日の候補を提案ボタン</p>
+          <img src="/guide/pharmacy/messages-chat.png" alt="メッセージ画面（初回出勤日候補ボタン）" className="w-full rounded-xl border border-gray-200 my-4" />
+          <p className="text-xs text-gray-500 mt-2 mb-1">② 候補日入力画面</p>
+          <img src="/guide/pharmacy/date-proposal.png" alt="初回出勤日候補入力画面" className="w-full rounded-xl border border-gray-200 my-4" />
+          <p className="text-xs text-gray-500 mt-2 mb-1">③ 提案するボタン</p>
+          <img src="/guide/pharmacy/date-proposal-send.png" alt="提案するボタン" className="w-full rounded-xl border border-gray-200 my-4" />
+          <p className="text-xs text-gray-500 mt-2 mb-1">④ 確認メッセージ（OKで薬剤師に届く）</p>
+          <img src="/guide/pharmacy/date-proposal-confirm.png" alt="候補日提案の確認" className="w-full rounded-xl border border-gray-200 my-4" />
+          <Caution>候補日は掲載日から2週間後以降の日付のみ設定できます。提案は1回のみ可能です。</Caution>
         </div>
         <div>
           <h4 className="font-semibold text-gray-800 mb-2">正式オファーの送信</h4>
@@ -190,16 +208,6 @@ const sections: Section[] = [
           ]} />
           <ImagePlaceholder label="スクリーンショット：正式オファー送信画面" />
           <Tip>正式オファーが承諾されると、契約管理に契約が作成されます。</Tip>
-        </div>
-        <div>
-          <h4 className="font-semibold text-gray-800 mb-2">初回出勤日候補の送付</h4>
-          <StepList steps={[
-            'メッセージ画面で「初回出勤日候補を送る」ボタンを押します',
-            '候補日を選択します（掲載日から2週間後以降の日付のみ選択可）',
-            '「送信」ボタンで薬剤師に候補日が届きます',
-          ]} />
-          <ImagePlaceholder label="スクリーンショット：初回出勤日候補送付画面" />
-          <Caution>候補日は掲載日から2週間後以降の日付のみ設定できます。それ以前の日付は選択できません。</Caution>
         </div>
       </div>
     ),
