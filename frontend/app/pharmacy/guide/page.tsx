@@ -306,26 +306,25 @@ const sections: Section[] = [
             '報告するとステータスが「支払い報告済み」に変わります',
             '運営が入金を確認（1〜2営業日）すると「支払い確認済み」となり、契約が成立します',
           ]} />
-          <p className="text-xs text-gray-500 mt-3 mb-1">① 請求書管理一覧（支払い待ち・支払い確認済みのステータスが表示）</p>
+          <p className="text-xs text-gray-500 mt-3 mb-1">① 請求書管理一覧（支払い待ちが1件ある状態）</p>
           <img src="/guide/pharmacy/invoice-list.png" alt="請求書管理一覧" className="w-full rounded-xl border border-gray-200 my-2" />
-          <p className="text-xs text-gray-500 mt-3 mb-1">② 請求書詳細（支払い待ち）振込先と請求内容を確認</p>
+          <p className="text-xs text-gray-500 mt-3 mb-1">② 請求書詳細（支払い待ち）— 請求内容の確認</p>
           <img src="/guide/pharmacy/invoice-detail-pending.png" alt="請求書詳細（支払い待ち）" className="w-full rounded-xl border border-gray-200 my-2" />
-          <Tip>請求書詳細画面の右上にある「印刷 / PDF保存」ボタンから、印刷またはPDFとして保存できます。ブラウザの印刷ダイアログで「PDFに保存」を選択すれば、帳簿保存用のファイルとしてダウンロードできます。</Tip>
-          <p className="text-xs text-gray-500 mt-3 mb-1">③ 支払い報告フォーム（振込後に支払い日・振込名義を入力して報告）</p>
-          <img src="/guide/pharmacy/invoice-payment-report.png" alt="支払い報告フォーム" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">③ 同ページ下部：振込先口座の確認と支払い報告フォーム（振込後に支払い日・振込名義を入力して報告）</p>
+          <img src="/guide/pharmacy/invoice-payment-report.png" alt="振込先口座と支払い報告フォーム" className="w-full rounded-xl border border-gray-200 my-2" />
           <p className="text-xs text-gray-500 mt-3 mb-1">④ 支払い報告の確認ダイアログ（OKで報告完了）</p>
           <img src="/guide/pharmacy/invoice-payment-report-confirm.png" alt="支払い報告確認" className="w-full rounded-xl border border-gray-200 my-2" />
           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm">
             <p className="font-semibold text-blue-800 mb-2">ステータスの変化</p>
             <ul className="space-y-1 text-blue-700">
-              <li>• <strong>支払い報告</strong>を送信すると → 「支払い報告済み」に変わります</li>
+              <li>• <strong>支払い報告</strong>を送信すると → 「支払い報告済み」に変わります（支払い待ちの件数が0になります）</li>
               <li>• <strong>運営による入金確認</strong>が完了すると → 「支払い確認済み」となり、契約成立・薬剤師連絡先が開示されます</li>
             </ul>
           </div>
-          <p className="text-xs text-gray-500 mt-3 mb-1">⑤ 支払い報告済みの一覧・詳細（運営確認中の表示）</p>
-          <img src="/guide/pharmacy/invoice-list-reported.png" alt="請求書一覧（支払い報告済み）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">⑤ 支払い報告後の一覧と詳細（支払い待ちが0件になり、運営が確認中の状態）</p>
+          <img src="/guide/pharmacy/invoice-list-reported.png" alt="請求書一覧（支払い報告後）" className="w-full rounded-xl border border-gray-200 my-2" />
           <img src="/guide/pharmacy/invoice-detail-reported.png" alt="請求書詳細（支払い報告済み・運営確認中）" className="w-full rounded-xl border border-gray-200 my-2" />
-          <p className="text-xs text-gray-500 mt-3 mb-1">⑥ 支払い確認済みの一覧（運営確認完了後）</p>
+          <p className="text-xs text-gray-500 mt-3 mb-1">⑥ 運営確認完了後の一覧（すべて「支払い確認済み」になった状態）</p>
           <img src="/guide/pharmacy/invoice-list-confirmed.png" alt="請求書一覧（支払い確認済み）" className="w-full rounded-xl border border-gray-200 my-2" />
           <div className="p-4 bg-gray-50 rounded-xl text-sm mt-4">
             <p className="font-semibold text-gray-800 mb-2">振込先口座</p>
@@ -337,6 +336,25 @@ const sections: Section[] = [
                 <tr><td className="py-1 text-gray-500">口座名義</td><td>カ）トレスクーレ</td></tr>
               </tbody>
             </table>
+          </div>
+          <div className="mt-4 p-4 bg-gray-50 rounded-xl text-sm">
+            <p className="font-semibold text-gray-800 mb-3">請求書を印刷・PDF保存するには？</p>
+            <StepList steps={[
+              '請求書詳細画面を開きます',
+              '右上の「印刷 / PDF保存」ボタンを押します',
+              'ブラウザの印刷ダイアログが表示されます',
+            ]} />
+            <div className="mt-3 space-y-2 text-gray-700">
+              <div className="flex gap-3 p-2 bg-white rounded-lg border border-gray-200">
+                <span className="font-semibold text-gray-800 w-20 flex-shrink-0">印刷する</span>
+                <span>プリンターを選択して「プリント」を押します</span>
+              </div>
+              <div className="flex gap-3 p-2 bg-white rounded-lg border border-gray-200">
+                <span className="font-semibold text-gray-800 w-20 flex-shrink-0">PDF保存</span>
+                <span>ダイアログ左下の「PDF」→「PDFに保存」を選択し、保存先を指定してダウンロードします</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-3">※ 請求書詳細画面の右上「印刷 / PDF保存」ボタンが起点です（上記②の画面右上）</p>
           </div>
           <Caution>振込手数料は貴社負担です。支払い報告後、運営の確認（1〜2営業日）が完了すると契約が有効になり、薬剤師の連絡先が開示されます。</Caution>
         </div>
