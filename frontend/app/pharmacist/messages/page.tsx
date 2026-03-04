@@ -254,6 +254,23 @@ export default function MessagesPage() {
           </p>
         </div>
       );
+    } else if (message.messageType === 'contract_approved') {
+      return (
+        <div className="w-full">
+          <div className="bg-blue-50 border border-blue-300 rounded-lg p-3 sm:p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl sm:text-2xl">🎉</span>
+              <h4 className="font-semibold text-blue-900 text-sm sm:text-base">契約が成立しました</h4>
+            </div>
+            <p className="text-xs sm:text-sm text-blue-800">
+              オファーを承諾し、契約が成立しました。初回出勤日に向けてご準備ください。
+            </p>
+          </div>
+          <p className="text-xs text-gray-400 mt-1">
+            {format(new Date(message.createdAt), 'MM/dd HH:mm', { locale: ja })}
+          </p>
+        </div>
+      );
     } else {
       return (
         <div className={`max-w-[70%] sm:max-w-md ${isPharmacist ? 'ml-auto' : ''}`}>
@@ -466,7 +483,7 @@ export default function MessagesPage() {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.senderType === 'pharmacist' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${message.messageType === 'contract_approved' ? 'justify-center' : message.senderType === 'pharmacist' ? 'justify-end' : 'justify-start'}`}
               >
                 {renderMessage(message)}
               </div>

@@ -279,6 +279,23 @@ export default function MessagesPage() {
                     </p>
                 </div>
             );
+        } else if (message.messageType === 'contract_approved') {
+            return (
+                <div className="w-full">
+                    <div className="bg-blue-50 border border-blue-300 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">🎉</span>
+                            <h4 className="font-semibold text-blue-900">契約が成立しました</h4>
+                        </div>
+                        <p className="text-sm text-blue-800">
+                            薬剤師がオファーを承諾し、契約が成立しました。手数料のお支払いをお願いします。
+                        </p>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                        {format(new Date(message.createdAt), 'MM/dd HH:mm', { locale: ja })}
+                    </p>
+                </div>
+            );
         } else {
             // 通常のテキストメッセージ
             return message.messageContent;
@@ -406,10 +423,10 @@ export default function MessagesPage() {
                                     {messages.map((message) => (
                                         <div
                                             key={message.id}
-                                            className={`flex ${message.senderType === 'pharmacy' ? 'justify-end' : 'justify-start'
+                                            className={`flex ${message.messageType === 'contract_approved' ? 'justify-center' : message.senderType === 'pharmacy' ? 'justify-end' : 'justify-start'
                                                 }`}
                                         >
-                                            {message.messageType === 'date_proposal' || message.messageType === 'date_selection' ? (
+                                            {message.messageType === 'date_proposal' || message.messageType === 'date_selection' || message.messageType === 'contract_approved' ? (
                                                 renderMessage(message)
                                             ) : (
                                                 <div

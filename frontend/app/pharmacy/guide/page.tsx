@@ -201,13 +201,24 @@ const sections: Section[] = [
         </div>
         <div>
           <h4 className="font-semibold text-gray-800 mb-2">正式オファーの送信</h4>
+          <p className="text-sm text-gray-600 mb-3">
+            初回勤務日が決まった後、薬局側から正式オファーを行います。メッセージでのやり取りで条件が合えば、この手順でオファーを送信してください。
+          </p>
           <StepList steps={[
-            'メッセージ画面で「正式オファーを送る」ボタンを押します',
-            '勤務日数・日給を確認・編集します',
-            '「オファーを送信」ボタンで薬剤師に通知が届きます',
+            'メッセージ画面下部に「正式オファーを送る」ボタンが表示されます',
+            '契約条件（勤務日数・日給）を確認します。変更がある場合は「編集する」ボタンから修正できます',
+            '「正式オファーを送信」ボタンを押すと確認モーダルが表示されます',
+            '内容を確認して「オファーを送信」を押すと薬剤師に通知が届きます',
           ]} />
-          <ImagePlaceholder label="スクリーンショット：正式オファー送信画面" />
-          <Tip>正式オファーが承諾されると、契約管理に契約が作成されます。</Tip>
+          <p className="text-xs text-gray-500 mt-3 mb-1">① 「正式オファーを送る」ボタンが表示された画面</p>
+          <img src="/guide/pharmacy/offer-ready.png" alt="正式オファーボタン表示画面" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">② 契約条件の編集画面（日数・日給を変更できます）</p>
+          <img src="/guide/pharmacy/offer-edit.png" alt="契約条件編集画面" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">③ 送信内容の確認モーダル</p>
+          <img src="/guide/pharmacy/offer-modal.png" alt="オファー送信確認モーダル" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">④ 最終確認ダイアログ（OKで薬剤師に送信）</p>
+          <img src="/guide/pharmacy/offer-confirm.png" alt="オファー送信最終確認" className="w-full rounded-xl border border-gray-200 my-2" />
+          <Tip>正式オファーが承諾されると、契約管理に契約が作成されます。その後、手数料の支払い手続きに進みます。</Tip>
         </div>
       </div>
     ),
@@ -224,26 +235,45 @@ const sections: Section[] = [
           <h4 className="font-semibold text-gray-800 mb-2">契約一覧の確認</h4>
           <StepList steps={[
             'サイドバーの「契約管理」をクリックします',
-            '契約中・完了済みの薬剤師一覧が表示されます',
-            '「詳細」ボタンから各契約の詳細を確認できます',
+            '契約中の一覧が表示されます',
+            '「詳細を見る」ボタンから各契約の詳細を確認できます',
           ]} />
-          <ImagePlaceholder label="スクリーンショット：契約管理一覧画面" />
+          <img src="/guide/pharmacy/contract-list.png" alt="契約管理一覧画面" className="w-full rounded-xl border border-gray-200 my-4" />
         </div>
         <div>
           <h4 className="font-semibold text-gray-800 mb-2">契約のステータス</h4>
           <div className="space-y-2 text-sm">
-            {[
-              { status: '手続き中', color: 'bg-yellow-100 text-yellow-800', desc: '正式オファーを送り、薬剤師の承諾待ちの状態' },
-              { status: '契約中', color: 'bg-green-100 text-green-800', desc: '手数料の支払いが完了し、契約が有効な状態' },
-              { status: '完了', color: 'bg-gray-100 text-gray-800', desc: '勤務が完了した状態' },
-            ].map((item) => (
-              <div key={item.status} className="flex gap-3 items-start p-3 bg-gray-50 rounded-lg">
-                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 ${item.color}`}>{item.status}</span>
-                <span className="text-gray-700">{item.desc}</span>
+            <div className="flex gap-3 items-start p-3 bg-gray-50 rounded-lg">
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 bg-yellow-100 text-yellow-800">手続き中</span>
+              <span className="text-gray-700">正式オファーを送り、薬剤師の承諾待ちの状態</span>
+            </div>
+            <div className="flex gap-3 items-start p-3 bg-gray-50 rounded-lg">
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 bg-orange-100 text-orange-800">手数料支払い待ち</span>
+              <div className="text-gray-700 space-y-1">
+                <p>薬剤師と契約が成立し、薬局からの手数料支払い待ちの状態です。</p>
+                <p>期限内に手数料をお振り込みください。</p>
+                <p className="text-gray-500">（振込先口座は請求書に記載されています）</p>
               </div>
-            ))}
+            </div>
+            <div className="flex gap-3 items-start p-3 bg-gray-50 rounded-lg">
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 bg-green-100 text-green-800">契約中</span>
+              <span className="text-gray-700">手数料の支払いが完了し、契約が有効な状態</span>
+            </div>
+            <div className="flex gap-3 items-start p-3 bg-gray-50 rounded-lg">
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 bg-gray-100 text-gray-800">完了</span>
+              <span className="text-gray-700">勤務が完了した状態</span>
+            </div>
           </div>
-          <ImagePlaceholder label="スクリーンショット：契約詳細画面" />
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-800 mb-2">契約詳細の見方</h4>
+          <p className="text-sm text-gray-600 mb-3">「詳細を見る」を押すと、契約の状態によって表示内容が変わります。</p>
+          <p className="text-xs text-gray-500 mt-2 mb-1">手数料支払い待ちの詳細画面（支払い期限と振込先が表示されます）</p>
+          <img src="/guide/pharmacy/contract-detail-pending.png" alt="契約詳細（手数料支払い待ち）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <Caution>支払い期限を過ぎると契約が自動キャンセルされます。期限内に必ずお振り込みください。</Caution>
+          <p className="text-xs text-gray-500 mt-3 mb-1">契約成立後の詳細画面（薬剤師の連絡先が表示されます）</p>
+          <img src="/guide/pharmacy/contract-detail-active.png" alt="契約詳細（契約成立）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <Tip>契約成立後、薬剤師の氏名・電話番号・メールアドレスが開示されます。直接連絡を取り、勤務スケジュールを調整してください。</Tip>
         </div>
       </div>
     ),
@@ -266,17 +296,38 @@ const sections: Section[] = [
           </div>
         </div>
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">支払い方法</h4>
+          <h4 className="font-semibold text-gray-800 mb-2">支払いの流れ</h4>
+          <p className="text-sm text-gray-600 mb-3">手数料のお支払い後、<strong>支払い報告</strong>をするとステータスが変わります。続いて<strong>運営による入金確認</strong>が完了すると、契約成立となり薬剤師の連絡先が開示されます。</p>
           <StepList steps={[
             'サイドバーの「請求書管理」をクリックします',
-            '対象の請求書の「詳細」を開きます',
-            '「請求書プレビュー」から請求内容を確認します',
-            '指定の銀行口座へ振込を行います',
-            '運営側で入金確認後、契約が「契約中」に切り替わります',
+            '支払い待ちの請求書の「詳細を見る」を開きます',
+            '請求内容と振込先を確認し、指定口座へ振込を行います',
+            '振込後に「支払いを報告する」ボタンから報告します（支払い日・振込名義を入力）',
+            '報告するとステータスが「支払い報告済み」に変わります',
+            '運営が入金を確認（1〜2営業日）すると「支払い確認済み」となり、契約が成立します',
           ]} />
-          <ImagePlaceholder label="スクリーンショット：請求書管理画面" />
-          <ImagePlaceholder label="スクリーンショット：請求書プレビュー画面" />
-          <div className="p-4 bg-gray-50 rounded-xl text-sm">
+          <p className="text-xs text-gray-500 mt-3 mb-1">① 請求書管理一覧（支払い待ち・支払い確認済みのステータスが表示）</p>
+          <img src="/guide/pharmacy/invoice-list.png" alt="請求書管理一覧" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">② 請求書詳細（支払い待ち）振込先と請求内容を確認</p>
+          <img src="/guide/pharmacy/invoice-detail-pending.png" alt="請求書詳細（支払い待ち）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <Tip>請求書詳細画面の右上にある「印刷 / PDF保存」ボタンから、印刷またはPDFとして保存できます。ブラウザの印刷ダイアログで「PDFに保存」を選択すれば、帳簿保存用のファイルとしてダウンロードできます。</Tip>
+          <p className="text-xs text-gray-500 mt-3 mb-1">③ 支払い報告フォーム（振込後に支払い日・振込名義を入力して報告）</p>
+          <img src="/guide/pharmacy/invoice-payment-report.png" alt="支払い報告フォーム" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">④ 支払い報告の確認ダイアログ（OKで報告完了）</p>
+          <img src="/guide/pharmacy/invoice-payment-report-confirm.png" alt="支払い報告確認" className="w-full rounded-xl border border-gray-200 my-2" />
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm">
+            <p className="font-semibold text-blue-800 mb-2">ステータスの変化</p>
+            <ul className="space-y-1 text-blue-700">
+              <li>• <strong>支払い報告</strong>を送信すると → 「支払い報告済み」に変わります</li>
+              <li>• <strong>運営による入金確認</strong>が完了すると → 「支払い確認済み」となり、契約成立・薬剤師連絡先が開示されます</li>
+            </ul>
+          </div>
+          <p className="text-xs text-gray-500 mt-3 mb-1">⑤ 支払い報告済みの一覧・詳細（運営確認中の表示）</p>
+          <img src="/guide/pharmacy/invoice-list-reported.png" alt="請求書一覧（支払い報告済み）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <img src="/guide/pharmacy/invoice-detail-reported.png" alt="請求書詳細（支払い報告済み・運営確認中）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">⑥ 支払い確認済みの一覧（運営確認完了後）</p>
+          <img src="/guide/pharmacy/invoice-list-confirmed.png" alt="請求書一覧（支払い確認済み）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <div className="p-4 bg-gray-50 rounded-xl text-sm mt-4">
             <p className="font-semibold text-gray-800 mb-2">振込先口座</p>
             <table className="w-full text-gray-700 text-sm">
               <tbody>
@@ -287,7 +338,7 @@ const sections: Section[] = [
               </tbody>
             </table>
           </div>
-          <Caution>振込後、運営からの確認連絡をお待ちください。確認完了後に契約が有効になります。</Caution>
+          <Caution>振込手数料は貴社負担です。支払い報告後、運営の確認（1〜2営業日）が完了すると契約が有効になり、薬剤師の連絡先が開示されます。</Caution>
         </div>
       </div>
     ),

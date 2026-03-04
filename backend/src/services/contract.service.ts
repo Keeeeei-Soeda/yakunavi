@@ -261,6 +261,30 @@ export class ContractService {
             },
         });
 
+        // 契約成立メッセージをメッセージスレッドに追加
+        await prisma.message.create({
+            data: {
+                applicationId: contract.applicationId,
+                senderType: 'system',
+                senderId: BigInt(0),
+                messageType: 'contract_approved',
+                messageContent: '薬剤師がオファーを承諾し契約が成立しました',
+                structuredData: {
+                    type: 'contract_approved',
+                    contractId: Number(contractId),
+                    pharmacistName: `${contract.pharmacist.lastName} ${contract.pharmacist.firstName}`,
+                    pharmacyName: contract.pharmacy.pharmacyName || '薬局',
+                },
+                isRead: false,
+            },
+        });
+
+        // 応募の更新日時を更新
+        await prisma.application.update({
+            where: { id: contract.applicationId },
+            data: { updatedAt: new Date() },
+        });
+
         // 手数料税込額（報酬×40%×1.1）で支払いレコードを作成
         const platformFeeTaxInclusive = Math.floor(contract.platformFee * 1.1);
         const payment = await prisma.payment.create({
