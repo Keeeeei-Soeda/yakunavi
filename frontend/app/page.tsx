@@ -70,7 +70,56 @@ export default function Home() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          {/* スマホ: 2段レイアウト */}
+          <div className="flex flex-col sm:hidden py-3">
+            <div className="flex justify-between items-center">
+              <Link href="/" className="flex items-center">
+                <div className="h-10 w-auto flex items-center">
+                  <Image
+                    src="/logo_yakunavi.png"
+                    alt="薬ナビ"
+                    width={100}
+                    height={40}
+                    className="h-10 w-auto"
+                  />
+                </div>
+              </Link>
+              <div className="flex items-center gap-2">
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <Link
+                    href="/auth/register/pharmacist"
+                    className="px-3 py-1.5 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-full text-xs font-medium shadow-md hover:shadow-lg transition-all inline-block"
+                  >
+                    💊 薬剤師登録
+                  </Link>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <Link
+                    href="/auth/register/pharmacy"
+                    className="px-3 py-1.5 bg-white text-teal-600 border-2 border-teal-500 rounded-full text-xs font-medium hover:bg-teal-50 transition-all inline-block"
+                  >
+                    🏥 薬局登録
+                  </Link>
+                </motion.div>
+              </div>
+            </div>
+            <div className="flex justify-end items-center gap-4 mt-2 pt-2 border-t border-gray-100">
+              <Link
+                href="/contact"
+                className="text-gray-600 hover:text-teal-600 transition-colors text-xs"
+              >
+                お問い合わせ
+              </Link>
+              <Link
+                href="/auth/login"
+                className="text-gray-600 hover:text-teal-600 transition-colors text-xs"
+              >
+                ログイン
+              </Link>
+            </div>
+          </div>
+          {/* PC: 1段レイアウト */}
+          <div className="hidden sm:flex justify-between items-center h-20">
             <Link href="/" className="flex items-center">
               <div className="h-12 w-auto flex items-center">
                 <Image

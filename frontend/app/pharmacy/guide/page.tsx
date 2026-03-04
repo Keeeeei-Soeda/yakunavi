@@ -16,6 +16,8 @@ import {
   AlertCircle,
   Info,
 } from 'lucide-react';
+import { ProtectedRoute } from '@/components/common/ProtectedRoute';
+import { PharmacyLayout } from '@/components/pharmacy/Layout';
 
 interface Section {
   id: string;
@@ -333,7 +335,9 @@ export default function PharmacyGuidePage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <ProtectedRoute requiredUserType="pharmacy">
+      <PharmacyLayout title="使い方ガイド">
+        <div className="max-w-3xl mx-auto px-4 py-8">
       {/* ヘッダー */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -408,6 +412,8 @@ export default function PharmacyGuidePage() {
       <div className="mt-10 text-center text-xs text-gray-400">
         <p>ご不明な点は <a href="mailto:info@yaku-navi.com" className="text-blue-500 hover:underline">info@yaku-navi.com</a> までお問い合わせください</p>
       </div>
-    </div>
+        </div>
+      </PharmacyLayout>
+    </ProtectedRoute>
   );
 }
