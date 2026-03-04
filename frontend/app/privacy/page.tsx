@@ -126,6 +126,7 @@ export default function PrivacyPage() {
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
                 <li><Link href="/terms" className="hover:text-teal-400 transition-colors">利用規約</Link></li>
                 <li><Link href="/privacy" className="hover:text-teal-400 transition-colors">プライバシーポリシー</Link></li>
+                <li><Link href="/fees" className="hover:text-teal-400 transition-colors">有料職業紹介事業における手数料表および返金規定</Link></li>
               </ul>
             </div>
           </div>

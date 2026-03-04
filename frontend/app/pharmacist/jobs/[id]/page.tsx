@@ -166,12 +166,11 @@ export default function JobDetailPage() {
       return;
     }
 
-    // 資格証明書の確認
+    // 資格証明書の確認（未承認の場合は応募を進めない）
     const verifiedCerts = certificates.filter(c => c.verificationStatus === 'verified');
     if (verifiedCerts.length === 0) {
-      if (!confirm('資格証明書が未確認です。プロフィールページで証明書をアップロードしてください。\n\nそれでも応募しますか？')) {
-        return;
-      }
+      alert('応募するには資格証明書のアップロードと管理者による承認が必要です。\nプロフィールページで証明書をアップロードしてください。');
+      return;
     }
 
     if (!confirm('この求人に応募しますか？')) {
@@ -421,31 +420,29 @@ export default function JobDetailPage() {
           {/* 薬局情報 */}
           {job.pharmacyId && (
             <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-gray-900">🏥 薬局情報</h3>
-                <button
-                  onClick={handleViewPharmacyDetail}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                >
-                  <Building2 size={16} />
-                  薬局の詳細を見る
-                  <ChevronRight size={16} />
-                </button>
-              </div>
+              <h3 className="text-base font-semibold text-gray-900 mb-3">🏥 薬局情報</h3>
               {job.pharmacy && (
-                <div className="space-y-2">
+                <div className="space-y-1.5 mb-4">
                   <div>
-                    <p className="text-sm text-gray-600">薬局名</p>
-                    <p className="font-medium">{job.pharmacy.pharmacyName || job.pharmacy.companyName || '薬局情報なし'}</p>
+                    <p className="text-xs text-gray-600">薬局名</p>
+                    <p className="text-sm font-medium">{job.pharmacy.pharmacyName || job.pharmacy.companyName || '薬局情報なし'}</p>
                   </div>
                   {job.pharmacy.prefecture && (
                     <div>
-                      <p className="text-sm text-gray-600">都道府県</p>
-                      <p className="font-medium">{job.pharmacy.prefecture}</p>
+                      <p className="text-xs text-gray-600">都道府県</p>
+                      <p className="text-sm font-medium">{job.pharmacy.prefecture}</p>
                     </div>
                   )}
                 </div>
               )}
+              <button
+                onClick={handleViewPharmacyDetail}
+                className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm"
+              >
+                <Building2 size={14} />
+                薬局の詳細を見る
+                <ChevronRight size={14} />
+              </button>
             </div>
           )}
 

@@ -783,6 +783,7 @@ export default function Home() {
                 <li><Link href="/contact" className="hover:text-teal-400 transition-colors">お問い合わせ</Link></li>
                 <li><Link href="/terms" className="hover:text-teal-400 transition-colors">利用規約</Link></li>
                 <li><Link href="/privacy" className="hover:text-teal-400 transition-colors">プライバシーポリシー</Link></li>
+                <li><Link href="/fees" className="hover:text-teal-400 transition-colors">有料職業紹介事業における手数料表および返金規定</Link></li>
               </ul>
             </div>
           </div>

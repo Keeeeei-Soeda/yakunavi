@@ -249,33 +249,23 @@ export default function ContractDetailPage() {
           {/* 薬局の連絡先（手数料支払い後） */}
           {isContactDisclosed && contract.pharmacy && (
             <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  🏥 薬局の連絡先
-                </h2>
-                <button
-                  onClick={handleViewPharmacyDetail}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                >
-                  <Building2 size={16} />
-                  薬局の詳細を見る
-                  <ChevronRight size={16} />
-                </button>
-              </div>
+              <h2 className="text-base font-semibold text-gray-900 mb-3">
+                🏥 薬局の連絡先
+              </h2>
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
                 <p className="text-sm text-green-800">
                   ✅ プラットフォーム手数料の支払いが完了したため、薬局の連絡先が開示されました
                 </p>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-1.5 mb-4">
                 <div>
-                  <p className="text-sm text-gray-600">薬局名</p>
-                  <p className="font-medium text-lg">{contract.pharmacy.name || contract.pharmacy.pharmacyName || contract.pharmacy.companyName}</p>
+                  <p className="text-xs text-gray-600">薬局名</p>
+                  <p className="text-sm font-medium">{contract.pharmacy.name || contract.pharmacy.pharmacyName || contract.pharmacy.companyName}</p>
                 </div>
                 {contract.pharmacy.phoneNumber && (
                   <div>
-                    <p className="text-sm text-gray-600">電話番号</p>
-                    <p className="font-medium text-lg">
+                    <p className="text-xs text-gray-600">電話番号</p>
+                    <p className="text-sm font-medium">
                       <a href={`tel:${contract.pharmacy.phoneNumber}`} className="text-blue-600 hover:underline">
                         {contract.pharmacy.phoneNumber}
                       </a>
@@ -284,8 +274,8 @@ export default function ContractDetailPage() {
                 )}
                 {contract.pharmacy.phone && (
                   <div>
-                    <p className="text-sm text-gray-600">電話番号</p>
-                    <p className="font-medium text-lg">
+                    <p className="text-xs text-gray-600">電話番号</p>
+                    <p className="text-sm font-medium">
                       <a href={`tel:${contract.pharmacy.phone}`} className="text-blue-600 hover:underline">
                         {contract.pharmacy.phone}
                       </a>
@@ -294,8 +284,8 @@ export default function ContractDetailPage() {
                 )}
                 {contract.pharmacy.email && (
                   <div>
-                    <p className="text-sm text-gray-600">メールアドレス</p>
-                    <p className="font-medium">
+                    <p className="text-xs text-gray-600">メールアドレス</p>
+                    <p className="text-sm font-medium">
                       <a href={`mailto:${contract.pharmacy.email}`} className="text-blue-600 hover:underline">
                         {contract.pharmacy.email}
                       </a>
@@ -303,6 +293,14 @@ export default function ContractDetailPage() {
                   </div>
                 )}
               </div>
+              <button
+                onClick={handleViewPharmacyDetail}
+                className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm"
+              >
+                <Building2 size={14} />
+                薬局の詳細を見る
+                <ChevronRight size={14} />
+              </button>
             </div>
           )}
 
