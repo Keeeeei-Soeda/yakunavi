@@ -197,5 +197,14 @@ body {
     font-weight: bold;
     width: 30%;
   }
+
+  /* 記入欄の印刷スタイル */
+  .labor-conditions-content input,
+  .labor-conditions-content textarea {
+    border: none !important;
+    border-bottom: 1px solid #333 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
 }
 
