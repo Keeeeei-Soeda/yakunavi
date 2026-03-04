@@ -323,7 +323,7 @@ const sections: Section[] = [
           <p className="text-sm text-gray-600 mb-3">支払い待ち → 支払い報告済み → 支払い確認済みの順に変わります。</p>
           <p className="text-xs text-gray-500 mt-2 mb-1">④ 支払い報告済み（報告直後。INV-000013が水色の「支払い報告済み」、運営確認中）</p>
           <img src="/guide/pharmacy/invoice-list-reported.png" alt="請求書一覧（支払い報告済み）" className="w-full rounded-xl border border-gray-200 my-2" />
-          <p className="text-xs text-gray-500 mt-3 mb-1">⑤ 支払い確認済み（運営確認完了後。すべて緑の「支払い確認済み」になった状態）</p>
+          <p className="text-xs text-gray-500 mt-3 mb-1">⑤ 支払い確認済み（運営確認完了後。「支払い確認済み」になった状態）</p>
           <img src="/guide/pharmacy/invoice-list-confirmed.png" alt="請求書一覧（支払い確認済み）" className="w-full rounded-xl border border-gray-200 my-2" />
           <div className="p-4 bg-gray-50 rounded-xl text-sm mt-4">
             <p className="font-semibold text-gray-800 mb-2">振込先口座</p>
