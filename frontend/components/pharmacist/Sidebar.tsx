@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   X,
+  BookOpen,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import { pharmacistProfileAPI } from '@/lib/api/pharmacist-profile';
@@ -96,6 +97,11 @@ export const PharmacistSidebar: React.FC<PharmacistSidebarProps> = ({
       icon: User,
       label: 'プロフィール',
       href: '/pharmacist/profile',
+    },
+    {
+      icon: BookOpen,
+      label: '使い方ガイド',
+      href: '/pharmacist/guide',
     },
   ];
 

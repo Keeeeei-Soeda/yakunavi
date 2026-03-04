@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
   X,
+  BookOpen,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import { pharmacyAPI, PharmacyProfile } from '@/lib/api/pharmacy';
@@ -28,6 +29,7 @@ const menuItems = [
     { icon: CreditCard,  label: '請求書管理',            href: '/pharmacy/payments' },
     { icon: User,        label: 'プロフィール管理',      href: '/pharmacy/profile' },
     { icon: UserCircle,  label: '採用薬剤師のプロフィール', href: '/pharmacy/pharmacist-profiles' },
+    { icon: BookOpen,    label: '使い方ガイド',          href: '/pharmacy/guide' },
 ];
 
 interface PharmacySidebarProps {
