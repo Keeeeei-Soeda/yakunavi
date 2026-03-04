@@ -91,38 +91,8 @@ function SubHeading({ children }: { children: React.ReactNode }) {
 
 const sections: Section[] = [
   {
-    id: 'register',
-    step: 1,
-    icon: <LogIn size={20} />,
-    title: 'アカウント登録・ログイン',
-    description: '薬ナビへの新規登録からログインまで',
-    content: (
-      <div className="space-y-1">
-        <SubHeading>新規アカウント登録</SubHeading>
-        <StepList steps={[
-          'ブラウザで「https://yaku-navi.com/pharmacist/register」を開きます',
-          '法人名（所属法人がある場合）・代表者名、メールアドレス、パスワードを入力します',
-          '「登録する」ボタンを押します',
-          '登録したメールアドレス宛に確認メールが届きます',
-          'メール内のリンクをクリックして、メールアドレスを認証します',
-        ]} />
-        <ImagePlaceholder label="スクリーンショット：新規登録画面" />
-        <Tip>登録に使用したメールアドレスには今後、オファーや通知が届きます。普段使用しているメールアドレスで登録してください。</Tip>
-
-        <SubHeading>ログイン方法</SubHeading>
-        <StepList steps={[
-          'ブラウザで「https://yaku-navi.com/pharmacist/login」を開きます',
-          '登録済みのメールアドレスとパスワードを入力します',
-          '「ログイン」ボタンを押すとダッシュボードが表示されます',
-        ]} />
-        <ImagePlaceholder label="スクリーンショット：ログイン画面" />
-        <Caution>パスワードを忘れた場合は、ログイン画面の「パスワードを忘れた方はこちら」から再設定メールを送ることができます。</Caution>
-      </div>
-    ),
-  },
-  {
     id: 'profile',
-    step: 2,
+    step: 1,
     icon: <User size={20} />,
     title: 'プロフィール設定・書類提出',
     description: '求人に応募するための必須設定',
@@ -175,7 +145,7 @@ const sections: Section[] = [
   },
   {
     id: 'jobs',
-    step: 3,
+    step: 2,
     icon: <Search size={20} />,
     title: '求人の検索・詳細確認',
     description: '自分に合った求人を見つける',
@@ -206,7 +176,7 @@ const sections: Section[] = [
   },
   {
     id: 'apply',
-    step: 4,
+    step: 3,
     icon: <Send size={20} />,
     title: '求人への応募',
     description: '応募内容を入力して薬局に送る',
@@ -242,7 +212,7 @@ const sections: Section[] = [
   },
   {
     id: 'messages',
-    step: 5,
+    step: 4,
     icon: <MessageSquare size={20} />,
     title: 'メッセージ・オファー対応',
     description: '薬局からのメッセージと正式オファーへの対応',
@@ -288,7 +258,7 @@ const sections: Section[] = [
   },
   {
     id: 'contracts',
-    step: 6,
+    step: 5,
     icon: <Briefcase size={20} />,
     title: '契約管理',
     description: '契約内容と薬局の連絡先の確認',
@@ -328,7 +298,7 @@ const sections: Section[] = [
   },
   {
     id: 'notifications',
-    step: 7,
+    step: 6,
     icon: <Bell size={20} />,
     title: '通知・お知らせ',
     description: 'ダッシュボードと通知ページの使い方',
@@ -379,7 +349,7 @@ const sections: Section[] = [
   },
   {
     id: 'faq',
-    step: 8,
+    step: 7,
     icon: <Star size={20} />,
     title: 'よくある質問・お問い合わせ',
     description: '困ったときのガイドと連絡先',
@@ -436,7 +406,7 @@ const sections: Section[] = [
 ];
 
 export default function PharmacistGuidePage() {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ register: true });
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ profile: true });
 
   const toggle = (id: string) => {
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -462,7 +432,6 @@ export default function PharmacistGuidePage() {
         <h2 className="font-bold text-green-800 mb-4 text-sm">ご利用の流れ</h2>
         <div className="flex flex-wrap gap-2 items-center">
           {[
-            'アカウント登録',
             'プロフィール設定',
             '書類提出・審査',
             '求人応募',

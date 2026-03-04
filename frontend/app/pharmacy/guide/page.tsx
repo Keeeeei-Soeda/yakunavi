@@ -74,31 +74,23 @@ function StepList({ steps }: { steps: string[] }) {
 
 const sections: Section[] = [
   {
-    id: 'login',
+    id: 'profile',
     step: 1,
     icon: <LogIn size={20} />,
-    title: 'ログイン・初期設定',
-    description: 'アカウントの作成から初回ログインまで',
+    title: 'プロフィール設定',
+    description: 'まず薬局情報を登録しましょう',
     content: (
       <div className="space-y-6">
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">ログイン方法</h4>
-          <StepList steps={[
-            'ブラウザで「https://yaku-navi.com/pharmacy/login」を開きます',
-            '登録済みのメールアドレスとパスワードを入力します',
-            '「ログイン」ボタンを押すとダッシュボードが表示されます',
-          ]} />
-          <ImagePlaceholder label="スクリーンショット：ログイン画面" />
-          <Tip>初回ログイン後、まずプロフィール管理からプロフィールを完成させてください。プロフィールが未設定の場合、求人票の掲載や応募の受付ができません。</Tip>
-        </div>
-        <div>
-          <h4 className="font-semibold text-gray-800 mb-2">プロフィール設定</h4>
+          <h4 className="font-semibold text-gray-800 mb-2">プロフィールの入力</h4>
+          <p className="text-sm text-gray-600 mb-2">プロフィールが未設定の場合、求人票の掲載や応募の受付ができません。ログイン後まず設定してください。</p>
           <StepList steps={[
             'サイドバーの「プロフィール管理」をクリックします',
             '薬局名、代表者名、住所、電話番号などを入力します',
             '「保存」ボタンで内容を保存します',
           ]} />
           <ImagePlaceholder label="スクリーンショット：プロフィール管理画面" />
+          <Tip>薬局名・所在地・電話番号は必須です。契約成立後、薬剤師に開示されます。</Tip>
         </div>
       </div>
     ),
@@ -328,7 +320,7 @@ const sections: Section[] = [
 ];
 
 export default function PharmacyGuidePage() {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ login: true });
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ profile: true });
 
   const toggle = (id: string) => {
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
