@@ -189,7 +189,7 @@ export default function LaborConditionsNoticePage() {
               >
                 ← 契約詳細に戻る
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">労働条件通知書</h1>
+              <h1 className="text-2xl font-bold text-gray-900">労働条件通知書（雛形）</h1>
             </div>
             <div className="flex items-center space-x-2">
               <button
@@ -209,17 +209,19 @@ export default function LaborConditionsNoticePage() {
             </div>
           </div>
 
-          {/* 労働条件通知書の内容 */}
+          {/* 労働条件通知書の内容（雛形） */}
           <div className="bg-white rounded-lg shadow p-8 labor-conditions-content">
             {/* タイトル */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-2">労働条件通知書</h1>
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-bold mb-2">労働条件通知書（雛形）</h1>
               <p className="text-sm text-gray-600">(労働基準法第15条に基づく)</p>
             </div>
 
-            <p className="text-sm text-gray-600 mb-6 print:hidden">
-              労働開始後、薬局と薬剤師で各項目を確認の上、空欄を記入してください。
-            </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 print:border print:rounded">
+              <p className="text-sm text-blue-900">
+                本雛形は労働条件通知書のテンプレートです。空欄部分を薬局と薬剤師の両者で確認・記入の上、<strong>最終的に書類を作成し、取り交わしてください。</strong>
+              </p>
+            </div>
 
             {/* 労働条件の表 */}
             <div className="mb-8">
@@ -410,6 +412,13 @@ export default function LaborConditionsNoticePage() {
               <h3 className="font-semibold text-gray-900 mb-2">備考</h3>
               <p className="text-sm text-gray-700">
                 その他、就業規則に定める内容に準ずるものとする。
+              </p>
+            </div>
+
+            {/* 雛形の取り交わし案内 */}
+            <div className="border-t-2 border-gray-300 pt-6">
+              <p className="text-sm font-medium text-gray-800">
+                ※ 本雛形をご活用の上、薬局と薬剤師の両者で内容を確認・記入し、最終的に書類を作成の上、取り交わしてください。
               </p>
             </div>
 

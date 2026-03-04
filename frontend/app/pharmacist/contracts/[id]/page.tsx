@@ -307,16 +307,16 @@ export default function ContractDetailPage() {
           {/* 労働条件通知書 */}
           {contract.status === 'active' && (
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">労働条件通知書</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">労働条件通知書（雛形）</h2>
               <p className="text-sm text-gray-600 mb-4">
-                労働基準法第15条に基づく労働条件通知書を表示・印刷できます。
+                労働基準法第15条に基づく労働条件通知書の雛形を表示・印刷できます。両者で内容を確認・記入の上、最終的に書類を作成し、取り交わしてください。
               </p>
               <Link
                 href={`/pharmacist/contracts/${contractId}/labor-conditions`}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
                 <FileText size={20} />
-                労働条件通知書を表示
+                雛形を表示
               </Link>
             </div>
           )}
