@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import {
   BookOpen,
   LogIn,
@@ -32,13 +33,13 @@ interface Section {
   content: React.ReactNode;
 }
 
-function ImagePlaceholder({ label }: { label: string }) {
+function GuideImage({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="w-full rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center py-10 my-4 text-gray-400">
-      <svg className="w-10 h-10 mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-      <p className="text-sm font-medium">{label}</p>
+    <div className="w-full my-4">
+      <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm max-w-sm">
+        <Image src={src} alt={alt} width={400} height={600} className="w-full h-auto object-contain" />
+      </div>
+      <p className="text-xs text-gray-500 mt-1">{alt}</p>
     </div>
   );
 }
@@ -110,7 +111,8 @@ const sections: Section[] = [
           '自己紹介文を入力します（薬局に表示されます）',
           '「保存する」ボタンで内容を保存します',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：プロフィール入力画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0183.PNG" alt="プロフィール画面（編集ボタンで入力可能）" />
+        <GuideImage src="/guide/pharmacist/IMG_0184.PNG" alt="プロフィール編集フォーム（基本情報・学歴の入力）" />
         <Tip>自己紹介文は薬局が応募を確認する際に表示されます。得意分野や希望条件など、具体的に記入するとマッチングしやすくなります。</Tip>
 
         <SubHeading>資格書類の提出</SubHeading>
@@ -138,7 +140,11 @@ const sections: Section[] = [
           '管理者が審査後、承認メールが届きます',
           '承認が完了すると求人への応募ができるようになります',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：書類アップロード画面" />
+        <SubHeading>書類アップロードの操作（細かい手順）</SubHeading>
+        <p className="text-sm text-gray-600 mb-2">① プロフィールの「書類提出」セクションを開き、アップロードボタンをタップします。</p>
+        <GuideImage src="/guide/pharmacist/IMG_0161.PNG" alt="資格証明書アップロード済みの状態" />
+        <p className="text-sm text-gray-600 mb-2">② オーバーレイメニューからカメラまたはファイルから画像を選択し、アップロードします。</p>
+        <GuideImage src="/guide/pharmacist/IMG_0162.PNG" alt="アップロード操作メニュー（カメラ・ファイル選択）" />
         <Caution>書類が差し戻された場合は、登録メールアドレスに通知が届きます。プロフィール画面から再提出してください。</Caution>
       </div>
     ),
@@ -157,7 +163,7 @@ const sections: Section[] = [
           '掲載中の求人一覧が表示されます',
           '条件（地域・勤務形態など）で絞り込みができます',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：求人一覧画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0176.PNG" alt="求人一覧画面" />
 
         <SubHeading>求人の詳細確認</SubHeading>
         <StepList steps={[
@@ -165,12 +171,12 @@ const sections: Section[] = [
           '勤務条件・日給・業務内容・薬局情報を確認します',
           '「応募する」または「お気に入り」を選択します',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：求人詳細画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0174.PNG" alt="求人詳細画面" />
         <Tip>「お気に入り」ボタン（ハートアイコン）を押すと、ダッシュボードのお気に入り一覧に保存されます。後でまとめて確認できます。</Tip>
 
         <SubHeading>お気に入り機能</SubHeading>
         <p className="text-sm text-gray-600">気になる求人はお気に入り登録しておきましょう。ダッシュボードの「お気に入り求人」から一覧で確認できます。</p>
-        <ImagePlaceholder label="スクリーンショット：ダッシュボードのお気に入り一覧" />
+        <GuideImage src="/guide/pharmacist/IMG_0160.PNG" alt="ダッシュボード（お気に入り求人一覧含む）" />
       </div>
     ),
   },
@@ -188,7 +194,7 @@ const sections: Section[] = [
           '希望の勤務日程・勤務内容を入力します',
           '「応募する」ボタンを押して薬局に送信します',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：応募フォーム画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0178.PNG" alt="応募フォーム画面" />
         <Caution>書類の審査が承認されていない場合、「応募する」ボタンが表示されません。まずプロフィール画面から書類を提出し、審査完了をお待ちください。</Caution>
 
         <SubHeading>応募後の状態確認</SubHeading>
@@ -205,7 +211,7 @@ const sections: Section[] = [
             </div>
           ))}
         </div>
-        <ImagePlaceholder label="スクリーンショット：応募管理画面（ステータス表示）" />
+        <GuideImage src="/guide/pharmacist/IMG_0182.PNG" alt="応募管理画面（ステータス：すべて／応募済み／承認済み／却下）" />
         <Point>複数の求人に同時応募できます。気になる求人には積極的に応募してみましょう。</Point>
       </div>
     ),
@@ -227,8 +233,8 @@ const sections: Section[] = [
           'メッセージが届いている薬局を選択します',
           'テキストを入力して「送信」ボタンを押します',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：メッセージ画面（会話一覧）" />
-        <ImagePlaceholder label="スクリーンショット：メッセージ詳細（チャット画面）" />
+        <GuideImage src="/guide/pharmacist/IMG_0163.PNG" alt="メッセージ画面（会話一覧）" />
+        <GuideImage src="/guide/pharmacist/IMG_0171.PNG" alt="メッセージ詳細（チャット画面）" />
         <Tip>新しいメッセージが届くとダッシュボードとメール両方に通知が届きます。</Tip>
 
         <SubHeading>正式オファーの受け取り</SubHeading>
@@ -240,7 +246,7 @@ const sections: Section[] = [
           '内容に問題がなければ「オファーを承諾する」ボタンを押します',
           '問題がある場合は「辞退する」ボタンを押します',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：正式オファー受け取り画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0172.PNG" alt="正式オファー受け取り画面（承諾／辞退）" />
         <Caution>オファーを承諾すると、薬局側の手数料支払い手続きが始まります。内容をよく確認してから承諾してください。</Caution>
 
         <SubHeading>初回出勤日候補の選択</SubHeading>
@@ -252,7 +258,13 @@ const sections: Section[] = [
           '薬局から提示された候補日の中から希望日を選択します',
           '「日程を確定する」ボタンを押して薬局に通知します',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：初回出勤日選択画面" />
+        <SubHeading>初回出勤日選択の操作（3ステップでわかりやすく）</SubHeading>
+        <p className="text-sm text-gray-600 mb-2">① 薬局から候補日が届いたら、メッセージ画面に「初回出勤日の候補が届きました」と表示されます。</p>
+        <GuideImage src="/guide/pharmacist/IMG_0164.PNG" alt="初回出勤日候補の表示と選択UI" />
+        <p className="text-sm text-gray-600 mb-2">② 日付ピッカーを開いて希望日を選びます。</p>
+        <GuideImage src="/guide/pharmacist/IMG_0165.PNG" alt="日付ピッカーで初回出勤日を選択" />
+        <p className="text-sm text-gray-600 mb-2">③ 日付を選択したら「決定」ボタンを押して確定します。</p>
+        <GuideImage src="/guide/pharmacist/IMG_0166.PNG" alt="初回出勤日選択完了（決定ボタン）" />
       </div>
     ),
   },
@@ -270,13 +282,13 @@ const sections: Section[] = [
           '契約中・完了済みの一覧が表示されます',
           '「詳細」ボタンから各契約の詳細を確認できます',
         ]} />
-        <ImagePlaceholder label="スクリーンショット：契約管理一覧画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0185.PNG" alt="契約管理一覧（契約成立・薬局連絡先開示）" />
 
         <SubHeading>薬局の連絡先開示について</SubHeading>
         <p className="text-sm text-gray-600 mb-2">
           薬局が手数料の支払いを完了すると、契約が「契約中」に切り替わり、薬局の連絡先（電話番号・メールアドレス）が開示されます。
         </p>
-        <ImagePlaceholder label="スクリーンショット：契約詳細（薬局連絡先）画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0186.PNG" alt="契約詳細（薬局連絡先開示済み）" />
         <Tip>連絡先が開示されるまでの間は、メッセージ画面で薬局とやり取りできます。初回出勤日の確認などはメッセージを活用してください。</Tip>
 
         <SubHeading>契約のステータス一覧</SubHeading>
@@ -292,7 +304,6 @@ const sections: Section[] = [
             </div>
           ))}
         </div>
-        <ImagePlaceholder label="スクリーンショット：ステータスフィルタ画面" />
       </div>
     ),
   },
@@ -321,7 +332,7 @@ const sections: Section[] = [
             </div>
           ))}
         </div>
-        <ImagePlaceholder label="スクリーンショット：ダッシュボード全体" />
+        <GuideImage src="/guide/pharmacist/IMG_0160.PNG" alt="ダッシュボード全体" />
 
         <SubHeading>通知の種類</SubHeading>
         <p className="text-sm text-gray-600 mb-2">次のタイミングでダッシュボードとメールに通知が届きます。</p>
@@ -339,7 +350,7 @@ const sections: Section[] = [
             </div>
           ))}
         </div>
-        <ImagePlaceholder label="スクリーンショット：通知一覧ページ" />
+        <GuideImage src="/guide/pharmacist/IMG_0170.PNG" alt="通知一覧ページ" />
 
         <SubHeading>通知の全件表示</SubHeading>
         <p className="text-sm text-gray-600">ダッシュボードの「すべての通知を見る」をクリックすると、過去に届いた通知をすべて確認できます。通知をクリックすると既読になり、関連するページに移動します。</p>
