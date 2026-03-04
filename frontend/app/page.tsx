@@ -90,7 +90,7 @@ export default function Home() {
                     href="/auth/register/pharmacist"
                     className="px-3 py-1.5 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-full text-xs font-medium shadow-md hover:shadow-lg transition-all inline-block"
                   >
-                    💊 薬剤師登録
+                    薬剤師登録
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -98,7 +98,7 @@ export default function Home() {
                     href="/auth/register/pharmacy"
                     className="px-3 py-1.5 bg-white text-teal-600 border-2 border-teal-500 rounded-full text-xs font-medium hover:bg-teal-50 transition-all inline-block"
                   >
-                    🏥 薬局登録
+                    薬局登録
                   </Link>
                 </motion.div>
               </div>
