@@ -312,8 +312,6 @@ const sections: Section[] = [
           <img src="/guide/pharmacy/invoice-detail-pending.png" alt="請求書詳細（支払い待ち）" className="w-full rounded-xl border border-gray-200 my-2" />
           <p className="text-xs text-gray-500 mt-3 mb-1">③ 同ページ下部：振込先口座の確認と支払い報告フォーム（振込後に支払い日・振込名義を入力して報告）</p>
           <img src="/guide/pharmacy/invoice-payment-report.png" alt="振込先口座と支払い報告フォーム" className="w-full rounded-xl border border-gray-200 my-2" />
-          <p className="text-xs text-gray-500 mt-3 mb-1">④ 支払い報告の確認ダイアログ（OKで報告完了）</p>
-          <img src="/guide/pharmacy/invoice-payment-report-confirm.png" alt="支払い報告確認" className="w-full rounded-xl border border-gray-200 my-2" />
           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm">
             <p className="font-semibold text-blue-800 mb-2">ステータスの変化</p>
             <ul className="space-y-1 text-blue-700">
@@ -323,10 +321,10 @@ const sections: Section[] = [
           </div>
           <p className="font-semibold text-gray-800 mt-6 mb-2">ステータス変化の流れ（一覧での表示）</p>
           <p className="text-sm text-gray-600 mb-3">支払い待ち → 支払い報告済み → 支払い確認済みの順に変わります。</p>
-          <p className="text-xs text-gray-500 mt-2 mb-1">⑤ 支払い報告済み（報告直後。INV-000013が水色の「支払い報告済み」、運営確認中）</p>
+          <p className="text-xs text-gray-500 mt-2 mb-1">④ 支払い報告済み（報告直後。INV-000013が水色の「支払い報告済み」、運営確認中）</p>
           <img src="/guide/pharmacy/invoice-list-reported.png" alt="請求書一覧（支払い報告済み）" className="w-full rounded-xl border border-gray-200 my-2" />
           <img src="/guide/pharmacy/invoice-detail-reported.png" alt="請求書詳細（支払い報告済み・運営確認中）" className="w-full rounded-xl border border-gray-200 my-2" />
-          <p className="text-xs text-gray-500 mt-3 mb-1">⑥ 支払い確認済み（運営確認完了後。すべて緑の「支払い確認済み」になった状態）</p>
+          <p className="text-xs text-gray-500 mt-3 mb-1">⑤ 支払い確認済み（運営確認完了後。すべて緑の「支払い確認済み」になった状態）</p>
           <img src="/guide/pharmacy/invoice-list-confirmed.png" alt="請求書一覧（支払い確認済み）" className="w-full rounded-xl border border-gray-200 my-2" />
           <div className="p-4 bg-gray-50 rounded-xl text-sm mt-4">
             <p className="font-semibold text-gray-800 mb-2">振込先口座</p>
