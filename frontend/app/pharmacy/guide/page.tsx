@@ -89,7 +89,7 @@ const sections: Section[] = [
             '薬局名、代表者名、住所、電話番号などを入力します',
             '「保存」ボタンで内容を保存します',
           ]} />
-          <ImagePlaceholder label="スクリーンショット：プロフィール管理画面" />
+          <img src="/guide/pharmacy/profile.png" alt="プロフィール管理画面" className="w-full rounded-xl border border-gray-200 my-4" />
           <Tip>薬局名・所在地・電話番号は必須です。契約成立後、薬剤師に開示されます。</Tip>
         </div>
       </div>
@@ -111,13 +111,16 @@ const sections: Section[] = [
             '勤務日、勤務地、日給、業務内容などを入力します',
             '「下書き保存」または「公開する」を選択します',
           ]} />
-          <ImagePlaceholder label="スクリーンショット：求人票作成画面" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">③ 基本情報・勤務条件の入力画面</p>
+          <img src="/guide/pharmacy/job-create.png" alt="求人票作成画面（基本情報・勤務条件）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="text-xs text-gray-500 mt-3 mb-1">④ 応募条件・資格の入力と公開ボタン</p>
+          <img src="/guide/pharmacy/job-create-publish.png" alt="求人票作成画面（応募条件・公開）" className="w-full rounded-xl border border-gray-200 my-2" />
           <Caution>「公開する」を選択すると薬剤師側に表示されます。内容を確認してから公開しましょう。</Caution>
         </div>
         <div>
           <h4 className="font-semibold text-gray-800 mb-2">求人票の管理</h4>
           <p className="text-sm text-gray-600 mb-2">作成した求人票は一覧から確認・編集できます。「公開中」「下書き」のステータスで管理されます。</p>
-          <ImagePlaceholder label="スクリーンショット：求人票一覧画面" />
+          <img src="/guide/pharmacy/job-list.png" alt="求人票一覧画面" className="w-full rounded-xl border border-gray-200 my-4" />
           <Tip>掲載日から2週間後以降の日付を初回出勤日の候補として設定できます。</Tip>
         </div>
       </div>
@@ -136,14 +139,18 @@ const sections: Section[] = [
           <StepList steps={[
             'サイドバーの「応募確認」をクリックします',
             '応募が届いている一覧が表示されます',
-            '薬剤師名をクリックすると応募詳細を確認できます',
+            '詳細をクリックすると薬剤師のプロフィールが確認できます（名前、連絡先などの個人情報は表示されません。契約締結後に表示されます。）',
           ]} />
-          <ImagePlaceholder label="スクリーンショット：応募一覧画面" />
+          <img src="/guide/pharmacy/applications-list.png" alt="応募一覧画面" className="w-full rounded-xl border border-gray-200 my-4" />
         </div>
         <div>
           <h4 className="font-semibold text-gray-800 mb-2">応募への対応</h4>
           <p className="text-sm text-gray-600 mb-2">各応募に対して以下の操作ができます。</p>
           <div className="space-y-2 text-sm">
+            <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
+              <span className="font-semibold text-blue-700 w-20 flex-shrink-0">詳細</span>
+              <span className="text-gray-700">薬剤師のプロフィール（経歴・スキルなど）を確認できます。名前・連絡先は契約締結後に表示されます。</span>
+            </div>
             <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
               <span className="font-semibold text-blue-700 w-20 flex-shrink-0">メッセージ</span>
               <span className="text-gray-700">薬剤師とメッセージでやり取りを始めます。まずはここからスタートします。</span>
@@ -153,7 +160,6 @@ const sections: Section[] = [
               <span className="text-gray-700">応募を却下します。却下後は元に戻せません。</span>
             </div>
           </div>
-          <ImagePlaceholder label="スクリーンショット：応募詳細画面（メッセージ・却下ボタン）" />
         </div>
       </div>
     ),
