@@ -371,18 +371,12 @@ const sections: Section[] = [
     content: (
       <div className="space-y-6">
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">設定の変更</h4>
-          <p className="text-sm text-gray-600">サイドバー下部の「設定」から、パスワードや登録情報の変更ができます。メールアドレスは変更できません。</p>
-          <ImagePlaceholder label="スクリーンショット：設定画面" />
-        </div>
-        <div>
           <h4 className="font-semibold text-gray-800 mb-2">よくある質問</h4>
           <div className="space-y-3">
             {[
               { q: '応募を却下した後、元に戻せますか？', a: '一度却下した応募は元に戻せません。慎重にご判断ください。' },
               { q: '求人票を削除したい場合は？', a: '公開中の求人票は非公開に変更できます。完全削除はサポートへご連絡ください。' },
               { q: '振込が完了したのに契約が切り替わらない', a: '運営による確認作業があります。確認完了まで1〜2営業日かかる場合があります。お急ぎの場合は info@yaku-navi.com までご連絡ください。' },
-              { q: 'パスワードを忘れた場合は？', a: 'ログイン画面の「パスワードを忘れた方はこちら」から再設定メールを送ることができます。' },
             ].map((item, i) => (
               <div key={i} className="p-4 bg-gray-50 rounded-xl">
                 <p className="font-semibold text-gray-800 text-sm mb-1">Q. {item.q}</p>
