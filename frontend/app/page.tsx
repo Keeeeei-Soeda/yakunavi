@@ -552,6 +552,147 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 使い方セクション */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            className="text-center mb-10"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">
+              使い方
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600">
+              登録から勤務開始まで、シンプルなステップで完了します
+            </p>
+          </motion.div>
+
+          {/* タブ切り替え */}
+          <div className="flex justify-center mb-10">
+            <div className="inline-flex bg-gray-100 rounded-2xl p-1.5">
+              <button
+                onClick={() => setActiveTab('pharmacist')}
+                className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  activeTab === 'pharmacist'
+                    ? 'bg-white shadow-md text-teal-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                💊 薬剤師の方
+              </button>
+              <button
+                onClick={() => setActiveTab('pharmacy')}
+                className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  activeTab === 'pharmacy'
+                    ? 'bg-white shadow-md text-teal-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                🏥 薬局の方
+              </button>
+            </div>
+          </div>
+
+          {/* 薬剤師向け手順 */}
+          {activeTab === 'pharmacist' && (
+            <motion.div
+              key="how-pharmacist"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  { step: '1', icon: '📝', title: '無料登録', desc: 'メールアドレスとパスワードで簡単登録。1分で完了します。' },
+                  { step: '2', icon: '👤', title: 'プロフィール設定・書類提出', desc: '氏名・経歴などを入力し、薬剤師免許証・保険薬剤師登録票をアップロード。管理者が審査します。' },
+                  { step: '3', icon: '🔍', title: '求人を探して応募', desc: '条件で絞り込んで気になる求人を見つけ、応募フォームから申し込みます。' },
+                  { step: '4', icon: '💬', title: '薬局とメッセージ', desc: '薬局担当者とメッセージでやり取りし、条件を確認します。' },
+                  { step: '5', icon: '✅', title: 'オファーを承諾', desc: '正式オファーが届いたら内容を確認し、承諾するとおためし勤務が開始できます。' },
+                  { step: '6', icon: '🎉', title: 'お仕事開始', desc: '初回出勤日が確定し、契約成立。薬局の連絡先が開示されます。' },
+                ].map((item) => (
+                  <motion.div
+                    key={item.step}
+                    className="flex gap-4 bg-gray-50 rounded-2xl p-5"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                  >
+                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-black shadow">
+                      {item.step}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span className="text-base">{item.icon}</span>
+                        <p className="font-bold text-gray-900 text-sm">{item.title}</p>
+                      </div>
+                      <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="mt-8 text-center">
+                <a
+                  href="/auth/register/pharmacist"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 text-sm sm:text-base"
+                >
+                  💊 薬剤師として無料登録
+                </a>
+              </div>
+            </motion.div>
+          )}
+
+          {/* 薬局向け手順 */}
+          {activeTab === 'pharmacy' && (
+            <motion.div
+              key="how-pharmacy"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  { step: '1', icon: '📝', title: '無料登録', desc: 'メールアドレスとパスワードで簡単登録。1分で完了します。' },
+                  { step: '2', icon: '🏥', title: 'プロフィール設定', desc: '薬局名・所在地・電話番号などを入力します。契約成立後に薬剤師に開示されます。' },
+                  { step: '3', icon: '📋', title: '求人票を作成・公開', desc: '勤務日・日給・業務内容を入力して求人を公開。薬剤師から応募が届きます。' },
+                  { step: '4', icon: '👥', title: '応募を確認', desc: '応募一覧から薬剤師のプロフィールを確認し、メッセージでやり取りします。' },
+                  { step: '5', icon: '📩', title: '正式オファーを送る', desc: '条件が合えば勤務日数・日給を確認して正式オファーを送信。薬剤師が承諾すると次のステップへ。' },
+                  { step: '6', icon: '💳', title: '手数料支払い・契約成立', desc: '所定の口座に手数料を振込み。確認後に契約が成立し、薬剤師との連絡が可能になります。' },
+                ].map((item) => (
+                  <motion.div
+                    key={item.step}
+                    className="flex gap-4 bg-gray-50 rounded-2xl p-5"
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                  >
+                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-teal-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-black shadow">
+                      {item.step}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span className="text-base">{item.icon}</span>
+                        <p className="font-bold text-gray-900 text-sm">{item.title}</p>
+                      </div>
+                      <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="mt-8 text-center">
+                <a
+                  href="/auth/register/pharmacy"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-white text-teal-600 border-2 border-teal-500 font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105 hover:bg-teal-50 text-sm sm:text-base"
+                >
+                  🏥 採用担当者として無料登録
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </section>
+
       {/* CTAセクション */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-teal-600 via-blue-600 to-purple-600 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
