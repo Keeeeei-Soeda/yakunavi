@@ -321,10 +321,12 @@ const sections: Section[] = [
               <li>• <strong>運営による入金確認</strong>が完了すると → 「支払い確認済み」となり、契約成立・薬剤師連絡先が開示されます</li>
             </ul>
           </div>
-          <p className="text-xs text-gray-500 mt-3 mb-1">⑤ 支払い報告後の一覧と詳細（支払い待ちが0件になり、運営が確認中の状態）</p>
-          <img src="/guide/pharmacy/invoice-list-reported.png" alt="請求書一覧（支払い報告後）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <p className="font-semibold text-gray-800 mt-6 mb-2">ステータス変化の流れ（一覧での表示）</p>
+          <p className="text-sm text-gray-600 mb-3">支払い待ち → 支払い報告済み → 支払い確認済みの順に変わります。</p>
+          <p className="text-xs text-gray-500 mt-2 mb-1">⑤ 支払い報告済み（報告直後。INV-000013が水色の「支払い報告済み」、運営確認中）</p>
+          <img src="/guide/pharmacy/invoice-list-reported.png" alt="請求書一覧（支払い報告済み）" className="w-full rounded-xl border border-gray-200 my-2" />
           <img src="/guide/pharmacy/invoice-detail-reported.png" alt="請求書詳細（支払い報告済み・運営確認中）" className="w-full rounded-xl border border-gray-200 my-2" />
-          <p className="text-xs text-gray-500 mt-3 mb-1">⑥ 運営確認完了後の一覧（すべて「支払い確認済み」になった状態）</p>
+          <p className="text-xs text-gray-500 mt-3 mb-1">⑥ 支払い確認済み（運営確認完了後。すべて緑の「支払い確認済み」になった状態）</p>
           <img src="/guide/pharmacy/invoice-list-confirmed.png" alt="請求書一覧（支払い確認済み）" className="w-full rounded-xl border border-gray-200 my-2" />
           <div className="p-4 bg-gray-50 rounded-xl text-sm mt-4">
             <p className="font-semibold text-gray-800 mb-2">振込先口座</p>
@@ -344,6 +346,8 @@ const sections: Section[] = [
               '右上の「印刷 / PDF保存」ボタンを押します',
               'ブラウザの印刷ダイアログが表示されます',
             ]} />
+            <p className="text-xs text-gray-500 mt-2 mb-1">印刷ダイアログ（PDF保存時：保存先を指定して「保存」を押す）</p>
+            <img src="/guide/pharmacy/invoice-print-pdf-dialog.png" alt="印刷・PDF保存ダイアログ" className="w-full rounded-xl border border-gray-200 my-2" />
             <div className="mt-3 space-y-2 text-gray-700">
               <div className="flex gap-3 p-2 bg-white rounded-lg border border-gray-200">
                 <span className="font-semibold text-gray-800 w-20 flex-shrink-0">印刷する</span>
@@ -351,7 +355,7 @@ const sections: Section[] = [
               </div>
               <div className="flex gap-3 p-2 bg-white rounded-lg border border-gray-200">
                 <span className="font-semibold text-gray-800 w-20 flex-shrink-0">PDF保存</span>
-                <span>ダイアログ左下の「PDF」→「PDFに保存」を選択し、保存先を指定してダウンロードします</span>
+                <span>ダイアログ左下の「PDF」→「PDFに保存」を選択し、保存先を指定して「保存」を押してダウンロードします</span>
               </div>
             </div>
             <p className="text-xs text-gray-500 mt-3">※ 請求書詳細画面の右上「印刷 / PDF保存」ボタンが起点です（上記②の画面右上）</p>
