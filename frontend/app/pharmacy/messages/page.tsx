@@ -28,9 +28,9 @@ export default function MessagesPage() {
     const [loadingContract, setLoadingContract] = useState(false);
     const [showOfferDialog, setShowOfferDialog] = useState(false);
     const [offerData, setOfferData] = useState({
-        workDays: 30,
-        dailyWage: 25000,
-        workHours: '9:00-18:00',
+        workDays: 0,
+        dailyWage: 0,
+        workHours: '',
     });
     const [sendingOffer, setSendingOffer] = useState(false);
     const [isEditingOffer, setIsEditingOffer] = useState(false);
@@ -53,6 +53,19 @@ export default function MessagesPage() {
 
         fetchConversations();
     }, [pharmacyId]);
+
+    // 会話切り替え時にofferDataを求人票データで初期化
+    useEffect(() => {
+        if (!selectedConversation || conversations.length === 0) return;
+        const conv = conversations.find((c) => c.applicationId === selectedConversation);
+        if (!conv) return;
+        setIsEditingOffer(false);
+        setOfferData({
+            workDays: conv.jobPosting.desiredWorkDays ?? 0,
+            dailyWage: conv.jobPosting.dailyWage ?? 0,
+            workHours: conv.jobPosting.desiredWorkHours ?? '',
+        });
+    }, [selectedConversation, conversations]);
 
     // メッセージを取得
     useEffect(() => {

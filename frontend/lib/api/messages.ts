@@ -15,6 +15,9 @@ interface Conversation {
         id: number;
         title: string;
         publishedAt?: string | null;
+        dailyWage?: number;
+        desiredWorkDays?: number;
+        desiredWorkHours?: string;
     };
     contract?: {
         id: number;

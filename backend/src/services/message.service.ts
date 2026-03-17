@@ -45,6 +45,9 @@ export class MessageService {
                         id: true,
                         title: true,
                         publishedAt: true,
+                        dailyWage: true,
+                        desiredWorkDays: true,
+                        desiredWorkHours: true,
                     },
                 },
                 contract: {
@@ -92,6 +95,9 @@ export class MessageService {
                     id: Number(app.jobPosting.id),
                     title: app.jobPosting.title,
                     publishedAt: app.jobPosting.publishedAt,
+                    dailyWage: app.jobPosting.dailyWage,
+                    desiredWorkDays: app.jobPosting.desiredWorkDays,
+                    desiredWorkHours: app.jobPosting.desiredWorkHours,
                 },
                 contract: app.contract ? {
                     id: Number(app.contract.id),
