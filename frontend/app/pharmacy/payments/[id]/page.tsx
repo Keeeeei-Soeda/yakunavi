@@ -171,6 +171,40 @@ export default function PaymentDetailPage() {
   return (
     <ProtectedRoute requiredUserType="pharmacy">
       <PharmacyLayout hideSidebar={true}>
+        {/* 印刷時：Chrome空白ページ対策 + Safari 1ページ化 */}
+        <style jsx global>{`
+          @media print {
+            /* レイアウトラッパーの高さを崩してChrome空白ページを防ぐ */
+            html, body, #__next {
+              height: auto !important;
+              min-height: 0 !important;
+              overflow: visible !important;
+            }
+            .min-h-screen {
+              min-height: 0 !important;
+              height: auto !important;
+            }
+            .flex-1 {
+              flex: none !important;
+              height: auto !important;
+              overflow: visible !important;
+            }
+            .overflow-y-auto { overflow: visible !important; }
+
+            /* 印刷時のみ表示・非表示 */
+            .no-print  { display: none !important; }
+            .print-only { display: block !important; }
+            .screen-only { display: none !important; }
+
+            /* 印刷用ヘッダーのフォントをコンパクトに */
+            .invoice-print-header h1 { font-size: 14px !important; margin: 0 0 2px !important; }
+            .invoice-print-header p  { font-size: 9px !important; margin: 0 !important; }
+            .invoice-print-header .inv-meta { font-size: 10px !important; }
+            .invoice-print-header .inv-meta-bold { font-size: 12px !important; }
+            .invoice-print-header .bill-to { font-size: 11px !important; padding: 4px 6px !important; margin-bottom: 4px !important; }
+            .invoice-print-header .bill-to-name { font-size: 13px !important; margin: 0 0 1px !important; }
+          }
+        `}</style>
         <div className="space-y-6 invoice-container">
           {/* ヘッダー */}
           <div className="flex items-center justify-between no-print">
@@ -197,46 +231,35 @@ export default function PaymentDetailPage() {
           </div>
 
           {/* 印刷用ヘッダー（印刷時のみ表示） */}
-          <div className="hidden print-only mb-6">
-            <div className="text-right text-sm text-gray-600 mb-4">
-              発行日: {format(new Date(), 'yyyy年MM月dd日', { locale: ja })}
-            </div>
-            <h1 className="text-3xl font-bold text-center mb-2">
-              プラットフォーム手数料 請求書
-            </h1>
-            <p className="text-center text-gray-600 mb-1">Platform Fee Invoice</p>
-            <p className="text-center text-xs text-gray-500 mb-6">登録番号 T8120001241474</p>
-            <div className="flex justify-between items-start mb-6">
+          <div className="hidden print-only invoice-print-header">
+            {/* タイトル行 + 発行日（横並び） */}
+            <div className="flex justify-between items-start mb-2">
               <div>
-                <p className="text-sm text-gray-600 mb-1">請求書番号</p>
-                <p className="text-lg font-bold">
-                  INV-{String(payment.contractId).padStart(6, '0')}
-                </p>
+                <h1 className="text-2xl font-bold">プラットフォーム手数料 請求書</h1>
+                <p className="text-gray-600">Platform Fee Invoice　登録番号 T8120001241474</p>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-600 mb-1">発行日</p>
-                <p className="text-lg font-bold">
-                  {format(new Date(), 'yyyy年MM月dd日', { locale: ja })}
-                </p>
+              <div className="text-right inv-meta">
+                <p className="text-gray-600">請求書番号</p>
+                <p className="font-bold inv-meta-bold">INV-{String(payment.contractId).padStart(6, '0')}</p>
+                <p className="text-gray-600 mt-1">発行日</p>
+                <p className="font-bold inv-meta-bold">{format(new Date(), 'yyyy年MM月dd日', { locale: ja })}</p>
               </div>
             </div>
 
             {/* 請求先情報（印刷時のみ表示） */}
             {payment.contract && (
-              <div className="mb-6 p-4 border-2 border-gray-400">
-                <h3 className="font-semibold text-lg mb-3">請求先</h3>
-                <p className="text-xl font-bold mb-2">
+              <div className="bill-to p-3 border-2 border-gray-400 mb-3">
+                <p className="text-sm text-gray-600 mb-1">請求先</p>
+                <p className="bill-to-name text-lg font-bold">
                   {payment.contract.pharmacy?.pharmacyName || payment.contract.pharmacy?.companyName || payment.contract.pharmacy?.name || '薬局名'} 御中
                 </p>
                 {(payment.contract.pharmacy?.address || payment.contract.pharmacy?.prefecture) && (
-                  <p className="text-sm mb-1">
+                  <p className="text-sm">
                     {payment.contract.pharmacy?.prefecture || ''}{payment.contract.pharmacy?.address || ''}
                   </p>
                 )}
                 {payment.contract.pharmacy?.phoneNumber && (
-                  <p className="text-sm">
-                    TEL: {payment.contract.pharmacy.phoneNumber}
-                  </p>
+                  <p className="text-sm">TEL: {payment.contract.pharmacy.phoneNumber}</p>
                 )}
               </div>
             )}

@@ -8,7 +8,7 @@ async function createAdminAccount() {
     console.log('管理者アカウントを作成しています...');
 
     // 管理者情報
-    const adminEmail = 'admin@yakunavi.com';
+    const adminEmail = 'admin@yaku-navi.com';
     const adminPassword = 'Admin@2026!'; // 強力なパスワード
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
@@ -53,7 +53,7 @@ async function createAdminAccount() {
     }
 
     // 追加の管理者アカウントを作成（オプション）
-    const secondAdminEmail = 'support@yakunavi.com';
+    const secondAdminEmail = 'support@yaku-navi.com';
     const secondAdminPassword = 'Support@2026!';
     const secondHashedPassword = await bcrypt.hash(secondAdminPassword, 10);
 

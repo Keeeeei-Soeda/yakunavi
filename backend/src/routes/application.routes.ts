@@ -27,7 +27,7 @@ router.patch(
 
 // 応募取り下げ（薬剤師のみ）
 // ⚠️ 廃止：一度応募したら、基本的に取り下げはできません
-// やむを得ない場合は運営（support@yakunavi.jp）までご連絡ください
+// やむを得ない場合は運営（info@yaku-navi.com）までご連絡ください
 // router.post(
 //   '/:id/withdraw',
 //   requireUserType('pharmacist'),

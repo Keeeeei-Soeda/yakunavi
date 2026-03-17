@@ -72,37 +72,32 @@ export default function InvoicePage() {
       <PharmacyLayout hideSidebar={true}>
         <style jsx global>{`
           @media print {
-            body * {
-              visibility: hidden;
+            /* Chrome空白ページ対策：layout wrapperの高さを崩す */
+            html, body, #__next {
+              height: auto !important;
+              min-height: 0 !important;
+              overflow: visible !important;
             }
-            .invoice-container,
-            .invoice-container * {
-              visibility: visible;
+            .min-h-screen {
+              min-height: 0 !important;
+              height: auto !important;
             }
-            .invoice-container {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
+            .flex-1 {
+              flex: none !important;
+              height: auto !important;
+              overflow: visible !important;
             }
-            .no-print {
-              display: none !important;
-            }
-            .print-only {
-              display: block !important;
-            }
-            .screen-only {
-              display: none !important;
-            }
-            .no-break {
-              page-break-inside: avoid;
-            }
+            .overflow-y-auto { overflow: visible !important; }
+
+            /* visibility方式をやめてdisplay方式に統一 */
+            .no-print  { display: none !important; }
+            .print-only { display: block !important; }
+            .screen-only { display: none !important; }
+
+            .no-break { page-break-inside: avoid; }
             .invoice-card {
               box-shadow: none !important;
               border: 1px solid #ddd;
-            }
-            .invoice-amount {
-              font-size: 2rem;
             }
           }
           .print-only {
