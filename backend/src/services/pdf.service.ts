@@ -205,7 +205,7 @@ export class PDFService {
         doc.fontSize(10).font(japaneseFont);
         currentY += 10;
         doc.text('銀行名:', 60, currentY);
-        doc.text('GMO青空ネット銀行', 150, currentY);
+        doc.text('GMOあおぞらネット銀行', 150, currentY);
         currentY += 20;
 
         doc.text('支店名:', 60, currentY);

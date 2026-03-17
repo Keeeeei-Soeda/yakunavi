@@ -409,7 +409,7 @@ export default function PaymentDetailPage() {
             <div className="space-y-3 text-sm">
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">銀行名:</span>
-                <span className="text-gray-900">GMO青空ネット銀行</span>
+                <span className="text-gray-900">GMOあおぞらネット銀行</span>
               </div>
               <div className="flex border-b border-gray-200 pb-2">
                 <span className="w-32 font-medium text-gray-700">支店名:</span>

@@ -2,86 +2,144 @@
 
 ## 📋 目次
 
-1. [最新版デプロイ手順](#最新版デプロイ手順)
-2. [デプロイコマンド集](#デプロイコマンド集)
-3. [トラブルシューティング](#トラブルシューティング)
-4. [ロールバック手順](#ロールバック手順)
+1. [今後のデプロイ手順（推奨フロー）](#今後のデプロイ手順推奨フロー)
+2. [本番サーバー上での作業](#本番サーバー上での作業)
+3. [デプロイコマンド集](#デプロイコマンド集)
+4. [トラブルシューティング](#トラブルシューティング)
+5. [ロールバック手順](#ロールバック手順)
 
 ---
 
-## 最新版デプロイ手順
+## 今後のデプロイ手順（推奨フロー）
 
-### 1. サーバーにSSH接続
+### 前提
+
+- 本番サーバー: `85.131.247.170`（yaku-navi.com）
+- SSH: 鍵ファイル `ssh_yakunavi.pem` を使用
+- バックエンドは **TypeScript をコンパイルした `dist/`** で動作するため、**ソース変更のたびに `npm run build` が必須**
+
+---
+
+### Step 1: ローカルでコミット・プッシュ
 
 ```bash
-ssh root@x85-131-247-170
+cd /path/to/yaku_navi
+git add .
+git commit -m "feat: 変更内容の説明"
+git push origin main
 ```
 
-### 2. プロジェクトディレクトリに移動
+---
+
+### Step 2: 本番サーバーに SSH 接続
 
 ```bash
-cd ~/yaku_navi
+ssh -i ssh_yakunavi.pem root@85.131.247.170
 ```
 
-### 3. 最新のコードを取得
+（または `~/.ssh/config` で Host を設定している場合: `ssh yaku-navi`）
+
+---
+
+### Step 3: 本番で最新コードを取得
 
 ```bash
+cd /root/yaku_navi
 git pull origin main
 ```
 
-### 4. バックエンドの更新
+---
+
+### Step 4: バックエンドの更新（必須）
+
+**重要**: バックエンドの TypeScript を変更した場合は、必ず `npm run build` を実行する。  
+未実行だと `dist/` が古いままになり、新ルートが 404 になったり BigInt などで 500 が出る。
 
 ```bash
-cd backend
+cd /root/yaku_navi/backend
+npm install
+npx prisma generate
+npx prisma migrate deploy   # DB スキーマ変更がある場合のみ
+# データ移行スクリプトが必要な場合のみ:
+# npx ts-node scripts/xxxx.ts
+npm run build
+cd ..
+```
+
+---
+
+### Step 5: フロントエンドの更新
+
+```bash
+cd /root/yaku_navi/frontend
 npm install
 npm run build
 cd ..
 ```
 
-### 5. フロントエンドの更新
+---
+
+### Step 6: PM2 で再起動
 
 ```bash
+pm2 restart all
+pm2 status
+```
+
+---
+
+### Step 7: 動作確認
+
+```bash
+# ヘルスチェック
+curl -s http://localhost:5001/health
+
+# エラーログ確認（直近）
+pm2 logs yaku-navi-backend --lines 30 --nostream
+```
+
+ブラウザで https://yaku-navi.com を開き、該当機能を確認する。
+
+---
+
+## 本番サーバー上での作業
+
+上記 Step 2 以降を、本番サーバーにログインしたうえで次のように一括実行することもできる。
+
+```bash
+cd /root/yaku_navi
+git pull origin main
+
+cd backend
+npm install
+npx prisma generate
+npx prisma migrate deploy
+npm run build
+cd ..
+
 cd frontend
 npm install
 npm run build
 cd ..
-```
 
-### 6. PM2でアプリケーションを再起動
-
-```bash
-# バックエンドを再起動
-pm2 restart yaku-navi-backend
-
-# フロントエンドを再起動
-pm2 restart yaku-navi-frontend
-
-# ステータス確認
+pm2 restart all
 pm2 status
-```
-
-### 7. ログ確認
-
-```bash
-# バックエンドのログ
-pm2 logs yaku-navi-backend --lines 50
-
-# フロントエンドのログ
-pm2 logs yaku-navi-frontend --lines 50
 ```
 
 ---
 
 ## デプロイコマンド集
 
-### 一括実行コマンド（コピー&ペースト用）
+### 一括実行コマンド（本番サーバー上でコピー&ペースト用）
 
 ```bash
-cd ~/yaku_navi && \
-cd backend && npm install && npm run build && cd .. && \
+cd /root/yaku_navi && \
+git pull origin main && \
+cd backend && npm install && npx prisma generate && npx prisma migrate deploy && npm run build && cd .. && \
 cd frontend && npm install && npm run build && cd .. && \
 pm2 restart all && \
-pm2 logs --lines 50
+pm2 status && \
+pm2 logs --lines 20 --nostream
 ```
 
 ### PM2コマンド
@@ -114,11 +172,19 @@ rm -rf node_modules package-lock.json
 npm install
 ```
 
-### 問題2: `npm run build`でエラーが発生する場合
+### 問題2: フロントエンドの `npm run build` でエラーが発生する場合
 
 ```bash
-# .nextディレクトリを削除して再ビルド
+cd frontend
 rm -rf .next
+npm run build
+```
+
+### 問題2b: バックエンドの `npm run build` でエラーが発生する場合
+
+```bash
+cd backend
+rm -rf dist
 npm run build
 ```
 
@@ -192,6 +258,8 @@ pm2 restart yaku-navi-frontend
 
 ## 📝 注意事項
 
+- **バックエンド**: 本番は `dist/` のコンパイル済み JS で動作します。TypeScript やルート・サービスを変更したら必ず `npm run build` を実行してください。未実行だと 404（新ルート未反映）や 500（BigInt シリアライズ等）の原因になります。
+- **DB スキーマ変更時**: `prisma migrate deploy` のあと、必要に応じて `scripts/` のデータ移行スクリプトを実行してください（例: `npx ts-node scripts/migrate-to-branches.ts`）。
 - デプロイ前にデータベースのバックアップを推奨
 - 本番環境では `NODE_ENV=production` が設定されていることを確認
 - 環境変数（`.env`）が正しく設定されていることを確認
@@ -201,5 +269,5 @@ pm2 restart yaku-navi-frontend
 
 ---
 
-**最終更新**: 2026年1月28日
+**最終更新**: 2026年3月17日
 
