@@ -29,6 +29,30 @@ export interface PharmacyProfile {
   equipmentSystems?: string;
 }
 
+export interface PharmacyBranch {
+  id: number;
+  pharmacyId: number;
+  name: string;
+  phoneNumber?: string;
+  faxNumber?: string;
+  prefecture?: string;
+  address?: string;
+  nearestStation?: string;
+  minutesFromStation?: number;
+  carCommuteAvailable?: boolean;
+  establishedDate?: string;
+  dailyPrescriptionCount?: number;
+  staffCount?: number;
+  businessHoursStart?: string;
+  businessHoursEnd?: string;
+  introduction?: string;
+  strengths?: string;
+  equipmentSystems?: string;
+  displayOrder?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export const pharmacyAPI = {
   // 薬局プロフィール取得
   getProfile: async (pharmacyId: number) => {
@@ -80,6 +104,36 @@ export const pharmacyAPI = {
   getPublicProfile: async (pharmacyId: number) => {
     return apiClient.get<APIResponse<PharmacyProfile>>(
       `/pharmacy/public-profile/${pharmacyId}`
+    );
+  },
+
+  // 薬局（Branch）一覧取得
+  getBranches: async (pharmacyId: number) => {
+    return apiClient.get<APIResponse<PharmacyBranch[]>>(
+      `/pharmacy/${pharmacyId}/branches`
+    );
+  },
+
+  // 薬局（Branch）追加
+  createBranch: async (pharmacyId: number, data: Partial<PharmacyBranch>) => {
+    return apiClient.post<APIResponse<PharmacyBranch>>(
+      `/pharmacy/${pharmacyId}/branches`,
+      data
+    );
+  },
+
+  // 薬局（Branch）更新
+  updateBranch: async (pharmacyId: number, branchId: number, data: Partial<PharmacyBranch>) => {
+    return apiClient.put<APIResponse<PharmacyBranch>>(
+      `/pharmacy/${pharmacyId}/branches/${branchId}`,
+      data
+    );
+  },
+
+  // 薬局（Branch）削除
+  deleteBranch: async (pharmacyId: number, branchId: number) => {
+    return apiClient.delete<APIResponse>(
+      `/pharmacy/${pharmacyId}/branches/${branchId}`
     );
   },
 };

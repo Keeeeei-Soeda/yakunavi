@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreateJobPostingInput } from '@/lib/api/jobPostings';
+import { pharmacyAPI, PharmacyBranch } from '@/lib/api/pharmacy';
 import { PREFECTURES } from '@/lib/constants/prefectures';
 
 interface JobPostingFormProps {
@@ -20,6 +21,22 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
 }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [branches, setBranches] = useState<PharmacyBranch[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<number | null>(
+    initialData?.pharmacyBranchId ?? null
+  );
+
+  useEffect(() => {
+    pharmacyAPI.getBranches(pharmacyId).then((res) => {
+      if (res.success && res.data) {
+        setBranches(res.data);
+        // 初期値未設定かつ1件以上ある場合は最初のbranchを選択
+        if (!initialData?.pharmacyBranchId && res.data.length > 0) {
+          setSelectedBranchId(res.data[0].id);
+        }
+      }
+    }).catch(() => {});
+  }, [pharmacyId]);
 
   // 勤務開始可能期間のデフォルト値（今日から2週間後）
   const getDefaultWorkStartDate = () => {
@@ -128,6 +145,7 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
       // workLocationを都道府県+市区町村で結合
       const submitData = {
         ...formData,
+        pharmacyBranchId: selectedBranchId ?? null,
         workLocation: `${prefecture}${city}`,
         workStartPeriodTo,
         desiredWorkDays: formData.desiredWorkDays || 30,
@@ -144,6 +162,33 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
 
   return (
     <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+      {/* 勤務薬局の選択 */}
+      {branches.length > 0 && (
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold mb-4">勤務薬局</h3>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              どの薬局の求人ですか？ *
+            </label>
+            <select
+              value={selectedBranchId ?? ''}
+              onChange={(e) => setSelectedBranchId(e.target.value ? Number(e.target.value) : null)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">選択してください</option>
+              {branches.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name}{b.prefecture ? `（${b.prefecture}）` : ''}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              薬局が未登録の場合はプロフィール管理から追加してください
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* 基本情報 */}
       <div className="bg-white rounded-lg shadow p-6">
         <h3 className="text-lg font-semibold mb-4">基本情報</h3>

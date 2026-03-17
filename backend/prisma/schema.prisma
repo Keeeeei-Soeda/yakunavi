@@ -33,39 +33,69 @@ model User {
 }
 
 model Pharmacy {
-  id                      BigInt       @id @default(autoincrement())
-  userId                  BigInt       @unique @map("user_id")
-  companyName             String       @map("company_name") @db.VarChar(255)
-  pharmacyName            String?      @map("pharmacy_name") @db.VarChar(255)
-  representativeLastName  String       @map("representative_last_name") @db.VarChar(100)
-  representativeFirstName String       @map("representative_first_name") @db.VarChar(100)
-  phoneNumber             String?      @map("phone_number") @db.VarChar(20)
-  faxNumber               String?      @map("fax_number") @db.VarChar(20)
-  prefecture              String?      @db.VarChar(50)
+  id                      BigInt            @id @default(autoincrement())
+  userId                  BigInt            @unique @map("user_id")
+  companyName             String            @map("company_name") @db.VarChar(255)
+  pharmacyName            String?           @map("pharmacy_name") @db.VarChar(255)
+  representativeLastName  String            @map("representative_last_name") @db.VarChar(100)
+  representativeFirstName String            @map("representative_first_name") @db.VarChar(100)
+  phoneNumber             String?           @map("phone_number") @db.VarChar(20)
+  faxNumber               String?           @map("fax_number") @db.VarChar(20)
+  prefecture              String?           @db.VarChar(50)
   address                 String?
-  nearestStation          String?      @map("nearest_station") @db.VarChar(255)
-  minutesFromStation      Int?         @map("minutes_from_station")
-  carCommuteAvailable     Boolean?     @map("car_commute_available")
-  establishedDate         DateTime?    @map("established_date") @db.Date
-  dailyPrescriptionCount  Int?         @map("daily_prescription_count")
-  staffCount              Int?         @map("staff_count")
-  businessHoursStart      DateTime?    @map("business_hours_start") @db.Time(6)
-  businessHoursEnd        DateTime?    @map("business_hours_end") @db.Time(6)
+  nearestStation          String?           @map("nearest_station") @db.VarChar(255)
+  minutesFromStation      Int?              @map("minutes_from_station")
+  carCommuteAvailable     Boolean?          @map("car_commute_available")
+  establishedDate         DateTime?         @map("established_date") @db.Date
+  dailyPrescriptionCount  Int?              @map("daily_prescription_count")
+  staffCount              Int?              @map("staff_count")
+  businessHoursStart      DateTime?         @map("business_hours_start") @db.Time(6)
+  businessHoursEnd        DateTime?         @map("business_hours_end") @db.Time(6)
   introduction            String?
   strengths               String?
-  equipmentSystems        String?      @map("equipment_systems")
-  createdAt               DateTime     @default(now()) @map("created_at")
-  updatedAt               DateTime     @updatedAt @map("updated_at")
+  equipmentSystems        String?           @map("equipment_systems")
+  createdAt               DateTime          @default(now()) @map("created_at")
+  updatedAt               DateTime          @updatedAt @map("updated_at")
+  branches                PharmacyBranch[]
   contracts               Contract[]
   documents               Document[]
   jobPostings             JobPosting[]
   payments                Payment[]
   penalties               Penalty[]
-  user                    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId], map: "idx_pharmacies_user_id")
   @@index([prefecture], map: "idx_pharmacies_prefecture")
   @@map("pharmacies")
+}
+
+model PharmacyBranch {
+  id                     BigInt       @id @default(autoincrement())
+  pharmacyId             BigInt       @map("pharmacy_id")
+  name                   String       @map("name") @db.VarChar(255)
+  phoneNumber            String?      @map("phone_number") @db.VarChar(20)
+  faxNumber              String?      @map("fax_number") @db.VarChar(20)
+  prefecture             String?      @db.VarChar(50)
+  address                String?
+  nearestStation         String?      @map("nearest_station") @db.VarChar(255)
+  minutesFromStation     Int?         @map("minutes_from_station")
+  carCommuteAvailable    Boolean?     @map("car_commute_available")
+  establishedDate        DateTime?    @map("established_date") @db.Date
+  dailyPrescriptionCount Int?         @map("daily_prescription_count")
+  staffCount             Int?         @map("staff_count")
+  businessHoursStart     DateTime?    @map("business_hours_start") @db.Time(6)
+  businessHoursEnd       DateTime?    @map("business_hours_end") @db.Time(6)
+  introduction           String?
+  strengths              String?
+  equipmentSystems       String?      @map("equipment_systems")
+  displayOrder           Int          @default(0) @map("display_order")
+  createdAt              DateTime     @default(now()) @map("created_at")
+  updatedAt              DateTime     @updatedAt @map("updated_at")
+  pharmacy               Pharmacy     @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  jobPostings            JobPosting[]
+
+  @@index([pharmacyId], map: "idx_pharmacy_branches_pharmacy_id")
+  @@map("pharmacy_branches")
 }
 
 model FavoriteJob {
@@ -127,33 +157,36 @@ model Pharmacist {
 }
 
 model JobPosting {
-  id                  BigInt        @id @default(autoincrement())
-  pharmacyId          BigInt        @map("pharmacy_id")
-  title               String        @db.VarChar(255)
+  id                  BigInt          @id @default(autoincrement())
+  pharmacyId          BigInt          @map("pharmacy_id")
+  pharmacyBranchId    BigInt?         @map("pharmacy_branch_id")
+  title               String          @db.VarChar(255)
   description         String?
-  workLocation        String        @map("work_location") @db.VarChar(255)
-  desiredWorkDays     Int           @map("desired_work_days")
-  workStartPeriodFrom DateTime      @map("work_start_period_from") @db.Date
-  workStartPeriodTo   DateTime      @map("work_start_period_to") @db.Date
-  recruitmentDeadline DateTime      @map("recruitment_deadline") @db.Date
+  workLocation        String          @map("work_location") @db.VarChar(255)
+  desiredWorkDays     Int             @map("desired_work_days")
+  workStartPeriodFrom DateTime        @map("work_start_period_from") @db.Date
+  workStartPeriodTo   DateTime        @map("work_start_period_to") @db.Date
+  recruitmentDeadline DateTime        @map("recruitment_deadline") @db.Date
   requirements        String?
-  desiredWorkHours    String?       @map("desired_work_hours")
-  dailyWage           Int           @map("daily_wage")
-  totalCompensation   Int           @map("total_compensation")
-  platformFee         Int           @map("platform_fee")
-  status              String        @default("draft") @db.VarChar(20)
-  viewCount           Int           @default(0) @map("view_count")
-  applicationCount    Int           @default(0) @map("application_count")
-  publishedAt         DateTime?     @map("published_at")
-  closedAt            DateTime?     @map("closed_at")
-  createdAt           DateTime      @default(now()) @map("created_at")
-  updatedAt           DateTime      @updatedAt @map("updated_at")
+  desiredWorkHours    String?         @map("desired_work_hours")
+  dailyWage           Int             @map("daily_wage")
+  totalCompensation   Int             @map("total_compensation")
+  platformFee         Int             @map("platform_fee")
+  status              String          @default("draft") @db.VarChar(20)
+  viewCount           Int             @default(0) @map("view_count")
+  applicationCount    Int             @default(0) @map("application_count")
+  publishedAt         DateTime?       @map("published_at")
+  closedAt            DateTime?       @map("closed_at")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
   applications        Application[]
   contracts           Contract[]
   favoriteJobs        FavoriteJob[]
-  pharmacy            Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  pharmacy            Pharmacy        @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  pharmacyBranch      PharmacyBranch? @relation(fields: [pharmacyBranchId], references: [id])
 
   @@index([pharmacyId], map: "idx_job_postings_pharmacy_id")
+  @@index([pharmacyBranchId], map: "idx_job_postings_pharmacy_branch_id")
   @@index([status], map: "idx_job_postings_status")
   @@index([recruitmentDeadline], map: "idx_job_postings_deadline")
   @@index([publishedAt], map: "idx_job_postings_published_at")

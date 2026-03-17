@@ -107,6 +107,12 @@ export default function JobPostingDetailPage() {
                         )}
 
                         <div className="grid grid-cols-2 gap-6">
+                            {jobPosting.pharmacyBranch && (
+                                <div className="col-span-2">
+                                    <h3 className="text-sm font-medium text-gray-500 mb-1">勤務薬局</h3>
+                                    <p className="text-gray-900 font-medium">{jobPosting.pharmacyBranch.name}</p>
+                                </div>
+                            )}
                             <div>
                                 <h3 className="text-sm font-medium text-gray-500 mb-1">勤務地</h3>
                                 <p className="text-gray-900">

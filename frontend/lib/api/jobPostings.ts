@@ -4,6 +4,7 @@ import { APIResponse } from '../types';
 export interface JobPosting {
   id: number;
   pharmacyId: number;
+  pharmacyBranchId?: number | null;
   title: string;
   description?: string;
   workLocation: string;
@@ -33,10 +34,20 @@ export interface JobPosting {
     phoneNumber?: string;
     introduction?: string;
   };
+  pharmacyBranch?: {
+    id: number;
+    name: string;
+    prefecture?: string;
+    address?: string;
+    nearestStation?: string;
+    phoneNumber?: string;
+    introduction?: string;
+  } | null;
 }
 
 export interface CreateJobPostingInput {
   pharmacyId: number;
+  pharmacyBranchId?: number | null;
   title: string;
   description?: string;
   workLocation: string;

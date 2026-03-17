@@ -109,6 +109,9 @@ export default function JobPostingsPage() {
                       </span>
                     </div>
                     <div className="space-y-1 text-sm text-gray-600">
+                      {job.pharmacyBranch && (
+                        <p>🏥 {job.pharmacyBranch.name}</p>
+                      )}
                       <p>
                         📍 {job.workLocation}
                       </p>

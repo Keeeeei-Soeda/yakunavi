@@ -24,6 +24,7 @@ export class JobPostingController {
       const pharmacyId = BigInt(req.body.pharmacyId);
       const jobPosting = await this.jobPostingService.createJobPosting({
         pharmacyId,
+        pharmacyBranchId: req.body.pharmacyBranchId ? BigInt(req.body.pharmacyBranchId) : null,
         title: req.body.title,
         workLocation: req.body.workLocation,
         description: req.body.description,

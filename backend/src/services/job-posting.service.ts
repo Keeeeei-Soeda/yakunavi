@@ -2,6 +2,7 @@ import prisma from '../utils/prisma';
 
 interface CreateJobPostingInput {
   pharmacyId: bigint;
+  pharmacyBranchId?: bigint | null;
   title: string;
   workLocation: string;
   description?: string;
@@ -55,6 +56,7 @@ export class JobPostingService {
     const jobPosting = await prisma.jobPosting.create({
       data: {
         pharmacyId: BigInt(input.pharmacyId),
+        pharmacyBranchId: input.pharmacyBranchId ? BigInt(input.pharmacyBranchId) : null,
         title: input.title,
         workLocation: input.workLocation,
         description: input.description || null,
@@ -70,12 +72,19 @@ export class JobPostingService {
         status,
         publishedAt,
       },
+      include: {
+        pharmacyBranch: { select: { id: true, name: true } },
+      },
     });
 
     return {
       ...jobPosting,
       id: Number(jobPosting.id),
       pharmacyId: Number(jobPosting.pharmacyId),
+      pharmacyBranchId: jobPosting.pharmacyBranchId ? Number(jobPosting.pharmacyBranchId) : null,
+      pharmacyBranch: jobPosting.pharmacyBranch
+        ? { ...jobPosting.pharmacyBranch, id: Number(jobPosting.pharmacyBranch.id) }
+        : null,
     };
   }
 
@@ -160,6 +169,17 @@ export class JobPostingService {
             introduction: true,
           },
         },
+        pharmacyBranch: {
+          select: {
+            id: true,
+            name: true,
+            prefecture: true,
+            address: true,
+            nearestStation: true,
+            phoneNumber: true,
+            introduction: true,
+          },
+        },
         applications: {
           include: {
             pharmacist: {
@@ -185,10 +205,14 @@ export class JobPostingService {
       ...jobPosting,
       id: Number(jobPosting.id),
       pharmacyId: Number(jobPosting.pharmacyId),
+      pharmacyBranchId: jobPosting.pharmacyBranchId ? Number(jobPosting.pharmacyBranchId) : null,
       pharmacy: {
         ...jobPosting.pharmacy,
         id: Number(jobPosting.pharmacy.id),
       },
+      pharmacyBranch: jobPosting.pharmacyBranch
+        ? { ...jobPosting.pharmacyBranch, id: Number(jobPosting.pharmacyBranch.id) }
+        : null,
       applications: jobPosting.applications.map((app: any) => ({
         ...app,
         id: Number(app.id),
@@ -209,12 +233,19 @@ export class JobPostingService {
     const jobPostings = await prisma.jobPosting.findMany({
       where: { pharmacyId },
       orderBy: { createdAt: 'desc' },
+      include: {
+        pharmacyBranch: { select: { id: true, name: true } },
+      },
     });
 
     return jobPostings.map((jp) => ({
       ...jp,
       id: Number(jp.id),
       pharmacyId: Number(jp.pharmacyId),
+      pharmacyBranchId: jp.pharmacyBranchId ? Number(jp.pharmacyBranchId) : null,
+      pharmacyBranch: jp.pharmacyBranch
+        ? { ...jp.pharmacyBranch, id: Number(jp.pharmacyBranch.id) }
+        : null,
     }));
   }
 
