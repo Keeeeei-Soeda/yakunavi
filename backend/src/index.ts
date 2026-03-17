@@ -17,6 +17,11 @@ import adminRoutes from './routes/admin.routes';
 // 環境変数の読み込み
 dotenv.config();
 
+// BigInt を JSON.stringify で数値として出力できるようにする
+(BigInt.prototype as any).toJSON = function () {
+  return Number(this);
+};
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 

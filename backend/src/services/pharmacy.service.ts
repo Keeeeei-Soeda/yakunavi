@@ -238,6 +238,7 @@ export class PharmacyService {
       ...jp,
       id: Number(jp.id),
       pharmacyId: Number(jp.pharmacyId),
+      pharmacyBranchId: jp.pharmacyBranchId ? Number(jp.pharmacyBranchId) : null,
       applicationCount: jp._count.applications,
     }));
   }
