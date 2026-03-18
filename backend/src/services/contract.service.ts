@@ -220,7 +220,11 @@ export class ContractService {
         const contract = await prisma.contract.findUnique({
             where: { id: contractId },
             include: {
-                pharmacy: true,
+                pharmacy: {
+                    include: {
+                        user: { select: { id: true, email: true } },
+                    },
+                },
                 pharmacist: true,
                 application: {
                     include: {
@@ -417,6 +421,19 @@ export class ContractService {
         //   console.error('Failed to generate invoice:', error);
         // }
 
+        // 薬局へオファー承認通知を送信（fire & forget）
+        if (contract.pharmacy.user?.email) {
+            const pharmacyName = contract.pharmacy.pharmacyName || contract.pharmacy.companyName || '薬局';
+            const pharmacistName = `${contract.pharmacist.lastName} ${contract.pharmacist.firstName}`;
+            this.notificationService.notifyOfferAcceptedToPharmacy({
+                pharmacyUserId: contract.pharmacy.user.id,
+                pharmacyEmail: contract.pharmacy.user.email,
+                pharmacyName,
+                pharmacistName,
+                contractId: Number(contractId),
+            }).catch((err: Error) => console.error('Offer accepted notification error:', err));
+        }
+
         return {
             ...updatedContract,
             id: Number(updatedContract.id),
@@ -433,6 +450,16 @@ export class ContractService {
     async rejectContract(contractId: bigint, pharmacistId: bigint) {
         const contract = await prisma.contract.findUnique({
             where: { id: contractId },
+            include: {
+                pharmacy: {
+                    include: {
+                        user: { select: { id: true, email: true } },
+                    },
+                },
+                pharmacist: {
+                    select: { lastName: true, firstName: true },
+                },
+            },
         });
 
         if (!contract) {
@@ -465,6 +492,18 @@ export class ContractService {
                 respondedAt: new Date(),
             },
         });
+
+        // 薬局へオファー辞退通知を送信（fire & forget）
+        if (contract.pharmacy.user?.email) {
+            const pharmacyName = contract.pharmacy.pharmacyName || contract.pharmacy.companyName || '薬局';
+            const pharmacistName = `${contract.pharmacist.lastName} ${contract.pharmacist.firstName}`;
+            this.notificationService.notifyOfferDeclinedToPharmacy({
+                pharmacyUserId: contract.pharmacy.user.id,
+                pharmacyEmail: contract.pharmacy.user.email,
+                pharmacyName,
+                pharmacistName,
+            }).catch((err: Error) => console.error('Offer declined notification error:', err));
+        }
 
         return { success: true, message: 'オファーを辞退しました' };
     }

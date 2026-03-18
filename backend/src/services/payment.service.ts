@@ -90,7 +90,11 @@ export class PaymentService {
       include: {
         contract: {
           include: {
-            pharmacy: true,
+            pharmacy: {
+              include: {
+                user: { select: { id: true, email: true } },
+              },
+            },
             pharmacist: {
               include: {
                 user: {
@@ -144,6 +148,19 @@ export class PaymentService {
         pharmacyName,
         contractId: Number(payment.contractId),
       }).catch((err: Error) => console.error('Contract activated notification error:', err));
+
+      // 薬局へ支払い確認完了通知を送信（fire & forget）
+      if (payment.contract?.pharmacy?.user?.email) {
+        const pharmacy = payment.contract.pharmacy;
+        const pharmacyUserName = pharmacy.pharmacyName || pharmacy.companyName || '薬局';
+        this.notificationService.notifyPaymentConfirmedToPharmacy({
+          pharmacyUserId: pharmacy.user!.id,
+          pharmacyEmail: pharmacy.user!.email,
+          pharmacyName: pharmacyUserName,
+          pharmacistName,
+          contractId: Number(payment.contractId),
+        }).catch((err: Error) => console.error('Payment confirmed notification to pharmacy error:', err));
+      }
     }
 
     return {

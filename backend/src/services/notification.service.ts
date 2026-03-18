@@ -272,6 +272,217 @@ export class NotificationService {
         });
     }
 
+    // =============================================
+    // 薬局向け通知
+    // =============================================
+
+    /**
+     * 新規応募到着通知（薬局向け）
+     * application.service.ts の createApplication 内で呼び出す
+     */
+    async notifyNewApplicationToPharmacy(params: {
+        pharmacyUserId: bigint;
+        pharmacyEmail: string;
+        pharmacyName: string;
+        pharmacistName: string;
+        jobTitle: string;
+        applicationId: number;
+    }) {
+        const { pharmacyUserId, pharmacyEmail, pharmacyName, pharmacistName, jobTitle, applicationId } = params;
+        const linkUrl = `/pharmacy/applications`;
+
+        await this.createNotification({
+            userId: pharmacyUserId,
+            notificationType: 'new_application',
+            title: '新しい応募が届きました',
+            message: `${pharmacistName}さんが「${jobTitle}」に応募しました。`,
+            linkUrl,
+        });
+
+        const html = this.buildEmailHtml({
+            title: '📋 新しい応募が届きました',
+            recipientName: pharmacyName,
+            bodyHtml: `
+                <p><strong>${pharmacistName}</strong>さんが求人「${jobTitle}」に応募しました。</p>
+                <p>管理画面から応募内容をご確認ください。</p>
+            `,
+            buttonUrl: `https://yaku-navi.com${linkUrl}`,
+            buttonText: '応募を確認する',
+            color: '#2563eb',
+        });
+
+        await this.sendEmail({
+            to: pharmacyEmail,
+            subject: `【薬ナビ】${pharmacistName}さんから新しい応募が届きました`,
+            html,
+        });
+    }
+
+    /**
+     * オファー承認通知（薬局向け）
+     * contract.service.ts の approveContract 内で呼び出す
+     */
+    async notifyOfferAcceptedToPharmacy(params: {
+        pharmacyUserId: bigint;
+        pharmacyEmail: string;
+        pharmacyName: string;
+        pharmacistName: string;
+        contractId: number;
+    }) {
+        const { pharmacyUserId, pharmacyEmail, pharmacyName, pharmacistName, contractId } = params;
+        const linkUrl = `/pharmacy/contracts`;
+
+        await this.createNotification({
+            userId: pharmacyUserId,
+            notificationType: 'offer_accepted',
+            title: 'オファーが承認されました',
+            message: `${pharmacistName}さんがオファーを承認しました。手数料のお支払いをお願いします。`,
+            linkUrl,
+        });
+
+        const html = this.buildEmailHtml({
+            title: '✅ オファーが承認されました',
+            recipientName: pharmacyName,
+            bodyHtml: `
+                <p><strong>${pharmacistName}</strong>さんがオファーを承認しました。</p>
+                <p>続けて、プラットフォーム手数料のお支払い手続きをお願いします。</p>
+            `,
+            buttonUrl: `https://yaku-navi.com${linkUrl}`,
+            buttonText: '契約管理を確認する',
+            color: '#16a34a',
+        });
+
+        await this.sendEmail({
+            to: pharmacyEmail,
+            subject: `【薬ナビ】${pharmacistName}さんがオファーを承認しました`,
+            html,
+        });
+    }
+
+    /**
+     * オファー辞退通知（薬局向け）
+     * contract.service.ts の rejectContract 内で呼び出す
+     */
+    async notifyOfferDeclinedToPharmacy(params: {
+        pharmacyUserId: bigint;
+        pharmacyEmail: string;
+        pharmacyName: string;
+        pharmacistName: string;
+    }) {
+        const { pharmacyUserId, pharmacyEmail, pharmacyName, pharmacistName } = params;
+        const linkUrl = `/pharmacy/applications`;
+
+        await this.createNotification({
+            userId: pharmacyUserId,
+            notificationType: 'offer_declined',
+            title: 'オファーが辞退されました',
+            message: `${pharmacistName}さんがオファーを辞退しました。`,
+            linkUrl,
+        });
+
+        const html = this.buildEmailHtml({
+            title: '❌ オファーが辞退されました',
+            recipientName: pharmacyName,
+            bodyHtml: `
+                <p><strong>${pharmacistName}</strong>さんがオファーを辞退しました。</p>
+                <p>他の応募者を検討するか、新たな求人募集をご検討ください。</p>
+            `,
+            buttonUrl: `https://yaku-navi.com${linkUrl}`,
+            buttonText: '応募一覧を確認する',
+            color: '#dc2626',
+        });
+
+        await this.sendEmail({
+            to: pharmacyEmail,
+            subject: `【薬ナビ】${pharmacistName}さんがオファーを辞退しました`,
+            html,
+        });
+    }
+
+    /**
+     * 初回出勤日確定通知（薬局向け）
+     * message.service.ts の selectDate 内で呼び出す
+     */
+    async notifyDateSelectedToPharmacy(params: {
+        pharmacyUserId: bigint;
+        pharmacyEmail: string;
+        pharmacyName: string;
+        pharmacistName: string;
+        selectedDate: string;
+        applicationId: number;
+    }) {
+        const { pharmacyUserId, pharmacyEmail, pharmacyName, pharmacistName, selectedDate, applicationId } = params;
+        const linkUrl = `/pharmacy/messages?applicationId=${applicationId}`;
+
+        await this.createNotification({
+            userId: pharmacyUserId,
+            notificationType: 'date_selected',
+            title: '出勤日が確定しました',
+            message: `${pharmacistName}さんが初回出勤日（${selectedDate}）を選択しました。`,
+            linkUrl,
+        });
+
+        const html = this.buildEmailHtml({
+            title: '📅 出勤日が確定しました',
+            recipientName: pharmacyName,
+            bodyHtml: `
+                <p><strong>${pharmacistName}</strong>さんが初回出勤日を選択しました。</p>
+                <p>選択された日程: <strong>${selectedDate}</strong></p>
+                <p>詳細はメッセージ画面でご確認ください。</p>
+            `,
+            buttonUrl: `https://yaku-navi.com${linkUrl}`,
+            buttonText: 'メッセージを確認する',
+            color: '#7c3aed',
+        });
+
+        await this.sendEmail({
+            to: pharmacyEmail,
+            subject: `【薬ナビ】${pharmacistName}さんが初回出勤日を確定しました`,
+            html,
+        });
+    }
+
+    /**
+     * 支払い確認完了通知（薬局向け）
+     * payment.service.ts の confirmPayment 内で呼び出す
+     */
+    async notifyPaymentConfirmedToPharmacy(params: {
+        pharmacyUserId: bigint;
+        pharmacyEmail: string;
+        pharmacyName: string;
+        pharmacistName: string;
+        contractId: number;
+    }) {
+        const { pharmacyUserId, pharmacyEmail, pharmacyName, pharmacistName, contractId } = params;
+        const linkUrl = `/pharmacy/contracts`;
+
+        await this.createNotification({
+            userId: pharmacyUserId,
+            notificationType: 'payment_confirmed',
+            title: '支払いが確認されました',
+            message: `手数料の支払いが確認され、${pharmacistName}さんとの契約が正式に成立しました。`,
+            linkUrl,
+        });
+
+        const html = this.buildEmailHtml({
+            title: '✅ 支払いが確認されました',
+            recipientName: pharmacyName,
+            bodyHtml: `
+                <p>手数料の支払いが確認され、<strong>${pharmacistName}</strong>さんとの契約が正式に成立しました。</p>
+                <p>薬剤師の連絡先が開示されましたので、直接ご連絡のうえ勤務開始のご調整をお願いします。</p>
+            `,
+            buttonUrl: `https://yaku-navi.com${linkUrl}`,
+            buttonText: '契約管理を確認する',
+            color: '#16a34a',
+        });
+
+        await this.sendEmail({
+            to: pharmacyEmail,
+            subject: `【薬ナビ】手数料の支払いが確認されました`,
+            html,
+        });
+    }
+
     /**
      * 支払い報告時の運営通知（info@yaku-navi.com へ Resend で送信）
      */

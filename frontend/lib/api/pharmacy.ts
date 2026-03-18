@@ -144,5 +144,25 @@ export const pharmacyAPI = {
       { params: { limit } }
     );
   },
+
+  // 全通知取得
+  getAllNotifications: async () => {
+    return apiClient.get<APIResponse<any[]>>(`/pharmacy/dashboard/notifications/all`);
+  },
+
+  // 未読通知数取得
+  getNotificationUnreadCount: async () => {
+    return apiClient.get<APIResponse<{ count: number }>>(`/pharmacy/dashboard/notifications/unread-count`);
+  },
+
+  // 通知を既読にする
+  markNotificationRead: async (notificationId: number) => {
+    return apiClient.patch<APIResponse>(`/pharmacy/dashboard/notifications/${notificationId}/read`);
+  },
+
+  // 全通知を既読にする
+  markAllNotificationsRead: async () => {
+    return apiClient.patch<APIResponse>(`/pharmacy/dashboard/notifications/read-all`);
+  },
 };
 

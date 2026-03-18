@@ -31,12 +31,12 @@ router.get(
     pharmacyController.getDashboardStats
 );
 
-// 最近の通知（薬局のみ）
-router.get(
-    '/dashboard/notifications',
-    requireUserType('pharmacy'),
-    pharmacyController.getRecentNotifications
-);
+// 通知系エンドポイント（薬局のみ）
+router.get('/dashboard/notifications', requireUserType('pharmacy'), pharmacyController.getRecentNotifications);
+router.get('/dashboard/notifications/all', requireUserType('pharmacy'), pharmacyController.getAllNotifications);
+router.get('/dashboard/notifications/unread-count', requireUserType('pharmacy'), pharmacyController.getNotificationUnreadCount);
+router.patch('/dashboard/notifications/read-all', requireUserType('pharmacy'), pharmacyController.markAllNotificationsRead);
+router.patch('/dashboard/notifications/:notificationId/read', requireUserType('pharmacy'), pharmacyController.markNotificationRead);
 
 // 最近の応募（薬局のみ）
 router.get(

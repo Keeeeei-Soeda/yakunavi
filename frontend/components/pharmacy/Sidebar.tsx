@@ -16,13 +16,16 @@ import {
   LogOut,
   X,
   BookOpen,
+  Bell,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import { pharmacyAPI, PharmacyProfile } from '@/lib/api/pharmacy';
 import { messagesAPI } from '@/lib/api/messages';
+import { pharmacyAPI as pharmacyNotifAPI } from '@/lib/api/pharmacy';
 
 const menuItems = [
     { icon: Home,        label: 'ホーム',               href: '/pharmacy/dashboard' },
+    { icon: Bell,        label: '通知',                  href: '/pharmacy/notifications' },
     { icon: Users,       label: '応募確認',              href: '/pharmacy/applications' },
     { icon: MessageSquare, label: 'メッセージ管理',      href: '/pharmacy/messages' },
     { icon: Briefcase,   label: '求人票',                href: '/pharmacy/job-postings' },
@@ -51,6 +54,7 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
   const pharmacyId = user?.relatedId || 1;
   const [pharmacyProfile, setPharmacyProfile] = useState<PharmacyProfile | null>(null);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -68,12 +72,14 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
 
   const fetchUnreadCount = async () => {
     try {
-      const response = await messagesAPI.getUnreadCount(pharmacyId);
-      if (response.success && response.data) {
-        setUnreadMessageCount(response.data.count);
-      }
+      const [msgRes, notifRes] = await Promise.all([
+        messagesAPI.getUnreadCount(pharmacyId),
+        pharmacyNotifAPI.getNotificationUnreadCount(),
+      ]);
+      if (msgRes.success && msgRes.data) setUnreadMessageCount(msgRes.data.count);
+      if (notifRes.success && notifRes.data) setUnreadNotificationCount(notifRes.data.count);
     } catch (error) {
-      console.error('Failed to fetch unread message count:', error);
+      console.error('Failed to fetch unread counts:', error);
     }
   };
 
@@ -114,7 +120,12 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
               const Icon = item.icon;
               const isActive = pathname === item.href;
               const isMessages = item.href === '/pharmacy/messages';
-              const badgeCount = isMessages ? unreadMessageCount : 0;
+              const isNotifications = item.href === '/pharmacy/notifications';
+              const badgeCount = isMessages
+                ? unreadMessageCount
+                : isNotifications
+                ? unreadNotificationCount
+                : 0;
               return (
                 <li key={item.href}>
                   <Link
@@ -188,7 +199,12 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
                   const Icon = item.icon;
                   const isActive = pathname === item.href;
                   const isMessages = item.href === '/pharmacy/messages';
-                  const badgeCount = isMessages ? unreadMessageCount : 0;
+                  const isNotifications = item.href === '/pharmacy/notifications';
+                  const badgeCount = isMessages
+                    ? unreadMessageCount
+                    : isNotifications
+                    ? unreadNotificationCount
+                    : 0;
                   return (
                     <li key={item.href}>
                       <Link

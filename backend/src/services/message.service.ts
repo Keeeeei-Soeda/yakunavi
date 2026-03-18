@@ -416,6 +416,20 @@ export class MessageService {
     async selectDate(applicationId: bigint, pharmacistId: bigint, selectedDate: string) {
         const application = await prisma.application.findUnique({
             where: { id: applicationId },
+            include: {
+                jobPosting: {
+                    include: {
+                        pharmacy: {
+                            include: {
+                                user: { select: { id: true, email: true } },
+                            },
+                        },
+                    },
+                },
+                pharmacist: {
+                    select: { lastName: true, firstName: true },
+                },
+            },
         });
 
         if (!application) {
@@ -441,6 +455,21 @@ export class MessageService {
                 isRead: false,
             },
         });
+
+        // 薬局へ出勤日確定通知を送信（fire & forget）
+        const pharmacy = application.jobPosting.pharmacy;
+        if (pharmacy.user?.email) {
+            const pharmacyName = pharmacy.pharmacyName || pharmacy.companyName || '薬局';
+            const pharmacistName = `${application.pharmacist.lastName} ${application.pharmacist.firstName}`;
+            this.notificationService.notifyDateSelectedToPharmacy({
+                pharmacyUserId: pharmacy.user.id,
+                pharmacyEmail: pharmacy.user.email,
+                pharmacyName,
+                pharmacistName,
+                selectedDate,
+                applicationId: Number(applicationId),
+            }).catch((err: Error) => console.error('Date selected notification error:', err));
+        }
 
         return {
             id: Number(message.id),

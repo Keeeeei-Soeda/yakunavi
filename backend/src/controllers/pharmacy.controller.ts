@@ -139,6 +139,63 @@ export class PharmacyController {
   }
 
   /**
+   * 薬局向け全通知を取得
+   */
+  async getAllNotifications(req: AuthRequest, res: Response) {
+    try {
+      const userId = BigInt(req.user!.id);
+      const notifications = await dashboardService.getAllNotifications(userId);
+      res.json({ success: true, data: notifications });
+    } catch (error) {
+      console.error('Get pharmacy all notifications error:', error);
+      res.status(500).json({ success: false, error: '通知の取得に失敗しました' });
+    }
+  }
+
+  /**
+   * 薬局向け未読通知数を取得
+   */
+  async getNotificationUnreadCount(req: AuthRequest, res: Response) {
+    try {
+      const userId = BigInt(req.user!.id);
+      const count = await dashboardService.getUnreadCount(userId);
+      res.json({ success: true, data: { count } });
+    } catch (error) {
+      console.error('Get pharmacy unread count error:', error);
+      res.status(500).json({ success: false, error: '未読数の取得に失敗しました' });
+    }
+  }
+
+  /**
+   * 薬局向け通知を既読にする
+   */
+  async markNotificationRead(req: AuthRequest, res: Response) {
+    try {
+      const userId = BigInt(req.user!.id);
+      const notificationId = BigInt(req.params.notificationId);
+      await dashboardService.markNotificationRead(notificationId, userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Mark pharmacy notification read error:', error);
+      res.status(500).json({ success: false, error: '通知の更新に失敗しました' });
+    }
+  }
+
+  /**
+   * 薬局向け全通知を既読にする
+   */
+  async markAllNotificationsRead(req: AuthRequest, res: Response) {
+    try {
+      const userId = BigInt(req.user!.id);
+      await dashboardService.markAllNotificationsRead(userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Mark all pharmacy notifications read error:', error);
+      res.status(500).json({ success: false, error: '通知の更新に失敗しました' });
+    }
+  }
+
+  /**
    * 薬局プロフィールを取得（薬剤師側からもアクセス可能）
    */
   async getPublicProfile(req: AuthRequest, res: Response) {

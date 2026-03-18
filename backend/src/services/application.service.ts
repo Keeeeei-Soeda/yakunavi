@@ -1,4 +1,5 @@
 import prisma from '../utils/prisma';
+import { NotificationService } from './notification.service';
 
 interface CreateApplicationInput {
   jobPostingId: bigint;
@@ -14,6 +15,12 @@ interface UpdateApplicationStatusInput {
 }
 
 export class ApplicationService {
+  private notificationService: NotificationService;
+
+  constructor() {
+    this.notificationService = new NotificationService();
+  }
+
   /**
    * 応募を作成
    */
@@ -98,14 +105,33 @@ export class ApplicationService {
             pharmacy: {
               select: {
                 id: true,
+                userId: true,
                 companyName: true,
                 pharmacyName: true,
+                user: {
+                  select: { email: true },
+                },
               },
             },
           },
         },
       },
     });
+
+    // 薬局へ新規応募通知を送信（fire & forget）
+    const pharmacy = application.jobPosting.pharmacy;
+    if (pharmacy.user?.email) {
+      const pharmacyName = pharmacy.pharmacyName || pharmacy.companyName || '薬局';
+      const pharmacistName = `${pharmacist.lastName} ${pharmacist.firstName}`;
+      this.notificationService.notifyNewApplicationToPharmacy({
+        pharmacyUserId: pharmacy.userId,
+        pharmacyEmail: pharmacy.user.email,
+        pharmacyName,
+        pharmacistName,
+        jobTitle: application.jobPosting.title,
+        applicationId: Number(application.id),
+      }).catch((err: Error) => console.error('New application notification error:', err));
+    }
 
     return {
       ...application,
@@ -116,8 +142,9 @@ export class ApplicationService {
         ...application.jobPosting,
         id: Number(application.jobPosting.id),
         pharmacy: {
-          ...application.jobPosting.pharmacy,
           id: Number(application.jobPosting.pharmacy.id),
+          companyName: application.jobPosting.pharmacy.companyName,
+          pharmacyName: application.jobPosting.pharmacy.pharmacyName,
         },
       },
     };
