@@ -119,18 +119,18 @@ curl http://localhost:5001/api/admin/dashboard/stats
 #### フロントエンド確認
 ブラウザで以下にアクセス：
 - `https://yaku-navi.com/admin/auth/login`
-- 管理者ログイン（admin@yakunavi.com / Admin@2026!）
+- 管理者ログイン（admin@yaku-navi.com / Admin@2026!）
 - ダッシュボードが表示されることを確認
 - 各管理ページが正常に動作することを確認
 
 ## 📝 管理者アカウント情報
 
 ### メイン管理者
-- **メール**: `admin@yakunavi.com`
+- **メール**: `admin@yaku-navi.com`
 - **パスワード**: `Admin@2026!`
 
 ### サポート管理者
-- **メール**: `support@yakunavi.com`
+- **メール**: `support@yaku-navi.com`
 - **パスワード**: `Support@2026!`
 
 ## ⚠️ 注意事項

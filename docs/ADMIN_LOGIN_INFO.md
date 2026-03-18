@@ -4,14 +4,14 @@
 
 ### メイン管理者
 ```
-メールアドレス: admin@yakunavi.com
+メールアドレス: admin@yaku-navi.com
 パスワード: Admin@2026!
 ユーザーID: 24
 ```
 
 ### サポート管理者
 ```
-メールアドレス: support@yakunavi.com
+メールアドレス: support@yaku-navi.com
 パスワード: Support@2026!
 ユーザーID: 25
 ```
@@ -138,7 +138,7 @@ npx prisma studio
 
 # または、直接SQLで確認
 psql -d your_database
-SELECT id, email, user_type FROM users WHERE email = 'admin@yakunavi.com';
+SELECT id, email, user_type FROM users WHERE email = 'admin@yaku-navi.com';
 ```
 
 ### 管理者アカウントを再作成

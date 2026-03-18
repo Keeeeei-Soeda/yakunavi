@@ -30,11 +30,11 @@ npm run create:admin
 このコマンドで以下の管理者アカウントが作成されます：
 
 #### メイン管理者
-- **メール**: `admin@yakunavi.com`
+- **メール**: `admin@yaku-navi.com`
 - **パスワード**: `Admin@2026!`
 
 #### サポート管理者
-- **メール**: `support@yakunavi.com`
+- **メール**: `support@yaku-navi.com`
 - **パスワード**: `Support@2026!`
 
 ### 4. 既存アカウントを管理者に変更する場合
@@ -48,10 +48,10 @@ psql -d pharmacy_db
 # 既存アカウントを管理者に変更
 UPDATE users 
 SET "userType" = 'admin', "isActive" = true 
-WHERE email = 'admin@yakunavi.com';
+WHERE email = 'admin@yaku-navi.com';
 
 # 確認
-SELECT id, email, "userType", "isActive" FROM users WHERE email = 'admin@yakunavi.com';
+SELECT id, email, "userType", "isActive" FROM users WHERE email = 'admin@yaku-navi.com';
 ```
 
 ### 5. パスワードをリセットする場合
@@ -65,7 +65,7 @@ const prisma = new PrismaClient();
 (async () => {
   const hashedPassword = await bcrypt.hash('Admin@2026!', 10);
   await prisma.user.update({
-    where: { email: 'admin@yakunavi.com' },
+    where: { email: 'admin@yaku-navi.com' },
     data: { password: hashedPassword, userType: 'admin', isActive: true }
   });
   console.log('✅ パスワードをリセットしました');
@@ -117,7 +117,7 @@ psql -d pharmacy_db -c "SELECT id, email, \"userType\", \"isActive\" FROM users 
 ```bash
 curl -X POST http://localhost:5001/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@yakunavi.com","password":"Admin@2026!"}'
+  -d '{"email":"admin@yaku-navi.com","password":"Admin@2026!"}'
 ```
 
 成功すると、`accessToken`が返されます。
@@ -125,7 +125,7 @@ curl -X POST http://localhost:5001/api/auth/login \
 ### 3. ブラウザでログイン
 
 1. `https://yaku-navi.com/admin/auth/login` にアクセス
-2. メール: `admin@yakunavi.com`
+2. メール: `admin@yaku-navi.com`
 3. パスワード: `Admin@2026!`
 4. ログインボタンをクリック
 
@@ -194,7 +194,7 @@ WHERE "userType" = 'admin';
 -- 特定の管理者アカウントの詳細
 SELECT id, email, "userType", "isActive", "emailVerified", "createdAt" 
 FROM users 
-WHERE email = 'admin@yakunavi.com';
+WHERE email = 'admin@yaku-navi.com';
 ```
 
 ---

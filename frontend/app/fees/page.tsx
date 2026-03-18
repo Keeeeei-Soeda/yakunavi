@@ -164,10 +164,10 @@ export default function FeesPage() {
         </div>
       </section>
 
-      {/* フッター */}
+      {/* フッター（トップページと同一） */}
       <footer className="bg-gray-900 text-white py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid md:grid-cols-5 gap-8 mb-8">
             <div>
               <h3 className="font-bold text-base sm:text-lg mb-4">薬ナビ</h3>
               <p className="text-gray-400 text-xs sm:text-sm">
@@ -181,15 +181,24 @@ export default function FeesPage() {
               </ul>
             </div>
             <div>
+              <h4 className="font-bold text-sm sm:text-base mb-4">薬剤師の方</h4>
+              <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
+                <li><Link href="/auth/register/pharmacist" className="hover:text-teal-400 transition-colors">はじめての方は登録</Link></li>
+                <li><Link href="/pharmacist/login" className="hover:text-teal-400 transition-colors">登録済みの方はログイン</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-sm sm:text-base mb-4">薬局・採用担当者</h4>
+              <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
+                <li><Link href="/auth/register/pharmacy" className="hover:text-teal-400 transition-colors">はじめての方は登録</Link></li>
+                <li><Link href="/pharmacy/login" className="hover:text-teal-400 transition-colors">登録済みの方はログイン</Link></li>
+              </ul>
+            </div>
+            <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">会社情報</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
                 <li><Link href="/about" className="hover:text-teal-400 transition-colors">会社概要</Link></li>
                 <li><Link href="/contact" className="hover:text-teal-400 transition-colors">お問い合わせ</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-sm sm:text-base mb-4">その他</h4>
-              <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
                 <li><Link href="/terms" className="hover:text-teal-400 transition-colors">利用規約</Link></li>
                 <li><Link href="/privacy" className="hover:text-teal-400 transition-colors">プライバシーポリシー</Link></li>
                 <li><Link href="/fees" className="hover:text-teal-400 transition-colors">有料職業紹介事業における手数料表および返金規定</Link></li>

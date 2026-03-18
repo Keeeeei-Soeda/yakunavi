@@ -190,7 +190,7 @@ GET /api/pharmacist-profile/{pharmacistId}/certificates
 - 黄色背景の警告ボックス
 - 内容:
   - 応募後、薬局からメッセージが届く場合があります
-  - やむを得ずキャンセルが必要な場合は、運営（support@yakunavi.jp）までご連絡ください
+  - やむを得ずキャンセルが必要な場合は、運営（info@yaku-navi.com）までご連絡ください
   - 入力内容は薬局側に開示されます
   - 虚偽の情報を記載した場合、契約が取り消される場合があります
 
@@ -597,7 +597,7 @@ const pharmacistId = user?.relatedId;
 ### 10.3 応募の取り下げ
 
 - 一度応募したら、基本的に取り下げはできない
-- やむを得ない場合は運営（support@yakunavi.jp）まで連絡が必要
+- やむを得ない場合は運営（info@yaku-navi.com）まで連絡が必要
 
 ### 10.4 データの保存
 

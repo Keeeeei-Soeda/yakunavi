@@ -40,7 +40,7 @@ if (existingDateProposal) {
 **重要な変更:**
 ```
 ⚠️ 一度応募したら、基本的に取り下げはできません
-やむを得ない場合は運営（support@yakunavi.jp）までご連絡ください
+やむを得ない場合は運営（info@yaku-navi.com）までご連絡ください
 ```
 
 **影響:**
@@ -240,7 +240,7 @@ a.click();
 ## サポート連絡先
 
 取り下げが必要な場合の運営連絡先：
-- メール: support@yakunavi.jp
+- メール: info@yaku-navi.com
 - 対応時間: 平日9:00-18:00（土日祝日を除く）
 
 ---

@@ -86,14 +86,14 @@
 
 ### メイン管理者アカウント
 ```
-📧 メールアドレス: admin@yakunavi.com
+📧 メールアドレス: admin@yaku-navi.com
 🔑 パスワード: Admin@2026!
 👤 ユーザーID: 24
 ```
 
 ### サポート管理者アカウント
 ```
-📧 メールアドレス: support@yakunavi.com
+📧 メールアドレス: support@yaku-navi.com
 🔑 パスワード: Support@2026!
 👤 ユーザーID: 25
 ```
@@ -252,7 +252,7 @@ npm run dev
 
 ### 403 Forbidden エラー
 - ユーザータイプが `'admin'` であることを確認
-- データベースで確認: `SELECT user_type FROM users WHERE email = 'admin@yakunavi.com';`
+- データベースで確認: `SELECT user_type FROM users WHERE email = 'admin@yaku-navi.com';`
 
 ### ログインできない
 1. バックエンドが起動しているか確認（ポート5001）

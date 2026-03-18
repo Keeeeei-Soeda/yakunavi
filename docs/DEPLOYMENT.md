@@ -208,8 +208,8 @@ pm2 save
 # ポート5001（バックエンド）を確認
 lsof -i :5001
 
-# ポート3000（フロントエンド）を確認
-lsof -i :3000
+# ポート3001（フロントエンド・本番では next start -p 3001 で起動）を確認
+lsof -i :3001
 
 # プロセスを終了
 kill -9 <PID>
@@ -239,6 +239,10 @@ curl http://localhost:5001/health
 - [ ] 支払い報告後に自動遷移する
 - [ ] 薬剤師ログアウト後に `/pharmacist/login` に遷移する
 - [ ] エラーページが正しく表示される
+
+### 4. サブドメインLP（yakkyoku.yaku-navi.com）
+
+薬局向けLPは **https://yakkyoku.yaku-navi.com/** で公開。初回デプロイ・Nginx 反映手順は [SUBDOMAIN_YAKKYOKU_LP.md](./SUBDOMAIN_YAKKYOKU_LP.md) を参照。画像は `LP_page/images/` に指定ファイル名で後からアップロード可能。
 
 ---
 
