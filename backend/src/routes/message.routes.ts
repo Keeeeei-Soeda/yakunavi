@@ -8,6 +8,9 @@ const messageController = new MessageController();
 // すべてのルートに認証を適用
 router.use(authenticate);
 
+// 未読メッセージ数取得（?relatedId=xxx）
+router.get('/unread-count', messageController.getUnreadCount);
+
 // 会話リスト取得
 router.get('/conversations/:relatedId', messageController.getConversations);
 

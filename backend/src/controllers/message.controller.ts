@@ -55,6 +55,27 @@ export class MessageController {
     };
 
     /**
+     * メッセージ未読数を取得
+     */
+    getUnreadCount = async (req: AuthRequest, res: Response) => {
+        try {
+            if (!req.user) {
+                return res.status(401).json({ success: false, error: '認証が必要です' });
+            }
+            const role = req.user.userType as 'pharmacist' | 'pharmacy';
+            const relatedId = BigInt(req.query.relatedId as string);
+            const count = await this.messageService.getUnreadMessageCount(role, relatedId);
+            return res.status(200).json({ success: true, data: { count } });
+        } catch (error: any) {
+            console.error('Get unread message count error:', error);
+            return res.status(500).json({
+                success: false,
+                error: error.message || '未読数の取得に失敗しました',
+            });
+        }
+    };
+
+    /**
      * メッセージ一覧を取得
      */
     getMessages = async (req: AuthRequest, res: Response) => {

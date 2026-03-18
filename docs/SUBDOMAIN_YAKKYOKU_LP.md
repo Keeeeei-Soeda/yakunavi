@@ -4,10 +4,10 @@
 
 本番サーバー（85.131.247.170）とSSH（同じ鍵）で、Nginx に静的LP用のサブドメインを追加して公開しています。
 
-| サブドメイン | 用途 | トップページ（index） |
-|-------------|------|------------------------|
-| **yakkyoku.yaku-navi.com** | 薬局向けLP | phaemacy_lp.html |
-| **yakuzaishi.yaku-navi.com** | 薬剤師向けLP | pharmacist_lp.html |
+| サブドメイン                 | 用途         | トップページ（index） |
+| ---------------------------- | ------------ | --------------------- |
+| **yakkyoku.yaku-navi.com**   | 薬局向けLP   | phaemacy_lp.html      |
+| **yakuzaishi.yaku-navi.com** | 薬剤師向けLP | pharmacist_lp.html    |
 
 以下は yakkyoku を中心にした手順です。yakuzaishi も同じ方法（別ディレクトリ・別証明書）で運用します。
 
@@ -15,12 +15,12 @@
 
 ## 現状
 
-| 項目 | 内容 |
-|------|------|
-| 本番サーバー | 85.131.247.170（yaku-navi.com と同じ） |
-| SSH | 同じ `ssh_yakunavi.pem` で接続 |
-| Nginx | `yaku-navi.com` / `www.yaku-navi.com` のみ設定済み |
-| LPファイル | `LP_page/phaemacy_lp.html`（canonical は既に `https://yakkyoku.yaku-navi.com/`） |
+| 項目         | 内容                                                                             |
+| ------------ | -------------------------------------------------------------------------------- |
+| 本番サーバー | 85.131.247.170（yaku-navi.com と同じ）                                           |
+| SSH          | 同じ `ssh_yakunavi.pem` で接続                                                   |
+| Nginx        | `yaku-navi.com` / `www.yaku-navi.com` のみ設定済み                               |
+| LPファイル   | `LP_page/phaemacy_lp.html`（canonical は既に `https://yakkyoku.yaku-navi.com/`） |
 
 ---
 
@@ -56,9 +56,9 @@
 
 いずれにせよ「アップロード」は、
 
-1. ローカルで `LP_page/` を編集 → コミット・プッシュ  
-2. 本番で `git pull`  
-3. （必要なら）Nginx の root に合わせてファイルをコピー or シンボリックリンク  
+1. ローカルで `LP_page/` を編集 → コミット・プッシュ
+2. 本番で `git pull`
+3. （必要なら）Nginx の root に合わせてファイルをコピー or シンボリックリンク
 
 で実現できます。FTP等で直接アップロードする運用にも対応可能です（その場合は Nginx の `root` をアップロード先に合わせる）。
 
@@ -149,11 +149,11 @@ sudo systemctl reload nginx
 画像は後から、以下のファイル名で **LP_page/images/** に配置し、本番では **/var/www/yakkyoku/images/** に同じファイルを置いてください。  
 （`git pull` 後に `sudo cp -r /root/yaku_navi/LP_page/* /var/www/yakkyoku/` でまとめて反映しても可）
 
-| ファイル名 | 用途 |
-|------------|------|
-| `pain_manager.jpg` | 課題セクション用 |
-| `process_team.jpg` | 採用の流れセクション用 |
-| `cta_pharmacist.jpg` | CTA用 |
+| ファイル名           | 用途                   |
+| -------------------- | ---------------------- |
+| `pain_manager.jpg`   | 課題セクション用       |
+| `process_team.jpg`   | 採用の流れセクション用 |
+| `cta_pharmacist.jpg` | CTA用                  |
 
 - **方法1**: 本番で `git pull` したあと、SCP/SFTP で `LP_page/images/` にアップロード。
 - **方法2**: リポジトリに画像を追加してコミットし、本番で `git pull`。

@@ -136,5 +136,13 @@ export const pharmacyAPI = {
       `/pharmacy/${pharmacyId}/branches/${branchId}`
     );
   },
+
+  // 最近の通知取得
+  getRecentNotifications: async (limit: number = 5) => {
+    return apiClient.get<APIResponse<any[]>>(
+      `/pharmacy/dashboard/notifications`,
+      { params: { limit } }
+    );
+  },
 };
 

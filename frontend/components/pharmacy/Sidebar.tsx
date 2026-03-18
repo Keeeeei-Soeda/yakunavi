@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import { pharmacyAPI, PharmacyProfile } from '@/lib/api/pharmacy';
+import { messagesAPI } from '@/lib/api/messages';
 
 const menuItems = [
     { icon: Home,        label: 'ホーム',               href: '/pharmacy/dashboard' },
@@ -49,6 +50,7 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
   const user = useAuthStore((state) => state.user);
   const pharmacyId = user?.relatedId || 1;
   const [pharmacyProfile, setPharmacyProfile] = useState<PharmacyProfile | null>(null);
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -62,6 +64,28 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
       }
     };
     fetchProfile();
+  }, [pharmacyId]);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await messagesAPI.getUnreadCount(pharmacyId);
+      if (response.success && response.data) {
+        setUnreadMessageCount(response.data.count);
+      }
+    } catch (error) {
+      console.error('Failed to fetch unread message count:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUnreadCount();
+    const onFocus = () => fetchUnreadCount();
+    window.addEventListener('focus', onFocus);
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      clearInterval(interval);
+    };
   }, [pharmacyId]);
 
   const handleLogout = () => {
@@ -89,6 +113,8 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
+              const isMessages = item.href === '/pharmacy/messages';
+              const badgeCount = isMessages ? unreadMessageCount : 0;
               return (
                 <li key={item.href}>
                   <Link
@@ -100,7 +126,12 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
                     }`}
                   >
                     <Icon size={20} />
-                    <span>{item.label}</span>
+                    <span className="flex-1">{item.label}</span>
+                    {badgeCount > 0 && (
+                      <span className="ml-auto inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-xs font-bold bg-red-500 text-white">
+                        {badgeCount > 99 ? '99+' : badgeCount}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );
@@ -156,6 +187,8 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
                 {menuItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = pathname === item.href;
+                  const isMessages = item.href === '/pharmacy/messages';
+                  const badgeCount = isMessages ? unreadMessageCount : 0;
                   return (
                     <li key={item.href}>
                       <Link
@@ -168,7 +201,12 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
                         }`}
                       >
                         <Icon size={18} />
-                        <span>{item.label}</span>
+                        <span className="flex-1">{item.label}</span>
+                        {badgeCount > 0 && (
+                          <span className="ml-auto inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full text-xs font-bold bg-red-500 text-white">
+                            {badgeCount > 99 ? '99+' : badgeCount}
+                          </span>
+                        )}
                       </Link>
                     </li>
                   );

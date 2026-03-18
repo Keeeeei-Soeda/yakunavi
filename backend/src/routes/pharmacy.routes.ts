@@ -31,6 +31,13 @@ router.get(
     pharmacyController.getDashboardStats
 );
 
+// 最近の通知（薬局のみ）
+router.get(
+    '/dashboard/notifications',
+    requireUserType('pharmacy'),
+    pharmacyController.getRecentNotifications
+);
+
 // 最近の応募（薬局のみ）
 router.get(
     '/dashboard/:pharmacyId/recent-applications',

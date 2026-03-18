@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { PharmacyService } from '../services/pharmacy.service';
+import { PharmacistDashboardService } from '../services/pharmacist-dashboard.service';
 import { AuthRequest } from '../middleware/auth';
 
 const pharmacyService = new PharmacyService();
+const dashboardService = new PharmacistDashboardService();
 
 export class PharmacyController {
   /**
@@ -114,6 +116,24 @@ export class PharmacyController {
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'アクティブな求人の取得に失敗しました',
+      });
+    }
+  }
+
+  /**
+   * 薬局向け最近の通知を取得
+   */
+  async getRecentNotifications(req: AuthRequest, res: Response) {
+    try {
+      const userId = BigInt(req.user!.id);
+      const limit = req.query.limit ? Number(req.query.limit) : 5;
+      const notifications = await dashboardService.getRecentNotifications(userId, limit);
+      res.json({ success: true, data: notifications });
+    } catch (error) {
+      console.error('Get pharmacy notifications error:', error);
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : '通知の取得に失敗しました',
       });
     }
   }

@@ -384,6 +384,33 @@ export class MessageService {
     }
 
     /**
+     * メッセージ未読数を取得
+     * role: 'pharmacist' の場合、薬局からの未読メッセージ数を返す
+     * role: 'pharmacy' の場合、薬剤師からの未読メッセージ数を返す
+     */
+    async getUnreadMessageCount(role: 'pharmacist' | 'pharmacy', relatedId: bigint): Promise<number> {
+        if (role === 'pharmacist') {
+            return prisma.message.count({
+                where: {
+                    application: { pharmacistId: relatedId },
+                    senderType: 'pharmacy',
+                    isRead: false,
+                },
+            });
+        } else {
+            return prisma.message.count({
+                where: {
+                    application: {
+                        jobPosting: { pharmacyId: relatedId },
+                    },
+                    senderType: 'pharmacist',
+                    isRead: false,
+                },
+            });
+        }
+    }
+
+    /**
      * 初回出勤日を選択（薬剤師側）
      */
     async selectDate(applicationId: bigint, pharmacistId: bigint, selectedDate: string) {

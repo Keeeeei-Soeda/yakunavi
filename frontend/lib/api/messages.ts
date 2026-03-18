@@ -89,5 +89,13 @@ export const messagesAPI = {
             selectedDate,
         });
     },
+
+    // メッセージ未読数取得
+    getUnreadCount: async (relatedId: number) => {
+        return apiClient.get<APIResponse<{ count: number }>>(
+            `/messages/unread-count`,
+            { params: { relatedId } }
+        );
+    },
 };
 

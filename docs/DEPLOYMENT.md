@@ -215,6 +215,29 @@ lsof -i :3001
 kill -9 <PID>
 ```
 
+### 問題5: `git pull` で「未コミットの変更」エラーが出る場合
+
+**未コミットの変更**とは、本番サーバー上のリポジトリで、`git add` や `git commit` をしていない編集のことを指します。サーバー上で誰かがファイルを直接編集した、または以前のデプロイ手順の違いで、リモート（GitHub）の内容とサーバー上のファイルが食い違っている状態です。
+
+- **変更を破棄してリモートに合わせる場合**（通常のデプロイではこちらを推奨）:
+  ```bash
+  cd /root/yaku_navi
+  git fetch origin
+  git reset --hard origin/main
+  ```
+  その後、バックエンド・フロントのビルドと PM2 再起動、必要なら LP の `cp` を実行してください。
+- **変更を残したい場合**: サーバー上で `git stash` で一時退避してから `git pull` し、必要なら `git stash pop` で戻します。コンフリクトが出たら手で解消してください。
+
+#### 本番と GitHub を合わせて `git pull` 可能にする（推奨）
+
+サーバーが **origin/main より遅れている** だけで、**ローカルの変更内容がすでに GitHub に反映済み**（同じ内容がリモートにある）な場合は、作業ツリーをリセットしてから pull すると安全に揃えられます。
+
+1. **ステージだけ戻す**（ファイルは残す）: `git restore --staged <ファイル>`
+2. **作業ツリーの変更を破棄**（該当ファイルをリモートの状態に戻す）: `git restore <ファイル>`
+3. **pull**: `git pull origin main`
+
+※ 破棄する変更がリモートにない場合は、先にローカルでコミットするか別ブランチに退避してから実行してください。
+
 ---
 
 ## デプロイ後の確認
@@ -240,9 +263,25 @@ curl http://localhost:5001/health
 - [ ] 薬剤師ログアウト後に `/pharmacist/login` に遷移する
 - [ ] エラーページが正しく表示される
 
-### 4. サブドメインLP（yakkyoku.yaku-navi.com）
+### 4. サブドメインLP（yakkyoku / yakuzaishi）
 
-薬局向けLPは **https://yakkyoku.yaku-navi.com/** で公開。初回デプロイ・Nginx 反映手順は [SUBDOMAIN_YAKKYOKU_LP.md](./SUBDOMAIN_YAKKYOKU_LP.md) を参照。画像は `LP_page/images/` に指定ファイル名で後からアップロード可能。
+- **薬局向けLP**: https://yakkyoku.yaku-navi.com/（`phaemacy_lp.html`）
+- **薬剤師向けLP**: https://yakuzaishi.yaku-navi.com/（`pharmacist_lp.html`）
+
+初回デプロイ・Nginx 反映手順は [SUBDOMAIN_YAKKYOKU_LP.md](./SUBDOMAIN_YAKKYOKU_LP.md) を参照。画像は `LP_page/images/` に指定ファイル名で後からアップロード可能。
+
+**LPのHTMLだけ更新した場合**（バックエンド・フロントエンドのビルド不要）は、本番で以下を実行すれば反映されます。
+
+```bash
+cd /root/yaku_navi
+git pull origin main
+# 薬局向けLPを反映
+sudo cp -r /root/yaku_navi/LP_page/* /var/www/yakkyoku/
+sudo chown -R www-data:www-data /var/www/yakkyoku
+# 薬剤師向けLPを反映
+sudo cp -r /root/yaku_navi/LP_page/* /var/www/yakuzaishi/
+sudo chown -R www-data:www-data /var/www/yakuzaishi
+```
 
 ---
 

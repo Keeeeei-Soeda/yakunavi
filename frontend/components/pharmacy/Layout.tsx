@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { PharmacySidebar } from './Sidebar';
-import { Bell, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 interface PharmacyLayoutProps {
     children: React.ReactNode;
@@ -69,10 +69,6 @@ export const PharmacyLayout: React.FC<PharmacyLayoutProps> = ({
                                 </div>
                                 <div className="flex items-center gap-2 md:gap-4">
                                     {rightAction}
-                                    <button className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                                        <Bell size={20} />
-                                        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                                    </button>
                                 </div>
                             </div>
                         </div>
