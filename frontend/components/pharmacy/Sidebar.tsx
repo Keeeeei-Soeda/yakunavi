@@ -22,6 +22,7 @@ import { useAuthStore } from '@/lib/store/authStore';
 import { pharmacyAPI, PharmacyProfile } from '@/lib/api/pharmacy';
 import { messagesAPI } from '@/lib/api/messages';
 import { pharmacyAPI as pharmacyNotifAPI } from '@/lib/api/pharmacy';
+import { paymentsAPI } from '@/lib/api/payments';
 
 const menuItems = [
     { icon: Home,        label: 'ホーム',               href: '/pharmacy/dashboard' },
@@ -55,6 +56,7 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
   const [pharmacyProfile, setPharmacyProfile] = useState<PharmacyProfile | null>(null);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+  const [pendingPaymentCount, setPendingPaymentCount] = useState(0);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -72,12 +74,14 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
 
   const fetchUnreadCount = async () => {
     try {
-      const [msgRes, notifRes] = await Promise.all([
+      const [msgRes, notifRes, paymentCount] = await Promise.all([
         messagesAPI.getUnreadCount(pharmacyId),
         pharmacyNotifAPI.getNotificationUnreadCount(),
+        paymentsAPI.getPendingCount(pharmacyId),
       ]);
       if (msgRes.success && msgRes.data) setUnreadMessageCount(msgRes.data.count);
       if (notifRes.success && notifRes.data) setUnreadNotificationCount(notifRes.data.count);
+      setPendingPaymentCount(paymentCount);
     } catch (error) {
       console.error('Failed to fetch unread counts:', error);
     }
@@ -121,10 +125,13 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
               const isActive = pathname === item.href;
               const isMessages = item.href === '/pharmacy/messages';
               const isNotifications = item.href === '/pharmacy/notifications';
+              const isPayments = item.href === '/pharmacy/payments';
               const badgeCount = isMessages
                 ? unreadMessageCount
                 : isNotifications
                 ? unreadNotificationCount
+                : isPayments
+                ? pendingPaymentCount
                 : 0;
               return (
                 <li key={item.href}>
@@ -200,10 +207,13 @@ export const PharmacySidebar: React.FC<PharmacySidebarProps> = ({
                   const isActive = pathname === item.href;
                   const isMessages = item.href === '/pharmacy/messages';
                   const isNotifications = item.href === '/pharmacy/notifications';
+                  const isPayments = item.href === '/pharmacy/payments';
                   const badgeCount = isMessages
                     ? unreadMessageCount
                     : isNotifications
                     ? unreadNotificationCount
+                    : isPayments
+                    ? pendingPaymentCount
                     : 0;
                   return (
                     <li key={item.href}>

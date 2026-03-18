@@ -282,6 +282,23 @@ export class ContractService {
             },
         });
 
+        // 支払い案内メッセージをメッセージスレッドに追加（薬局向け）
+        await prisma.message.create({
+            data: {
+                applicationId: contract.applicationId,
+                senderType: 'system',
+                senderId: BigInt(0),
+                messageType: 'payment_required',
+                messageContent: 'プラットフォーム手数料のお支払いをお願いします',
+                structuredData: {
+                    type: 'payment_required',
+                    contractId: Number(contractId),
+                    amount: Math.floor(contract.platformFee * 1.1),
+                },
+                isRead: false,
+            },
+        });
+
         // 応募の更新日時を更新
         await prisma.application.update({
             where: { id: contract.applicationId },

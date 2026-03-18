@@ -55,6 +55,19 @@ export const paymentsAPI = {
     return apiClient.get<APIResponse<Payment[]>>(url);
   },
 
+  // 支払い待ち件数を取得（バッジ用）
+  getPendingCount: async (pharmacyId: number): Promise<number> => {
+    try {
+      const res = await apiClient.get<APIResponse<Payment[]>>(
+        `/payments/pharmacy/${pharmacyId}?status=pending`
+      );
+      if (res.success && res.data) return res.data.length;
+      return 0;
+    } catch {
+      return 0;
+    }
+  },
+
   // 請求書詳細を取得
   getById: async (paymentId: number) => {
     return apiClient.get<APIResponse<Payment>>(`/payments/${paymentId}`);

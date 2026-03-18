@@ -301,8 +301,37 @@ export default function MessagesPage() {
                             <h4 className="font-semibold text-blue-900">契約が成立しました</h4>
                         </div>
                         <p className="text-sm text-blue-800">
-                            薬剤師がオファーを承諾し、契約が成立しました。手数料のお支払いをお願いします。
+                            薬剤師がオファーを承諾し、契約が成立しました。
                         </p>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                        {format(new Date(message.createdAt), 'MM/dd HH:mm', { locale: ja })}
+                    </p>
+                </div>
+            );
+        } else if (message.messageType === 'payment_required') {
+            const amount: number | undefined = message.structuredData?.amount;
+            return (
+                <div className="w-full">
+                    <div className="bg-amber-50 border border-amber-300 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">💳</span>
+                            <h4 className="font-semibold text-amber-900">お支払いのお願い</h4>
+                        </div>
+                        <p className="text-sm text-amber-800 mb-1">
+                            プラットフォーム手数料のお支払いをお願いします。
+                        </p>
+                        {amount !== undefined && (
+                            <p className="text-sm font-semibold text-amber-900 mb-3">
+                                お支払い金額: ¥{amount.toLocaleString()}（税込）
+                            </p>
+                        )}
+                        <a
+                            href="/pharmacy/payments"
+                            className="inline-flex items-center gap-1.5 bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors"
+                        >
+                            請求書管理へ →
+                        </a>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                         {format(new Date(message.createdAt), 'MM/dd HH:mm', { locale: ja })}
@@ -436,10 +465,10 @@ export default function MessagesPage() {
                                     {messages.map((message) => (
                                         <div
                                             key={message.id}
-                                            className={`flex ${message.messageType === 'contract_approved' ? 'justify-center' : message.senderType === 'pharmacy' ? 'justify-end' : 'justify-start'
+                                            className={`flex ${message.messageType === 'contract_approved' || message.messageType === 'payment_required' ? 'justify-center' : message.senderType === 'pharmacy' ? 'justify-end' : 'justify-start'
                                                 }`}
                                         >
-                                            {message.messageType === 'date_proposal' || message.messageType === 'date_selection' || message.messageType === 'contract_approved' ? (
+                                            {message.messageType === 'date_proposal' || message.messageType === 'date_selection' || message.messageType === 'contract_approved' || message.messageType === 'payment_required' ? (
                                                 renderMessage(message)
                                             ) : (
                                                 <div
