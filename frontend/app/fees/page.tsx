@@ -73,7 +73,7 @@ export default function FeesPage() {
                     <tr>
                       <td className="border border-gray-300 px-4 py-3">無期雇用契約</td>
                       <td className="border border-gray-300 px-4 py-3">当該求職者の年間賃金の30％</td>
-                      <td className="border border-gray-300 px-4 py-3">採用決定時に一括して申し受けます。</td>
+                      <td className="border border-gray-300 px-4 py-3">体験決定時に一括して申し受けます。</td>
                     </tr>
                     <tr>
                       <td className="border border-gray-300 px-4 py-3">有期雇用契約</td>
