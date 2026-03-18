@@ -21,6 +21,7 @@ export default function JobSearchPage() {
   const [applying, setApplying] = useState<number | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<Set<number>>(new Set());
   const [togglingFavorite, setTogglingFavorite] = useState<number | null>(null);
+  const [appliedJobIds, setAppliedJobIds] = useState<Set<number>>(new Set());
 
   // フィルター
   const [filters, setFilters] = useState({
@@ -33,6 +34,7 @@ export default function JobSearchPage() {
   useEffect(() => {
     searchJobs();
     loadFavoriteIds();
+    loadAppliedJobIds();
   }, []);
 
   const loadFavoriteIds = async () => {
@@ -43,6 +45,17 @@ export default function JobSearchPage() {
       }
     } catch (error) {
       console.error('Failed to load favorites:', error);
+    }
+  };
+
+  const loadAppliedJobIds = async () => {
+    try {
+      const response = await applicationsAPI.getByPharmacist(pharmacistId);
+      if (response.success && response.data) {
+        setAppliedJobIds(new Set(response.data.map((a) => a.jobPostingId)));
+      }
+    } catch (error) {
+      console.error('Failed to load applied job ids:', error);
     }
   };
 
@@ -199,9 +212,16 @@ export default function JobSearchPage() {
               <div key={job.id} className="bg-white rounded-lg shadow p-4 md:p-6">
                 {/* モバイル: タイトル行にハートボタンを右端に配置 */}
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="text-base md:text-xl font-semibold text-gray-900 min-w-0 break-words">
-                    {job.title}
-                  </h3>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <h3 className="text-base md:text-xl font-semibold text-gray-900 break-words">
+                      {job.title}
+                    </h3>
+                    {appliedJobIds.has(job.id) && (
+                      <span className="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
+                        応募済み
+                      </span>
+                    )}
+                  </div>
                   <button
                     onClick={(e) => handleToggleFavorite(e, job.id)}
                     disabled={togglingFavorite === job.id}

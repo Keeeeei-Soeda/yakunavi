@@ -43,6 +43,7 @@ export default function JobDetailPage() {
   const [showPharmacyModal, setShowPharmacyModal] = useState(false);
   const [pharmacyProfile, setPharmacyProfile] = useState<PharmacyProfile | null>(null);
   const [loadingPharmacyProfile, setLoadingPharmacyProfile] = useState(false);
+  const [isAlreadyApplied, setIsAlreadyApplied] = useState(false);
 
   // 応募フォーム
   const [applicationForm, setApplicationForm] = useState({
@@ -110,7 +111,21 @@ export default function JobDetailPage() {
   useEffect(() => {
     fetchJobDetail();
     checkFavoriteStatus();
-  }, [jobId]);
+    if (pharmacistId) checkAlreadyApplied();
+  }, [jobId, pharmacistId]);
+
+  const checkAlreadyApplied = async () => {
+    if (!pharmacistId) return;
+    try {
+      const response = await applicationsAPI.getByPharmacist(pharmacistId);
+      if (response.success && response.data) {
+        const applied = response.data.some((a) => a.jobPostingId === jobId);
+        setIsAlreadyApplied(applied);
+      }
+    } catch (error) {
+      console.error('Failed to check already applied:', error);
+    }
+  };
 
   const checkFavoriteStatus = async () => {
     try {
@@ -322,18 +337,46 @@ export default function JobDetailPage() {
                 <Heart size={16} className={isFavorite ? 'fill-red-500 text-red-500' : ''} />
                 {isFavorite ? 'お気に入り済み' : 'お気に入り'}
               </button>
-              <button
-                onClick={() => setShowApplicationDialog(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5"
-              >
-                <Send size={16} />
-                応募する
-              </button>
+              {isAlreadyApplied ? (
+                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-blue-100 text-blue-700 border border-blue-200 cursor-not-allowed">
+                  <Send size={16} />
+                  応募済み
+                </span>
+              ) : (
+                <button
+                  onClick={() => setShowApplicationDialog(true)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5"
+                >
+                  <Send size={16} />
+                  応募する
+                </button>
+              )}
             </div>
           </div>
 
+          {/* 応募済みバナー */}
+          {isAlreadyApplied && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <Send className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-blue-900">
+                    この求人には応募済みです
+                  </p>
+                  <p className="text-sm text-blue-700 mt-1">
+                    応募状況は
+                    <Link href="/pharmacist/applications" className="underline ml-1">
+                      応募管理
+                    </Link>
+                    からご確認ください。
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* 資格証明書の警告 */}
-          {!hasVerifiedCertificate && (
+          {!hasVerifiedCertificate && !isAlreadyApplied && (
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-orange-600 mt-0.5" />
@@ -469,13 +512,27 @@ export default function JobDetailPage() {
 
           {/* 応募ボタン（下部） */}
           <div className="flex justify-center">
-            <button
-              onClick={() => setShowApplicationDialog(true)}
-              className="bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 text-lg"
-            >
-              <Send size={24} />
-              この求人に応募する
-            </button>
+            {isAlreadyApplied ? (
+              <div className="text-center">
+                <span className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-medium bg-blue-100 text-blue-700 border border-blue-200 cursor-not-allowed text-lg">
+                  <Send size={24} />
+                  応募済み
+                </span>
+                <p className="mt-2 text-sm text-gray-500">
+                  <Link href="/pharmacist/applications" className="text-blue-600 underline">
+                    応募管理で確認する
+                  </Link>
+                </p>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowApplicationDialog(true)}
+                className="bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 text-lg"
+              >
+                <Send size={24} />
+                この求人に応募する
+              </button>
+            )}
           </div>
         </div>
 
