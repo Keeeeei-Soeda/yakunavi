@@ -1,625 +1,2100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>薬ナビ | 薬局向け採用プラットフォーム</title>
-<link rel="canonical" href="https://yakkyoku.yaku-navi.com/">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --green: #16a34a;
-    --green-light: #22c55e;
-    --green-pale: #f0fdf4;
-    --green-mid: #dcfce7;
-    --green-border: #bbf7d0;
-    --text: #111827;
-    --text-mid: #374151;
-    --text-light: #6b7280;
-    --bg: #ffffff;
-    --bg-gray: #f9fafb;
-    --bg-gray2: #f3f4f6;
-    --border: #e5e7eb;
-    --red: #ef4444;
-    --red-pale: #fef2f2;
-    --radius: 16px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
-    --shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 10px 40px rgba(0,0,0,0.1);
-    --font: 'Noto Sans JP', sans-serif;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { font-family: var(--font); color: var(--text); background: var(--bg); line-height: 1.6; overflow-x: hidden; }
-  .container { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
-  .tag { display: inline-block; background: var(--green-pale); color: var(--green); font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 99px; letter-spacing: 0.04em; margin-bottom: 14px; }
-  .section-title { font-size: clamp(1.5rem, 3.5vw, 2.2rem); font-weight: 900; line-height: 1.45; color: var(--text); }
-  .section-sub { color: var(--text-light); font-size: 0.95rem; line-height: 1.85; margin-top: 12px; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 32px; border-radius: 99px; font-size: 0.95rem; font-weight: 700; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: var(--font); }
-  .btn-green { background: var(--green); color: #fff; }
-  .btn-green:hover { background: #15803d; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(22,163,74,0.3); }
-  .btn-white { background: #fff; color: var(--green); font-weight: 700; }
-  .btn-white:hover { background: var(--green-pale); }
-  .btn-ghost { background: transparent; color: rgba(255,255,255,0.85); border: 1.5px solid rgba(255,255,255,0.4); }
-  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
-  .btn-outline { background: transparent; color: var(--green); border: 1.5px solid var(--green); }
-  .btn-outline:hover { background: var(--green-pale); }
-  .btn-lg { padding: 18px 44px; font-size: 1.05rem; }
-  /* FADE IN */
-  .fi { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .fi.on { opacity: 1; transform: translateY(0); }
-  .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
-  /* HEADER */
-  header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-  .header-inner { max-width: 1040px; margin: 0 auto; padding: 0 20px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
-  .logo { display: flex; align-items: center; text-decoration: none; }
-  .logo-img { height: 48px; width: auto; display: block; }
-  nav { display: flex; gap: 6px; align-items: center; }
-  .nav-link { font-size: 0.85rem; color: var(--text-light); text-decoration: none; padding: 6px 12px; border-radius: 8px; transition: background 0.15s, color 0.15s; font-weight: 500; }
-  .nav-link:hover { background: var(--bg-gray); color: var(--text); }
-  .nav-cta { background: var(--green); color: #fff; padding: 8px 20px; border-radius: 99px; font-size: 0.85rem; font-weight: 700; text-decoration: none; transition: all 0.2s; }
-  .nav-cta:hover { background: #15803d; }
-  /* HERO */
-  #hero { background: linear-gradient(160deg, var(--green-pale) 0%, #fff 55%); padding: 80px 0 72px; position: relative; overflow: hidden; }
-  #hero::before { content: ''; position: absolute; top: -80px; right: -80px; width: 420px; height: 420px; background: radial-gradient(circle, rgba(34,197,94,0.12), transparent 70%); border-radius: 50%; }
-  .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; position: relative; }
-  .hero-eyebrow { display: inline-flex; align-items: center; gap: 6px; background: var(--green-pale); border: 1px solid var(--green-border); color: var(--green); font-size: 0.78rem; font-weight: 700; padding: 6px 14px; border-radius: 99px; margin-bottom: 20px; }
-  h1 { font-size: clamp(1.9rem, 4vw, 2.85rem); font-weight: 900; line-height: 1.4; color: var(--text); margin-bottom: 18px; letter-spacing: -0.02em; }
-  h1 .hl { color: var(--green); }
-  .hero-lead { font-size: 1rem; color: var(--text-mid); line-height: 1.9; margin-bottom: 32px; }
-  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
-  .hero-note { font-size: 0.8rem; color: var(--text-light); line-height: 1.8; display: flex; gap: 16px; flex-wrap: wrap; }
-  .hero-note span::before { content: '✓ '; color: var(--green); font-weight: 700; }
-  .hero-card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 28px; border: 1px solid var(--border); }
-  .hero-card-title { font-size: 0.78rem; font-weight: 700; color: var(--text-light); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
-  .flow-steps { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-  .flow-steps li { display: flex; align-items: center; gap: 12px; font-size: 0.88rem; color: var(--text-mid); font-weight: 500; }
-  .step-chip { flex-shrink: 0; min-width: 26px; height: 26px; background: var(--green); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; }
-  .metric-row { display: flex; gap: 10px; margin-top: 20px; }
-  .metric-chip { flex: 1; background: var(--green-pale); border: 1px solid var(--green-border); border-radius: 12px; padding: 12px 8px; text-align: center; }
-  .metric-chip .m-num { font-size: 1.2rem; font-weight: 900; color: var(--green); line-height: 1; margin-bottom: 4px; }
-  .metric-chip .m-label { font-size: 0.65rem; color: var(--text-light); line-height: 1.4; }
-  /* PAIN */
-  #pain { background: #fff; padding: 88px 0; }
-  .pain-header { text-align: center; margin-bottom: 48px; }
-  .pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 36px; }
-  .pain-card { background: var(--bg-gray); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; font-size: 0.87rem; color: var(--text-mid); line-height: 1.75; display: flex; align-items: flex-start; gap: 12px; transition: box-shadow 0.2s; }
-  .pain-card:hover { box-shadow: var(--shadow); }
-  .pain-card .pain-icon { flex-shrink: 0; width: 36px; height: 36px; background: var(--red-pale); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-  .pain-card h4 { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-  .pain-closing { background: var(--green-pale); border: 1px solid var(--green-border); border-radius: var(--radius); padding: 28px 32px; text-align: center; }
-  .pain-closing p { font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.75; }
-  .pain-closing p span { color: var(--green); }
-  /* SOLUTION */
-  #solution { background: var(--bg-gray); padding: 88px 0; }
-  .solution-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
-  .solution-image { background: #fff; border-radius: var(--radius); border: 1px solid var(--border); aspect-ratio: 4/3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-light); font-size: 0.85rem; overflow: hidden; box-shadow: var(--shadow); position: relative; }
-  .solution-image .sol-logo { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 24px 72px; min-height: 0; }
-  .solution-image .sol-logo img { max-width: 80%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
-  .sol-badge { position: absolute; bottom: 16px; left: 16px; right: 16px; background: var(--text); color: #fff; padding: 12px 16px; border-radius: 10px; font-size: 0.82rem; line-height: 1.65; font-weight: 500; }
-  .sol-badge strong { color: #86efac; }
-  .sol-list { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 2px; }
-  .sol-list li { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-radius: 10px; font-size: 0.9rem; color: var(--text-mid); line-height: 1.7; transition: background 0.15s; }
-  .sol-list li:hover { background: var(--green-pale); }
-  .sol-bullet { flex-shrink: 0; width: 22px; height: 22px; background: var(--green); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; margin-top: 3px; }
-  .sol-list li strong { display: block; font-weight: 700; color: var(--text); margin-bottom: 3px; font-size: 0.92rem; }
-  /* COMPARISON */
-  #comparison { background: #fff; padding: 88px 0; }
-  .comparison-header { text-align: center; margin-bottom: 48px; }
-  .comp-table-wrap { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); }
-  .comp-table-head { display: grid; grid-template-columns: 180px 1fr 1fr; background: var(--bg-gray2); border-bottom: 1px solid var(--border); }
-  .comp-th { padding: 16px 20px; font-size: 0.84rem; font-weight: 700; color: var(--text-light); }
-  .comp-th.good-col { background: var(--green-pale); color: var(--green); border-left: 2px solid var(--green-border); text-align: center; }
-  .comp-th.bad-col { color: var(--red); text-align: center; border-left: 1px solid var(--border); }
-  .comp-th .sub { font-size: 0.7rem; font-weight: 400; color: var(--text-light); display: block; margin-top: 2px; }
-  .comp-row { display: grid; grid-template-columns: 180px 1fr 1fr; border-bottom: 1px solid var(--border); transition: background 0.15s; }
-  .comp-row:last-child { border-bottom: none; }
-  .comp-row:hover { background: var(--bg-gray); }
-  .comp-cell { padding: 16px 20px; font-size: 0.87rem; display: flex; align-items: center; gap: 8px; line-height: 1.6; border-right: 1px solid var(--border); }
-  .comp-cell:last-child { border-right: none; }
-  .comp-cell.label-cell { font-weight: 700; color: var(--text); font-size: 0.82rem; background: var(--bg-gray); }
-  .comp-cell.bad-cell { color: var(--text-mid); }
-  .comp-cell.good-cell { background: var(--green-pale); border-left: 2px solid var(--green-border); color: var(--text-mid); font-weight: 500; }
-  .badge-x { flex-shrink: 0; width: 18px; height: 18px; background: #fee2e2; color: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 800; }
-  .badge-ok { flex-shrink: 0; width: 18px; height: 18px; background: var(--green-mid); color: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 800; }
-  .price-bad { font-weight: 900; color: var(--red); }
-  .price-good { font-weight: 900; color: var(--green); }
-  /* WHY */
-  #why { background: var(--bg-gray); padding: 88px 0; }
-  .why-header { text-align: center; margin-bottom: 48px; }
-  .why-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-  .why-card { background: #fff; border-radius: var(--radius); padding: 28px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
-  .why-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-  .why-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-  .why-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-  .why-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); }
-  .why-card p { font-size: 0.86rem; color: var(--text-mid); line-height: 1.85; }
-  /* PROCESS */
-  #process { background: #fff; padding: 88px 0; }
-  .process-header { text-align: center; margin-bottom: 48px; }
-  .steps-row { display: flex; gap: 0; align-items: flex-start; position: relative; }
-  .steps-row::before { content: ''; position: absolute; top: 25px; left: 8%; right: 8%; height: 2px; background: repeating-linear-gradient(90deg, var(--green-border) 0, var(--green-border) 8px, transparent 8px, transparent 16px); }
-  .proc-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; z-index: 1; }
-  .proc-num-wrap { width: 50px; height: 50px; background: #fff; border: 2px solid var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; font-size: 1.15rem; box-shadow: 0 0 0 4px var(--green-pale); }
-  .proc-step:last-child .proc-num-wrap { background: var(--green); }
-  .proc-step-title { font-size: 0.78rem; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
-  .proc-step-sub { font-size: 0.7rem; color: var(--text-light); line-height: 1.5; padding: 0 2px; }
-  .process-note { margin-top: 36px; background: var(--green-pale); border-left: 4px solid var(--green); border-radius: 0 12px 12px 0; padding: 16px 22px; font-size: 0.88rem; color: var(--text-mid); line-height: 1.85; }
-  .process-note strong { color: var(--green); }
-  /* PRICING */
-  #pricing { background: var(--bg-gray); padding: 88px 0; }
-  .pricing-header { text-align: center; margin-bottom: 48px; }
-  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 24px; }
-  .price-card { background: #fff; border-radius: var(--radius); padding: 32px; border: 1px solid var(--border); box-shadow: var(--shadow); text-align: center; }
-  .price-card.featured { border-color: var(--green); border-width: 2px; }
-  .price-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; margin-bottom: 12px; }
-  .badge-blue { background: #dbeafe; color: #1d4ed8; }
-  .badge-green { background: var(--green-mid); color: var(--green); }
-  .price-amount { font-size: 2.8rem; font-weight: 900; line-height: 1; margin-bottom: 6px; color: var(--text); }
-  .price-card.featured .price-amount { color: var(--green); font-size: 2rem; }
-  .price-unit { font-size: 0.85rem; color: var(--text-light); margin-bottom: 14px; }
-  .price-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
-  .price-desc { font-size: 0.84rem; color: var(--text-mid); line-height: 1.8; }
-  .price-example { background: #fff; border-radius: var(--radius); border: 1px solid var(--border); padding: 22px 28px; display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; box-shadow: var(--shadow); }
-  .pe-label { font-size: 0.72rem; color: var(--text-light); margin-bottom: 3px; text-align: center; }
-  .pe-box { background: var(--bg-gray); border-radius: 10px; padding: 10px 18px; text-align: center; min-width: 90px; }
-  .pe-box .pe-val { font-size: 1.1rem; font-weight: 900; color: var(--text); }
-  .pe-op { font-size: 1.4rem; color: var(--text-light); font-weight: 300; }
-  .pe-result { background: var(--green); border-radius: 10px; padding: 10px 22px; text-align: center; }
-  .pe-result .pe-label { color: rgba(255,255,255,0.75); }
-  .pe-result .pe-val { font-size: 1.1rem; font-weight: 900; color: #fff; }
-  .price-note { text-align: center; font-size: 0.78rem; color: var(--text-light); margin-top: 14px; line-height: 1.9; }
-  /* QA */
-  #qa { background: #fff; padding: 88px 0; }
-  .qa-header { text-align: center; margin-bottom: 48px; }
-  .qa-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-  .qa-item { background: var(--bg-gray); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: box-shadow 0.2s; }
-  .qa-item.open { box-shadow: var(--shadow); border-color: var(--green-border); }
-  .qa-q { display: flex; align-items: center; gap: 14px; padding: 18px 20px; cursor: pointer; user-select: none; }
-  .qa-icon { flex-shrink: 0; width: 28px; height: 28px; background: var(--green-pale); color: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 900; }
-  .qa-item.open .qa-icon { background: var(--green); color: #fff; }
-  .qa-q-text { flex: 1; font-size: 0.92rem; font-weight: 700; color: var(--text); line-height: 1.5; }
-  .qa-chevron { flex-shrink: 0; width: 20px; height: 20px; color: var(--text-light); transition: transform 0.2s; }
-  .qa-item.open .qa-chevron { transform: rotate(180deg); color: var(--green); }
-  .qa-a { display: none; padding: 0 20px 18px 62px; font-size: 0.87rem; color: var(--text-mid); line-height: 1.9; }
-  .qa-item.open .qa-a { display: block; }
-  /* CTA */
-  #cta { background: linear-gradient(135deg, #14532d 0%, #166534 40%, #15803d 100%); padding: 88px 0; position: relative; overflow: hidden; }
-  #cta::before { content: ''; position: absolute; top: -120px; right: -80px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(134,239,172,0.15), transparent 70%); border-radius: 50%; }
-  .cta-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
-  .cta-title { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 900; color: #fff; line-height: 1.45; margin-bottom: 16px; }
-  .cta-sub { font-size: 0.93rem; color: rgba(255,255,255,0.7); line-height: 1.9; margin-bottom: 28px; }
-  .cta-btns { display: flex; gap: 12px; flex-wrap: wrap; }
-  .cta-card { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius); padding: 28px; backdrop-filter: blur(4px); }
-  .cta-card-title { font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.12); }
-  .cta-points { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-  .cta-points li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.88rem; color: rgba(255,255,255,0.82); line-height: 1.65; }
-  .cta-points li::before { content: '✓'; color: #86efac; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
-  /* ENDPOINT */
-  #endpoint { background: var(--bg-gray); padding: 88px 0; text-align: center; }
-  .endpoint-card { max-width: 580px; margin: 0 auto; background: #fff; border-radius: 20px; padding: 52px 44px; border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
-  .endpoint-emoji { font-size: 2.5rem; margin-bottom: 16px; }
-  .endpoint-title { font-size: 1.3rem; font-weight: 900; color: var(--text); line-height: 1.6; margin-bottom: 10px; }
-  .endpoint-sub { font-size: 0.9rem; color: var(--text-light); line-height: 1.85; margin-bottom: 24px; }
-  .endpoint-checklist { list-style: none; text-align: left; display: inline-block; margin-bottom: 28px; }
-  .endpoint-checklist li { display: flex; align-items: center; gap: 8px; font-size: 0.87rem; color: var(--text-mid); margin-bottom: 10px; }
-  .endpoint-checklist li::before { content: '■'; color: var(--green); font-size: 0.6rem; flex-shrink: 0; }
-  .endpoint-note { font-size: 0.77rem; color: var(--text-light); margin-top: 14px; line-height: 1.9; }
-  /* FOOTER（yaku-navi.com と同一） */
-  footer { background: #111827; color: #fff; padding: 48px 24px 32px; }
-  .footer-inner { max-width: 1280px; margin: 0 auto; }
-  .footer-top { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap: 32px; margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .footer-top .f-brand h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
-  .footer-top .f-brand p { font-size: 12px; color: #9ca3af; line-height: 1.7; }
-  .footer-top .f-col h4 { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
-  .footer-top .f-col ul { list-style: none; }
-  .footer-top .f-col ul li { margin-bottom: 8px; }
-  .footer-top .f-col ul li a { text-decoration: none; color: #9ca3af; font-size: 12px; transition: color 0.2s; }
-  .footer-top .f-col ul li a:hover { color: #5eead4; }
-  .footer-bottom { text-align: center; font-size: 12px; color: #9ca3af; padding-top: 32px; }
-  /* PHOTO SECTIONS */
-  .pain-photo { width: 100%; margin-bottom: 36px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); }
-  .pain-photo img { width: 100%; height: 360px; object-fit: cover; object-position: center top; display: block; }
-  .process-photo { margin-top: 36px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); }
-  .process-photo img { width: 100%; height: 320px; object-fit: cover; object-position: center; display: block; }
-  .cta-photo { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); margin-bottom: 16px; }
-  .cta-photo img { width: 100%; height: 220px; object-fit: cover; object-position: center top; display: block; }
-  /* RESPONSIVE */
-  @media (max-width: 860px) {
-    nav .nav-link { display: none; }
-    .hero-inner, .solution-inner, .cta-inner { grid-template-columns: 1fr; }
-    .pain-grid { grid-template-columns: 1fr 1fr; }
-    .why-grid, .pricing-grid { grid-template-columns: 1fr; }
-    .steps-row { flex-direction: column; align-items: flex-start; gap: 20px; }
-    .steps-row::before { display: none; }
-    .proc-step { flex-direction: row; text-align: left; align-items: flex-start; gap: 14px; }
-    .proc-num-wrap { flex-shrink: 0; margin-bottom: 0; }
-    .comp-table-head, .comp-row { grid-template-columns: 120px 1fr 1fr; }
-    .endpoint-card { padding: 36px 20px; }
-    .footer-top { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 560px) {
-    .pain-grid { grid-template-columns: 1fr; }
-    .hero-btns { flex-direction: column; }
-    .price-example { flex-direction: column; gap: 8px; }
-    .comp-table-head, .comp-row { grid-template-columns: 80px 1fr 1fr; }
-    .comp-cell, .comp-th { padding: 10px 10px; font-size: 0.76rem; }
-  }
-</style>
-</head>
-<body>
-<!-- HEADER -->
-<header>
-  <div class="header-inner">
-    <a href="https://yaku-navi.com" class="logo">
-      <img src="https://yaku-navi.com/logo_yakunavi.png" alt="薬ナビ - 失敗しない転職、あなたに" class="logo-img" width="120" height="48">
-    </a>
-    <nav>
-      <a href="#pain" class="nav-link">課題</a>
-      <a href="#comparison" class="nav-link">比較</a>
-      <a href="#process" class="nav-link">採用の流れ</a>
-      <a href="#pricing" class="nav-link">料金</a>
-      <a href="#qa" class="nav-link">Q&A</a>
-      <a href="https://yaku-navi.com/auth/register/pharmacy" class="nav-cta">🏥 無料で始める</a>
-    </nav>
-  </div>
-</header>
-<!-- HERO -->
-<section id="hero">
-  <div class="container">
-    <div class="hero-inner">
-      <div class="fi">
-        <div class="hero-eyebrow">✨ おためし採用で、失敗しない採用を実現</div>
-        <h1>採用コストを抑え、<br><span class="hl">定着率を最大化する</span><br>新しい採用のカタチ。</h1>
-        <p class="hero-lead">
-          エージェントを介さない「ダイレクト・マッチング」と<br>
-          「体験期間制度」で、採用の失敗をなくします。<br>
-          掲載から体験勤務決定まで、一切費用はかかりません。
-        </p>
-        <div class="hero-btns">
-          <a href="https://yaku-navi.com/auth/register/pharmacy" class="btn btn-green btn-lg">🏥 採用担当者として無料登録</a>
-          <a href="https://yaku-navi.com/contact" class="btn btn-outline btn-lg">📩 お問い合わせ</a>
-        </div>
-        <div class="hero-note">
-          <span>登録完了まで約1分</span>
-          <span>完全無料</span>
-          <span>本採用時の手数料０円</span>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>薬ナビ | 薬局向け採用プラットフォーム</title>
+    <link rel="canonical" href="https://yakkyoku.yaku-navi.com/" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --green: #16a34a;
+        --green-light: #22c55e;
+        --green-pale: #f0fdf4;
+        --green-mid: #dcfce7;
+        --green-border: #bbf7d0;
+        --text: #111827;
+        --text-mid: #374151;
+        --text-light: #6b7280;
+        --bg: #ffffff;
+        --bg-gray: #f9fafb;
+        --bg-gray2: #f3f4f6;
+        --border: #e5e7eb;
+        --red: #ef4444;
+        --red-pale: #fef2f2;
+        --radius: 16px;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06);
+        --shadow-lg:
+          0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 40px rgba(0, 0, 0, 0.1);
+        --font: "Noto Sans JP", sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--font);
+        color: var(--text);
+        background: var(--bg);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+      .container {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .tag {
+        display: inline-block;
+        background: var(--green-pale);
+        color: var(--green);
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 99px;
+        letter-spacing: 0.04em;
+        margin-bottom: 14px;
+      }
+      .section-title {
+        font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+        font-weight: 900;
+        line-height: 1.45;
+        color: var(--text);
+      }
+      .section-sub {
+        color: var(--text-light);
+        font-size: 0.95rem;
+        line-height: 1.85;
+        margin-top: 12px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 32px;
+        border-radius: 99px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-family: var(--font);
+      }
+      .btn-green {
+        background: var(--green);
+        color: #fff;
+      }
+      .btn-green:hover {
+        background: #15803d;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(22, 163, 74, 0.3);
+      }
+      .btn-white {
+        background: #fff;
+        color: var(--green);
+        font-weight: 700;
+      }
+      .btn-white:hover {
+        background: var(--green-pale);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: rgba(255, 255, 255, 0.85);
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+      }
+      .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .btn-outline {
+        background: transparent;
+        color: var(--green);
+        border: 1.5px solid var(--green);
+      }
+      .btn-outline:hover {
+        background: var(--green-pale);
+      }
+      .btn-lg {
+        padding: 18px 44px;
+        font-size: 1.05rem;
+      }
+      /* FADE IN */
+      .fi {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .fi.on {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .d1 {
+        transition-delay: 0.1s;
+      }
+      .d2 {
+        transition-delay: 0.2s;
+      }
+      .d3 {
+        transition-delay: 0.3s;
+      }
+      .d4 {
+        transition-delay: 0.4s;
+      }
+      .d5 {
+        transition-delay: 0.5s;
+      }
+      /* HEADER */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .header-inner {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 0 20px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+      }
+      .logo-img {
+        height: 48px;
+        width: auto;
+        display: block;
+      }
+      nav {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .nav-link {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 8px;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        font-weight: 500;
+      }
+      .nav-link:hover {
+        background: var(--bg-gray);
+        color: var(--text);
+      }
+      .nav-cta {
+        background: var(--green);
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .nav-cta:hover {
+        background: #15803d;
+      }
+      /* HERO */
+      #hero {
+        background: linear-gradient(160deg, var(--green-pale) 0%, #fff 55%);
+        padding: 80px 0 72px;
+        position: relative;
+        overflow: hidden;
+      }
+      #hero::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(
+          circle,
+          rgba(34, 197, 94, 0.12),
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+      .hero-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 56px;
+        align-items: center;
+        position: relative;
+      }
+      .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--green-pale);
+        border: 1px solid var(--green-border);
+        color: var(--green);
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 99px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: clamp(1.9rem, 4vw, 2.85rem);
+        font-weight: 900;
+        line-height: 1.4;
+        color: var(--text);
+        margin-bottom: 18px;
+        letter-spacing: -0.02em;
+      }
+      h1 .hl {
+        color: var(--green);
+      }
+      .hero-lead {
+        font-size: 1rem;
+        color: var(--text-mid);
+        line-height: 1.9;
+        margin-bottom: 32px;
+      }
+      .hero-btns {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
+      }
+      .hero-note {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        line-height: 1.8;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .hero-note span::before {
+        content: "✓ ";
+        color: var(--green);
+        font-weight: 700;
+      }
+      .hero-crosslink { margin-top: 16px; }
+      .hero-crosslink-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 0.85rem; font-weight: 600; color: var(--text-mid);
+        text-decoration: none; padding: 8px 16px;
+        border: 1px solid var(--border); border-radius: 99px;
+        background: #fff; transition: all 0.2s;
+      }
+      .hero-crosslink-btn:hover {
+        background: var(--bg-gray); color: var(--text); border-color: var(--text-light);
+      }
+      .hero-card {
+        background: #fff;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        padding: 28px;
+        border: 1px solid var(--border);
+      }
+      .hero-card-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text-light);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+      }
+      .flow-steps {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .flow-steps li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.88rem;
+        color: var(--text-mid);
+        font-weight: 500;
+      }
+      .step-chip {
+        flex-shrink: 0;
+        min-width: 26px;
+        height: 26px;
+        background: var(--green);
+        color: #fff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+      .metric-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .metric-chip {
+        flex: 1;
+        background: var(--green-pale);
+        border: 1px solid var(--green-border);
+        border-radius: 12px;
+        padding: 12px 8px;
+        text-align: center;
+      }
+      .metric-chip .m-num {
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: var(--green);
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .metric-chip .m-label {
+        font-size: 0.65rem;
+        color: var(--text-light);
+        line-height: 1.4;
+      }
+      /* PAIN */
+      #pain {
+        background: #fff;
+        padding: 88px 0;
+      }
+      .pain-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .pain-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 36px;
+      }
+      .pain-card {
+        background: var(--bg-gray);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        font-size: 0.87rem;
+        color: var(--text-mid);
+        line-height: 1.75;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        transition: box-shadow 0.2s;
+      }
+      .pain-card:hover {
+        box-shadow: var(--shadow);
+      }
+      .pain-card .pain-icon {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        background: var(--red-pale);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+      }
+      .pain-card h4 {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .pain-closing {
+        background: var(--green-pale);
+        border: 1px solid var(--green-border);
+        border-radius: var(--radius);
+        padding: 28px 32px;
+        text-align: center;
+      }
+      .pain-closing p {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.75;
+      }
+      .pain-closing p span {
+        color: var(--green);
+      }
+      /* SOLUTION */
+      #solution {
+        background: var(--bg-gray);
+        padding: 88px 0;
+      }
+      .solution-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 56px;
+        align-items: center;
+      }
+      .solution-image {
+        background: #fff;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        aspect-ratio: 4/3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: var(--text-light);
+        font-size: 0.85rem;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+      .solution-image .sol-logo {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 24px 72px;
+        min-height: 0;
+      }
+      .solution-image .sol-logo img {
+        max-width: 80%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+      }
+      .sol-badge {
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+        right: 16px;
+        background: var(--text);
+        color: #fff;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        line-height: 1.65;
+        font-weight: 500;
+      }
+      .sol-badge strong {
+        color: #86efac;
+      }
+      .sol-list {
+        list-style: none;
+        margin-top: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .sol-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: var(--text-mid);
+        line-height: 1.7;
+        transition: background 0.15s;
+      }
+      .sol-list li:hover {
+        background: var(--green-pale);
+      }
+      .sol-bullet {
+        flex-shrink: 0;
+        width: 22px;
+        height: 22px;
+        background: var(--green);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 700;
+        margin-top: 3px;
+      }
+      .sol-list li strong {
+        display: block;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 3px;
+        font-size: 0.92rem;
+      }
+      /* COMPARISON */
+      #comparison {
+        background: #fff;
+        padding: 88px 0;
+      }
+      .comparison-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .comp-table-wrap {
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+      .comp-table-head {
+        display: grid;
+        grid-template-columns: 180px 1fr 1fr;
+        background: var(--bg-gray2);
+        border-bottom: 1px solid var(--border);
+      }
+      .comp-th {
+        padding: 16px 20px;
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: var(--text-light);
+      }
+      .comp-th.good-col {
+        background: var(--green-pale);
+        color: var(--green);
+        border-left: 2px solid var(--green-border);
+        text-align: center;
+      }
+      .comp-th.bad-col {
+        color: var(--red);
+        text-align: center;
+        border-left: 1px solid var(--border);
+      }
+      .comp-th .sub {
+        font-size: 0.7rem;
+        font-weight: 400;
+        color: var(--text-light);
+        display: block;
+        margin-top: 2px;
+      }
+      .comp-row {
+        display: grid;
+        grid-template-columns: 180px 1fr 1fr;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.15s;
+      }
+      .comp-row:last-child {
+        border-bottom: none;
+      }
+      .comp-row:hover {
+        background: var(--bg-gray);
+      }
+      .comp-cell {
+        padding: 16px 20px;
+        font-size: 0.87rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        line-height: 1.6;
+        border-right: 1px solid var(--border);
+      }
+      .comp-cell:last-child {
+        border-right: none;
+      }
+      .comp-cell.label-cell {
+        font-weight: 700;
+        color: var(--text);
+        font-size: 0.82rem;
+        background: var(--bg-gray);
+      }
+      .comp-cell.bad-cell {
+        color: var(--text-mid);
+      }
+      .comp-cell.good-cell {
+        background: var(--green-pale);
+        border-left: 2px solid var(--green-border);
+        color: var(--text-mid);
+        font-weight: 500;
+      }
+      .badge-x {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        background: #fee2e2;
+        color: var(--red);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 800;
+      }
+      .badge-ok {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        background: var(--green-mid);
+        color: var(--green);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 800;
+      }
+      .price-bad {
+        font-weight: 900;
+        color: var(--red);
+      }
+      .price-good {
+        font-weight: 900;
+        color: var(--green);
+      }
+      /* WHY */
+      #why {
+        background: var(--bg-gray);
+        padding: 88px 0;
+      }
+      .why-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .why-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+      .why-card {
+        background: #fff;
+        border-radius: var(--radius);
+        padding: 28px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .why-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+      }
+      .why-card-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+      .why-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: var(--green-pale);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+      .why-card h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .why-card p {
+        font-size: 0.86rem;
+        color: var(--text-mid);
+        line-height: 1.85;
+      }
+      /* PROCESS */
+      #process {
+        background: #fff;
+        padding: 88px 0;
+      }
+      .process-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .steps-row {
+        display: flex;
+        gap: 0;
+        align-items: flex-start;
+        position: relative;
+      }
+      .steps-row::before {
+        content: "";
+        position: absolute;
+        top: 25px;
+        left: 8%;
+        right: 8%;
+        height: 2px;
+        background: repeating-linear-gradient(
+          90deg,
+          var(--green-border) 0,
+          var(--green-border) 8px,
+          transparent 8px,
+          transparent 16px
+        );
+      }
+      .proc-step {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      .proc-num-wrap {
+        width: 50px;
+        height: 50px;
+        background: #fff;
+        border: 2px solid var(--green);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+        font-size: 1.15rem;
+        box-shadow: 0 0 0 4px var(--green-pale);
+      }
+      .proc-step:last-child .proc-num-wrap {
+        background: var(--green);
+      }
+      .proc-step-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+        line-height: 1.4;
+      }
+      .proc-step-sub {
+        font-size: 0.7rem;
+        color: var(--text-light);
+        line-height: 1.5;
+        padding: 0 2px;
+      }
+      .process-note {
+        margin-top: 36px;
+        background: var(--green-pale);
+        border-left: 4px solid var(--green);
+        border-radius: 0 12px 12px 0;
+        padding: 16px 22px;
+        font-size: 0.88rem;
+        color: var(--text-mid);
+        line-height: 1.85;
+      }
+      .process-note strong {
+        color: var(--green);
+      }
+      /* PRICING */
+      #pricing {
+        background: var(--bg-gray);
+        padding: 88px 0;
+      }
+      .pricing-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+      .price-card {
+        background: #fff;
+        border-radius: var(--radius);
+        padding: 32px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+      .price-card.featured {
+        border-color: var(--green);
+        border-width: 2px;
+      }
+      .price-badge {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 99px;
+        margin-bottom: 12px;
+      }
+      .badge-blue {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .badge-green {
+        background: var(--green-mid);
+        color: var(--green);
+      }
+      .price-amount {
+        font-size: 2.8rem;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 6px;
+        color: var(--text);
+      }
+      .price-card.featured .price-amount {
+        color: var(--green);
+        font-size: 2rem;
+      }
+      .price-unit {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        margin-bottom: 14px;
+      }
+      .price-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .price-desc {
+        font-size: 0.84rem;
+        color: var(--text-mid);
+        line-height: 1.8;
+      }
+      .price-example {
+        background: #fff;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 22px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        box-shadow: var(--shadow);
+      }
+      .pe-label {
+        font-size: 0.72rem;
+        color: var(--text-light);
+        margin-bottom: 3px;
+        text-align: center;
+      }
+      .pe-box {
+        background: var(--bg-gray);
+        border-radius: 10px;
+        padding: 10px 18px;
+        text-align: center;
+        min-width: 90px;
+      }
+      .pe-box .pe-val {
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: var(--text);
+      }
+      .pe-op {
+        font-size: 1.4rem;
+        color: var(--text-light);
+        font-weight: 300;
+      }
+      .pe-result {
+        background: var(--green);
+        border-radius: 10px;
+        padding: 10px 22px;
+        text-align: center;
+      }
+      .pe-result .pe-label {
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .pe-result .pe-val {
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: #fff;
+      }
+      .price-note {
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--text-light);
+        margin-top: 14px;
+        line-height: 1.9;
+      }
+      /* QA */
+      #qa {
+        background: #fff;
+        padding: 88px 0;
+      }
+      .qa-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .qa-list {
+        max-width: 720px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .qa-item {
+        background: var(--bg-gray);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+      }
+      .qa-item.open {
+        box-shadow: var(--shadow);
+        border-color: var(--green-border);
+      }
+      .qa-q {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 20px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .qa-icon {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        background: var(--green-pale);
+        color: var(--green);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 900;
+      }
+      .qa-item.open .qa-icon {
+        background: var(--green);
+        color: #fff;
+      }
+      .qa-q-text {
+        flex: 1;
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.5;
+      }
+      .qa-chevron {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        color: var(--text-light);
+        transition: transform 0.2s;
+      }
+      .qa-item.open .qa-chevron {
+        transform: rotate(180deg);
+        color: var(--green);
+      }
+      .qa-a {
+        display: none;
+        padding: 0 20px 18px 62px;
+        font-size: 0.87rem;
+        color: var(--text-mid);
+        line-height: 1.9;
+      }
+      .qa-item.open .qa-a {
+        display: block;
+      }
+      /* CTA */
+      #cta {
+        background: linear-gradient(
+          135deg,
+          #14532d 0%,
+          #166534 40%,
+          #15803d 100%
+        );
+        padding: 88px 0;
+        position: relative;
+        overflow: hidden;
+      }
+      #cta::before {
+        content: "";
+        position: absolute;
+        top: -120px;
+        right: -80px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(134, 239, 172, 0.15),
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+      .cta-inner {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 56px;
+        align-items: start;
+      }
+      .cta-title {
+        font-size: clamp(1.5rem, 3vw, 2.1rem);
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.45;
+        margin-bottom: 16px;
+      }
+      .cta-sub {
+        font-size: 0.93rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.9;
+        margin-bottom: 28px;
+      }
+      .cta-btns {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .cta-card {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: var(--radius);
+        padding: 28px;
+        backdrop-filter: blur(4px);
+      }
+      .cta-card-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .cta-points {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .cta-points li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 0.88rem;
+        color: rgba(255, 255, 255, 0.82);
+        line-height: 1.65;
+      }
+      .cta-points li::before {
+        content: "✓";
+        color: #86efac;
+        font-weight: 900;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      /* ENDPOINT */
+      #endpoint {
+        background: var(--bg-gray);
+        padding: 88px 0;
+        text-align: center;
+      }
+      .endpoint-card {
+        max-width: 580px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 20px;
+        padding: 52px 44px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-lg);
+      }
+      .endpoint-emoji {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+      }
+      .endpoint-title {
+        font-size: 1.3rem;
+        font-weight: 900;
+        color: var(--text);
+        line-height: 1.6;
+        margin-bottom: 10px;
+      }
+      .endpoint-sub {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        line-height: 1.85;
+        margin-bottom: 24px;
+      }
+      .endpoint-checklist {
+        list-style: none;
+        text-align: left;
+        display: inline-block;
+        margin-bottom: 28px;
+      }
+      .endpoint-checklist li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.87rem;
+        color: var(--text-mid);
+        margin-bottom: 10px;
+      }
+      .endpoint-checklist li::before {
+        content: "■";
+        color: var(--green);
+        font-size: 0.6rem;
+        flex-shrink: 0;
+      }
+      .endpoint-note {
+        font-size: 0.77rem;
+        color: var(--text-light);
+        margin-top: 14px;
+        line-height: 1.9;
+      }
+      /* FOOTER（yaku-navi.com と同一） */
+      footer {
+        background: #111827;
+        color: #fff;
+        padding: 48px 24px 32px;
+      }
+      .footer-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+      .footer-top {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        gap: 32px;
+        margin-bottom: 32px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .footer-top .f-brand h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .footer-top .f-brand p {
+        font-size: 12px;
+        color: #9ca3af;
+        line-height: 1.7;
+      }
+      .footer-top .f-col h4 {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .footer-top .f-col ul {
+        list-style: none;
+      }
+      .footer-top .f-col ul li {
+        margin-bottom: 8px;
+      }
+      .footer-top .f-col ul li a {
+        text-decoration: none;
+        color: #9ca3af;
+        font-size: 12px;
+        transition: color 0.2s;
+      }
+      .footer-top .f-col ul li a:hover {
+        color: #5eead4;
+      }
+      .footer-bottom {
+        text-align: center;
+        font-size: 12px;
+        color: #9ca3af;
+        padding-top: 32px;
+      }
+      /* PHOTO SECTIONS */
+      .pain-photo {
+        width: 100%;
+        margin-bottom: 36px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+      }
+      .pain-photo img {
+        width: 100%;
+        height: 360px;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+      }
+      .process-photo {
+        margin-top: 36px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+      }
+      .process-photo img {
+        width: 100%;
+        height: 320px;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+      }
+      .cta-photo {
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        margin-bottom: 16px;
+      }
+      .cta-photo img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+      }
+      /* RESPONSIVE */
+      @media (max-width: 860px) {
+        nav .nav-link {
+          display: none;
+        }
+        .hero-inner,
+        .solution-inner,
+        .cta-inner {
+          grid-template-columns: 1fr;
+        }
+        .pain-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .why-grid,
+        .pricing-grid {
+          grid-template-columns: 1fr;
+        }
+        .steps-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 20px;
+        }
+        .steps-row::before {
+          display: none;
+        }
+        .proc-step {
+          flex-direction: row;
+          text-align: left;
+          align-items: flex-start;
+          gap: 14px;
+        }
+        .proc-num-wrap {
+          flex-shrink: 0;
+          margin-bottom: 0;
+        }
+        .comp-table-head,
+        .comp-row {
+          grid-template-columns: 120px 1fr 1fr;
+        }
+        .endpoint-card {
+          padding: 36px 20px;
+        }
+        .footer-top {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .pain-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-btns {
+          flex-direction: column;
+        }
+        .price-example {
+          flex-direction: column;
+          gap: 8px;
+        }
+        .comp-table-head,
+        .comp-row {
+          grid-template-columns: 80px 1fr 1fr;
+        }
+        .comp-cell,
+        .comp-th {
+          padding: 10px 10px;
+          font-size: 0.76rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <div class="header-inner">
+        <a href="https://yaku-navi.com" class="logo">
+          <img
+            src="https://yaku-navi.com/logo_yakunavi.png"
+            alt="薬ナビ - 失敗しない転職、あなたに"
+            class="logo-img"
+            width="120"
+            height="48"
+          />
+        </a>
+        <nav>
+          <a href="#pain" class="nav-link">課題</a>
+          <a href="#comparison" class="nav-link">比較</a>
+          <a href="#process" class="nav-link">採用の流れ</a>
+          <a href="#pricing" class="nav-link">料金</a>
+          <a href="#qa" class="nav-link">Q&A</a>
+          <a href="https://yaku-navi.com/auth/register/pharmacy" class="nav-cta"
+            >🏥 無料で始める</a
+          >
+        </nav>
       </div>
-      <div class="fi d2">
-        <div class="hero-card">
-          <div class="hero-card-title">採用フロー（全6ステップ）</div>
-          <ul class="flow-steps">
-            <li><span class="step-chip">1</span>アカウント登録・求人票を作成・公開</li>
-            <li><span class="step-chip">2</span>薬剤師から直接エントリー</li>
-            <li><span class="step-chip">3</span>メッセージ機能で応募者と直接やり取り</li>
-            <li><span class="step-chip">4</span>職場見学・体験入社を実施</li>
-            <li><span class="step-chip">5</span>双方の合意で本採用 or 見送り</li>
-            <li><span class="step-chip" style="background:#15803d; font-size:0.8rem;">🎯</span>手数料は体験決定後のみ</li>
-          </ul>
-          <div class="metric-row">
-            <div class="metric-chip"><div class="m-num">¥0</div><div class="m-label">初期費用<br>掲載料</div></div>
-            <div class="metric-chip"><div class="m-num">最大90%</div><div class="m-label">コスト<br>削減</div></div>
-            <div class="metric-chip"><div class="m-num">100%</div><div class="m-label">直接<br>マッチング</div></div>
+    </header>
+    <!-- HERO -->
+    <section id="hero">
+      <div class="container">
+        <div class="hero-inner">
+          <div class="fi">
+            <div class="hero-eyebrow">
+              ✨ おためし採用で、失敗しない採用を実現
+            </div>
+            <h1>
+              採用コストを抑え、<br /><span class="hl">定着率を最大化する</span
+              ><br />新しい採用のカタチ。
+            </h1>
+            <p class="hero-lead">
+              エージェントを介さない「ダイレクト・マッチング」と<br />
+              「体験期間制度」で、採用の失敗をなくします。<br />
+              掲載から体験勤務決定まで、一切費用はかかりません。
+            </p>
+            <div class="hero-btns">
+              <a
+                href="https://yaku-navi.com/auth/register/pharmacy"
+                class="btn btn-green btn-lg"
+                >🏥 採用担当者として無料登録</a
+              >
+              <a
+                href="https://yaku-navi.com/contact"
+                class="btn btn-outline btn-lg"
+                >📩 お問い合わせ</a
+              >
+            </div>
+            <div class="hero-note">
+              <span>登録完了まで約1分</span>
+              <span>完全無料</span>
+              <span>本採用時の手数料０円</span>
+            </div>
+            <div class="hero-crosslink">
+              <a href="https://yakuzaishi.yaku-navi.com/" class="hero-crosslink-btn">
+                💊 薬剤師の方はこちら →
+              </a>
+            </div>
+          </div>
+          <div class="fi d2">
+            <div class="hero-card">
+              <div class="hero-card-title">採用フロー（全6ステップ）</div>
+              <ul class="flow-steps">
+                <li>
+                  <span class="step-chip">1</span
+                  >アカウント登録・求人票を作成・公開
+                </li>
+                <li>
+                  <span class="step-chip">2</span>薬剤師から直接エントリー
+                </li>
+                <li>
+                  <span class="step-chip">3</span
+                  >メッセージ機能で応募者と直接やり取り
+                </li>
+                <li>
+                  <span class="step-chip">4</span>職場見学・体験入社を実施
+                </li>
+                <li>
+                  <span class="step-chip">5</span>双方の合意で本採用 or 見送り
+                </li>
+                <li>
+                  <span
+                    class="step-chip"
+                    style="background: #15803d; font-size: 0.8rem"
+                    >🎯</span
+                  >手数料は体験決定後のみ
+                </li>
+              </ul>
+              <div class="metric-row">
+                <div class="metric-chip">
+                  <div class="m-num">¥0</div>
+                  <div class="m-label">初期費用<br />掲載料</div>
+                </div>
+                <div class="metric-chip">
+                  <div class="m-num">最大90%</div>
+                  <div class="m-label">コスト<br />削減</div>
+                </div>
+                <div class="metric-chip">
+                  <div class="m-num">100%</div>
+                  <div class="m-label">直接<br />マッチング</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </section>
+    <div style="background: var(--bg-gray); padding: 0 0 0">
+      <div class="container"></div>
     </div>
-  </div>
-</section>
-<div style="background:var(--bg-gray);padding:0 0 0;">
-  <div class="container">
-    </div>
-</div>
-<!-- PAIN -->
-<section id="pain">
-  <div class="container">
-    <div class="pain-header fi">
-      <div class="tag">💬 こんなお悩みありませんか？</div>
-      <h2 class="section-title">採用担当者が感じる、<br>人材採用の「つらさ」</h2>
-    </div>
-    <div class="pain-photo fi">
-      <img src="./images/pain_manager.jpg" alt="採用に悩む薬局担当者">
-    </div>
-    <div class="pain-grid">
-      <div class="pain-card fi d1"><div class="pain-icon">😔</div><div><h4>高額手数料なのに早期退職</h4>年収の30〜40%を払ったのに、数ヶ月で辞められてしまう。</div></div>
-      <div class="pain-card fi d2"><div class="pain-icon">😤</div><div><h4>スキルのギャップ</h4>エージェントが候補者のスキルを盛りすぎて、実務レベルに差がある。</div></div>
-      <div class="pain-card fi d3"><div class="pain-icon">😩</div><div><h4>魅力が伝わらない</h4>自社のこだわりが、紹介会社によって勝手にフィルタリングされる。</div></div>
-      <div class="pain-card fi d1"><div class="pain-icon">🤔</div><div><h4>ノルマ目的の紹介</h4>本当に欲しい人材ではなく、エージェントのノルマのための「紹介しやすい人」が来る。</div></div>
-      <div class="pain-card fi d2"><div class="pain-icon">💸</div><div><h4>採用コストが経営を圧迫</h4>採用費が高すぎて、設備投資や既存スタッフの昇給に予算が回せない。</div></div>
-      <div class="pain-card fi d3"><div class="pain-icon">📞</div><div><h4>しつこい営業電話</h4>エージェントからの定期的な連絡が業務を圧迫し、担当者の負担になっている。</div></div>
-    </div>
-    <div class="pain-closing fi">
-      <p>採用はギャンブルではないはずです。<br>一人の採用に<span>200万円</span>を投じ、定着するかを祈る日々は、もう終わりにしませんか？</p>
-    </div>
-  </div>
-</section>
-<!-- SOLUTION -->
-<section id="solution">
-  <div class="container">
-    <div class="solution-inner">
-      <div class="solution-image fi" style="padding:0;overflow:hidden;">
-        <div class="sol-logo">
-          <img src="https://yaku-navi.com/logo_yakunavi.png" alt="薬ナビ - 失敗しない転職、あなたに" width="200" height="80">
+    <!-- PAIN -->
+    <section id="pain">
+      <div class="container">
+        <div class="pain-header fi">
+          <div class="tag">💬 こんなお悩みありませんか？</div>
+          <h2 class="section-title">
+            採用担当者が感じる、<br />人材採用の「つらさ」
+          </h2>
         </div>
-        <div class="sol-badge">薬ナビは、エージェントを介さない<strong>ダイレクト・マッチング</strong>と<strong>体験期間制度</strong>をセットにした採用プラットフォームです。</div>
-      </div>
-      <div class="fi d1">
-        <div class="tag">✅ 解決策</div>
-        <h2 class="section-title">薬ナビなら、<br>この悩みを根本から<br>解決できます。</h2>
-        <ul class="sol-list">
-          <li><span class="sol-bullet">✓</span><div><strong>採用コストの正常化</strong>異常に高騰した紹介手数料の市場を破壊し、健全な経営を支援します。</div></li>
-          <li><span class="sol-bullet">✓</span><div><strong>ミスマッチによる損失の防止</strong>体験期間で応募者のスキルと既存スタッフとの相性を見極めてから採用決定。</div></li>
-          <li><span class="sol-bullet">✓</span><div><strong>情報の直接発信</strong>貴局の魅力を加工なく求職者へ届けます。エージェントの恣意的な誘導なし。</div></li>
-          <li><span class="sol-bullet">✓</span><div><strong>「納得の採用」を実現</strong>「とりあえず採用」ではなく「この人と働きたい」と思える出会いの創出。</div></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- COMPARISON -->
-<section id="comparison">
-  <div class="container">
-    <div class="comparison-header fi">
-      <div class="tag">📊 徹底比較</div>
-      <h2 class="section-title">従来の人材紹介 vs. 薬ナビ</h2>
-      <p class="section-sub">コスト・リスク・情報の透明性、すべての面で違います</p>
-    </div>
-    <div class="comp-table-wrap fi d1">
-      <div class="comp-table-head">
-        <div class="comp-th">比較項目</div>
-        <div class="comp-th bad-col">従来の人材紹介<span class="sub">年収600万円の場合</span></div>
-        <div class="comp-th good-col">✅ 薬ナビ<span class="sub">月収50万円の場合</span></div>
-      </div>
-      <div class="comp-row">
-        <div class="comp-cell label-cell">💰 紹介手数料</div>
-        <div class="comp-cell bad-cell"><span class="badge-x">✗</span><span class="price-bad">180万〜240万円</span></div>
-        <div class="comp-cell good-cell"><span class="badge-ok">✓</span><span class="price-good">わずか20万円</span>（月収×40%）</div>
-      </div>
-      <div class="comp-row">
-        <div class="comp-cell label-cell">📉 採用コスト</div>
-        <div class="comp-cell bad-cell"><span class="badge-x">✗</span>圧倒的高コスト。設備投資・昇給を圧迫</div>
-        <div class="comp-cell good-cell"><span class="badge-ok">✓</span>最大90%のコストカットを実現</div>
-      </div>
-      <div class="comp-row">
-        <div class="comp-cell label-cell">🔍 情報の透明性</div>
-        <div class="comp-cell bad-cell"><span class="badge-x">✗</span>エージェントの主観に左右される</div>
-        <div class="comp-cell good-cell"><span class="badge-ok">✓</span>直接対話でミスマッチなし</div>
-      </div>
-      <div class="comp-row">
-        <div class="comp-cell label-cell">🚪 離職リスク</div>
-        <div class="comp-cell bad-cell"><span class="badge-x">✗</span>入社後まで実力・相性が不明</div>
-        <div class="comp-cell good-cell"><span class="badge-ok">✓</span>お試し期間中に完全確認可能</div>
-      </div>
-      <div class="comp-row">
-        <div class="comp-cell label-cell">📞 営業電話</div>
-        <div class="comp-cell bad-cell"><span class="badge-x">✗</span>定期的なしつこい営業がある</div>
-        <div class="comp-cell good-cell"><span class="badge-ok">✓</span>エージェント不在、営業電話なし</div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- WHY -->
-<section id="why">
-  <div class="container">
-    <div class="why-header fi">
-      <div class="tag">🌱 薬ナビが大切にしていること</div>
-      <h2 class="section-title">選ばれる理由</h2>
-      <p class="section-sub">実績が積み重なるにつれて、選ばれる理由がより明確になります。今の薬ナビは、この想いで動いています。</p>
-    </div>
-    <div class="why-grid">
-      <div class="why-card fi d1"><div class="why-card-head"><div class="why-icon">💰</div><h3>採用コストの正常化</h3></div>
-        <p>異常に高騰した紹介手数料の市場を破壊し、健全な薬局経営を支援します。大切な予算は紹介会社へではなく、共に働くスタッフと患者様のために使われるべきだと信じています。</p></div>
-      <div class="why-card fi d2"><div class="why-card-head"><div class="why-icon">🤝</div><h3>ミスマッチによる損失の防止</h3></div>
-        <p>早期離職による現場の疲弊とコスト増を防ぎます。体験期間を通じて本当に合う薬剤師様を見つけていただけます。「納得の採用」こそが、長期定着の第一歩です。</p></div>
-      <div class="why-card fi d3"><div class="why-card-head"><div class="why-icon">📣</div><h3>情報の直接発信</h3></div>
-        <p>貴局の真の魅力を、加工されることなく求職者へ届けます。エージェントのフィルタリングなしに、自分たちの言葉で想いを伝えることができます。</p></div>
-      <div class="why-card fi d4"><div class="why-card-head"><div class="why-icon">🎯</div><h3>「納得の採用」の提供</h3></div>
-        <p>「とりあえず採用」ではなく「この人と働きたい」と思える出会いの創出を目指します。薬剤師にも薬局にも、互いにとって最良のマッチングを実現します。</p></div>
-    </div>
-  </div>
-</section>
-<!-- PROCESS -->
-<section id="process">
-  <div class="container">
-    <div class="process-header fi">
-      <div class="tag">📋 ご利用の流れ</div>
-      <h2 class="section-title">登録から本採用まで</h2>
-      <p class="section-sub">薬ナビにはエージェントがいません。しつこい営業電話や無理な紹介の心配はありません。体験開始まで、すべてオンラインで完結。業務の合間に作業していただけます。</p>
-    </div>
-    <div class="steps-row fi d1">
-      <div class="proc-step"><div class="proc-num-wrap">🏥</div><div><div class="proc-step-title">登録</div><div class="proc-step-sub">企業・薬局が<br>サービスに登録</div></div></div>
-      <div class="proc-step"><div class="proc-num-wrap">📋</div><div><div class="proc-step-title">求人票掲載</div><div class="proc-step-sub">募集要項を<br>作成・公開</div></div></div>
-      <div class="proc-step"><div class="proc-num-wrap">💊</div><div><div class="proc-step-title">応募受付</div><div class="proc-step-sub">薬剤師が<br>エントリー</div></div></div>
-      <div class="proc-step"><div class="proc-num-wrap">💬</div><div><div class="proc-step-title">直接やり取り</div><div class="proc-step-sub">エージェントなどの<br>バイアスを回避</div></div></div>
-      <div class="proc-step"><div class="proc-num-wrap">🔍</div><div><div class="proc-step-title">体験開始</div><div class="proc-step-sub">職場見学・<br>体験入社</div></div></div>
-      <div class="proc-step"><div class="proc-num-wrap" style="background:var(--green); border-color:var(--green);">🎉</div><div><div class="proc-step-title" style="color:var(--green);">本採用決定</div><div class="proc-step-sub">双方の合意で<br>確定</div></div></div>
-    </div>
-    <div class="process-photo fi d3">
-      <img src="./images/process_team.jpg" alt="薬剤師スタッフのチーム写真">
-    </div>
-    <div class="process-note fi d4"><strong>体験期間終了後、採用を見送ることもできます。</strong>合わないと判断された場合は自動的に契約解除。本採用に至った場合でも、<strong>追加の成功報酬は一切不要</strong>です。</div>
-  </div>
-</section>
-<!-- PRICING -->
-<section id="pricing">
-  <div class="container">
-    <div class="pricing-header fi">
-      <div class="tag">💴 料金体系</div>
-      <h2 class="section-title">シンプルで明確な料金</h2>
-      <p class="section-sub">初期費用・掲載料は一切かかりません。採用が決定した場合のみお支払いいただきます。</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="price-card fi d1">
-        <div class="price-badge badge-blue">初期費用・掲載料</div>
-        <div class="price-amount">¥0</div>
-        <div class="price-unit">完全無料</div>
-        <div class="price-title">掲載から体験決定まで無料</div>
-        <p class="price-desc">求人票の掲載・応募受付・メッセージ機能の利用まで一切費用はかかりません。何人でも掲載・応募受付が可能です。</p>
-      </div>
-      <div class="price-card featured fi d2">
-        <div class="price-badge badge-green">成約手数料（体験決定時のみ）</div>
-        <div class="price-amount">月収 × 40%</div>
-        <div class="price-unit">採用確定時・一括払い</div>
-        <div class="price-title">採用が決まったときだけ</div>
-        <p class="price-desc">採用が決定した場合のみ、体験期間中の月収×40%を手数料として頂戴します。本採用後の追加成功報酬は一切不要です。</p>
-      </div>
-    </div>
-    <div class="price-example fi d3">
-      <span style="font-size:0.8rem;color:var(--text-light);white-space:nowrap;">【計算例】月収50万円の薬剤師を採用する場合</span>
-      <div class="pe-box"><div class="pe-label">月収</div><div class="pe-val">50万円</div></div>
-      <div class="pe-op">×</div>
-      <div class="pe-box"><div class="pe-label">手数料率</div><div class="pe-val">40%</div></div>
-      <div class="pe-op">=</div>
-      <div class="pe-result"><div class="pe-label">手数料はわずか</div><div class="pe-val">20万円</div></div>
-    </div>
-    <p class="price-note fi">※本採用に至った場合でも、追加の成功報酬は一切不要です。<br>初出勤日に薬剤師様がご来局されなかった場合は手数料を全額返金いたします。</p>
-  </div>
-</section>
-<!-- QA -->
-<section id="qa">
-  <div class="container">
-    <div class="qa-header fi">
-      <div class="tag">❓ よくある質問</div>
-      <h2 class="section-title">よくあるご質問</h2>
-      <p class="section-sub">ご不明な点がございましたら、お気軽にお問い合わせください。</p>
-    </div>
-    <div class="qa-list fi d1">
-      <div class="qa-item">
-        <div class="qa-q"><div class="qa-icon">Q</div><div class="qa-q-text">登録・掲載は無料ですか？</div><svg class="qa-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <div class="qa-a">はい。実際に薬剤師様と契約が確定するまで完全無料です。求人票の掲載・応募受付・メッセージ機能の利用まで、一切費用はかかりません。</div>
-      </div>
-      <div class="qa-item">
-        <div class="qa-q"><div class="qa-icon">Q</div><div class="qa-q-text">勤務初日に薬剤師が来なかった場合はどうなりますか？</div><svg class="qa-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <div class="qa-a">契約確定後、初出勤日に薬剤師様がご来局されなかった場合は手数料を全額返金いたします。加えて、対象の薬剤師様には一定期間ペナルティとしてアカウントを凍結いたします。</div>
-      </div>
-      <div class="qa-item">
-        <div class="qa-q"><div class="qa-icon">Q</div><div class="qa-q-text">体験期間終了後、採用を見送ることはできますか？</div><svg class="qa-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <div class="qa-a">はい、可能です。体験期間で合わないと判断された場合は自動的に体験期間終了・契約解除となります。その場合、手数料のお支払いは発生いたしません。</div>
-      </div>
-      <div class="qa-item">
-        <div class="qa-q"><div class="qa-icon">Q</div><div class="qa-q-text">採用する場合、追加の費用はかかりますか？</div><svg class="qa-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <div class="qa-a">いいえ。体験期間終了後に採用となった場合でも追加の手数料は頂きません。ご負担いただくのは体験期間分の手数料のみです。</div>
-      </div>
-      <div class="qa-item">
-        <div class="qa-q"><div class="qa-icon">Q</div><div class="qa-q-text">エージェントはいますか？営業電話はありますか？</div><svg class="qa-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <div class="qa-a">薬ナビにはエージェントがいません。しつこい営業電話や無理な紹介の心配は一切ありません。体験期間を通じて、本当に合う薬剤師様を見つけていただけます。</div>
-      </div>
-      <div class="qa-item">
-        <div class="qa-q"><div class="qa-icon">Q</div><div class="qa-q-text">手数料の支払い期限を過ぎてしまった場合は？</div><svg class="qa-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <div class="qa-a">お気付きの時点でお振込とお問い合わせにて、期限を過ぎた経緯をご連絡ください。アカウント凍結などの措置もあり得ますので、期限を過ぎることのないようご注意ください。</div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- CTA -->
-<section id="cta">
-  <div class="container">
-    <div class="cta-inner">
-      <div class="fi">
-        <div class="tag" style="background:rgba(134,239,172,0.15);color:#86efac;">🚀 今すぐ始める</div>
-        <div class="cta-title">採用はギャンブルでは<br>ないはずです。</div>
-        <p class="cta-sub">現場のスタッフが充足し経営が健全化される、そんな「当たり前」の採用を薬ナビで実現しませんか？</p>
-        <div class="cta-btns">
-          <a href="https://yaku-navi.com/auth/register/pharmacy" class="btn btn-white btn-lg">🏥 採用担当者として無料登録</a>
-          <a href="https://yaku-navi.com/contact" class="btn btn-ghost">📩 お問い合わせ</a>
+        <div class="pain-photo fi">
+          <img src="./images/pain_manager.jpg" alt="採用に悩む薬局担当者" />
+        </div>
+        <div class="pain-grid">
+          <div class="pain-card fi d1">
+            <div class="pain-icon">😔</div>
+            <div>
+              <h4>高額手数料なのに早期退職</h4>
+              年収の30〜40%を払ったのに、数ヶ月で辞められてしまう。
+            </div>
+          </div>
+          <div class="pain-card fi d2">
+            <div class="pain-icon">😤</div>
+            <div>
+              <h4>スキルのギャップ</h4>
+              エージェントが候補者のスキルを盛りすぎて、実務レベルに差がある。
+            </div>
+          </div>
+          <div class="pain-card fi d3">
+            <div class="pain-icon">😩</div>
+            <div>
+              <h4>魅力が伝わらない</h4>
+              自社のこだわりが、紹介会社によって勝手にフィルタリングされる。
+            </div>
+          </div>
+          <div class="pain-card fi d1">
+            <div class="pain-icon">🤔</div>
+            <div>
+              <h4>ノルマ目的の紹介</h4>
+              本当に欲しい人材ではなく、エージェントのノルマのための「紹介しやすい人」が来る。
+            </div>
+          </div>
+          <div class="pain-card fi d2">
+            <div class="pain-icon">💸</div>
+            <div>
+              <h4>採用コストが経営を圧迫</h4>
+              採用費が高すぎて、設備投資や既存スタッフの昇給に予算が回せない。
+            </div>
+          </div>
+          <div class="pain-card fi d3">
+            <div class="pain-icon">📞</div>
+            <div>
+              <h4>しつこい営業電話</h4>
+              エージェントからの定期的な連絡が業務を圧迫し、担当者の負担になっている。
+            </div>
+          </div>
+        </div>
+        <div class="pain-closing fi">
+          <p>
+            採用はギャンブルではないはずです。<br />一人の採用に<span>200万円</span>を投じ、定着するかを祈る日々は、もう終わりにしませんか？
+          </p>
         </div>
       </div>
-      <div class="fi d2">
-        <div class="cta-card">
-          <div class="cta-card-title">登録でできること</div>
-          <ul class="cta-points">
-            <li>求人票を無制限で作成・掲載（完全無料）</li>
-            <li>薬剤師からのエントリーをリアルタイム確認</li>
-            <li>メッセージ機能で直接面談調整</li>
-            <li>体験期間の設定・管理</li>
-            <li>採用確定まで費用一切なし</li>
-            <li>エージェントなし・営業電話なし</li>
+    </section>
+    <!-- SOLUTION -->
+    <section id="solution">
+      <div class="container">
+        <div class="solution-inner">
+          <div class="solution-image fi" style="padding: 0; overflow: hidden">
+            <div class="sol-logo">
+              <img
+                src="https://yaku-navi.com/logo_yakunavi.png"
+                alt="薬ナビ - 失敗しない転職、あなたに"
+                width="200"
+                height="80"
+              />
+            </div>
+            <div class="sol-badge">
+              薬ナビは、エージェントを介さない<strong>ダイレクト・マッチング</strong>と<strong>体験期間制度</strong>をセットにした採用プラットフォームです。
+            </div>
+          </div>
+          <div class="fi d1">
+            <div class="tag">✅ 解決策</div>
+            <h2 class="section-title">
+              薬ナビなら、<br />この悩みを根本から<br />解決できます。
+            </h2>
+            <ul class="sol-list">
+              <li>
+                <span class="sol-bullet">✓</span>
+                <div>
+                  <strong>採用コストの正常化</strong
+                  >異常に高騰した紹介手数料の市場を破壊し、健全な経営を支援します。
+                </div>
+              </li>
+              <li>
+                <span class="sol-bullet">✓</span>
+                <div>
+                  <strong>ミスマッチによる損失の防止</strong
+                  >体験期間で応募者のスキルと既存スタッフとの相性を見極めてから採用決定。
+                </div>
+              </li>
+              <li>
+                <span class="sol-bullet">✓</span>
+                <div>
+                  <strong>情報の直接発信</strong
+                  >貴局の魅力を加工なく求職者へ届けます。エージェントの恣意的な誘導なし。
+                </div>
+              </li>
+              <li>
+                <span class="sol-bullet">✓</span>
+                <div>
+                  <strong>「納得の採用」を実現</strong
+                  >「とりあえず採用」ではなく「この人と働きたい」と思える出会いの創出。
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- COMPARISON -->
+    <section id="comparison">
+      <div class="container">
+        <div class="comparison-header fi">
+          <div class="tag">📊 徹底比較</div>
+          <h2 class="section-title">従来の人材紹介 vs. 薬ナビ</h2>
+          <p class="section-sub">
+            コスト・リスク・情報の透明性、すべての面で違います
+          </p>
+        </div>
+        <div class="comp-table-wrap fi d1">
+          <div class="comp-table-head">
+            <div class="comp-th">比較項目</div>
+            <div class="comp-th bad-col">
+              従来の人材紹介<span class="sub">年収600万円の場合</span>
+            </div>
+            <div class="comp-th good-col">
+              ✅ 薬ナビ<span class="sub">月収50万円の場合</span>
+            </div>
+          </div>
+          <div class="comp-row">
+            <div class="comp-cell label-cell">💰 紹介手数料</div>
+            <div class="comp-cell bad-cell">
+              <span class="badge-x">✗</span
+              ><span class="price-bad">180万〜240万円</span>
+            </div>
+            <div class="comp-cell good-cell">
+              <span class="badge-ok">✓</span
+              ><span class="price-good">わずか20万円</span>（月収×40%）
+            </div>
+          </div>
+          <div class="comp-row">
+            <div class="comp-cell label-cell">📉 採用コスト</div>
+            <div class="comp-cell bad-cell">
+              <span class="badge-x">✗</span>圧倒的高コスト。設備投資・昇給を圧迫
+            </div>
+            <div class="comp-cell good-cell">
+              <span class="badge-ok">✓</span>最大90%のコストカットを実現
+            </div>
+          </div>
+          <div class="comp-row">
+            <div class="comp-cell label-cell">🔍 情報の透明性</div>
+            <div class="comp-cell bad-cell">
+              <span class="badge-x">✗</span>エージェントの主観に左右される
+            </div>
+            <div class="comp-cell good-cell">
+              <span class="badge-ok">✓</span>直接対話でミスマッチなし
+            </div>
+          </div>
+          <div class="comp-row">
+            <div class="comp-cell label-cell">🚪 離職リスク</div>
+            <div class="comp-cell bad-cell">
+              <span class="badge-x">✗</span>入社後まで実力・相性が不明
+            </div>
+            <div class="comp-cell good-cell">
+              <span class="badge-ok">✓</span>お試し期間中に完全確認可能
+            </div>
+          </div>
+          <div class="comp-row">
+            <div class="comp-cell label-cell">📞 営業電話</div>
+            <div class="comp-cell bad-cell">
+              <span class="badge-x">✗</span>定期的なしつこい営業がある
+            </div>
+            <div class="comp-cell good-cell">
+              <span class="badge-ok">✓</span>エージェント不在、営業電話なし
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- WHY -->
+    <section id="why">
+      <div class="container">
+        <div class="why-header fi">
+          <div class="tag">🌱 薬ナビが大切にしていること</div>
+          <h2 class="section-title">選ばれる理由</h2>
+          <p class="section-sub">
+            実績が積み重なるにつれて、選ばれる理由がより明確になります。今の薬ナビは、この想いで動いています。
+          </p>
+        </div>
+        <div class="why-grid">
+          <div class="why-card fi d1">
+            <div class="why-card-head">
+              <div class="why-icon">💰</div>
+              <h3>採用コストの正常化</h3>
+            </div>
+            <p>
+              異常に高騰した紹介手数料の市場を破壊し、健全な薬局経営を支援します。大切な予算は紹介会社へではなく、共に働くスタッフと患者様のために使われるべきだと信じています。
+            </p>
+          </div>
+          <div class="why-card fi d2">
+            <div class="why-card-head">
+              <div class="why-icon">🤝</div>
+              <h3>ミスマッチによる損失の防止</h3>
+            </div>
+            <p>
+              早期離職による現場の疲弊とコスト増を防ぎます。体験期間を通じて本当に合う薬剤師様を見つけていただけます。「納得の採用」こそが、長期定着の第一歩です。
+            </p>
+          </div>
+          <div class="why-card fi d3">
+            <div class="why-card-head">
+              <div class="why-icon">📣</div>
+              <h3>情報の直接発信</h3>
+            </div>
+            <p>
+              貴局の真の魅力を、加工されることなく求職者へ届けます。エージェントのフィルタリングなしに、自分たちの言葉で想いを伝えることができます。
+            </p>
+          </div>
+          <div class="why-card fi d4">
+            <div class="why-card-head">
+              <div class="why-icon">🎯</div>
+              <h3>「納得の採用」の提供</h3>
+            </div>
+            <p>
+              「とりあえず採用」ではなく「この人と働きたい」と思える出会いの創出を目指します。薬剤師にも薬局にも、互いにとって最良のマッチングを実現します。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- PROCESS -->
+    <section id="process">
+      <div class="container">
+        <div class="process-header fi">
+          <div class="tag">📋 ご利用の流れ</div>
+          <h2 class="section-title">登録から本採用まで</h2>
+          <p class="section-sub">
+            薬ナビにはエージェントがいません。しつこい営業電話や無理な紹介の心配はありません。体験開始まで、すべてオンラインで完結。業務の合間に作業していただけます。
+          </p>
+        </div>
+        <div class="steps-row fi d1">
+          <div class="proc-step">
+            <div class="proc-num-wrap">🏥</div>
+            <div>
+              <div class="proc-step-title">登録</div>
+              <div class="proc-step-sub">企業・薬局が<br />サービスに登録</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num-wrap">📋</div>
+            <div>
+              <div class="proc-step-title">求人票掲載</div>
+              <div class="proc-step-sub">募集要項を<br />作成・公開</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num-wrap">💊</div>
+            <div>
+              <div class="proc-step-title">応募受付</div>
+              <div class="proc-step-sub">薬剤師が<br />エントリー</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num-wrap">💬</div>
+            <div>
+              <div class="proc-step-title">直接やり取り</div>
+              <div class="proc-step-sub">
+                エージェントなどの<br />バイアスを回避
+              </div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num-wrap">🔍</div>
+            <div>
+              <div class="proc-step-title">体験開始</div>
+              <div class="proc-step-sub">職場見学・<br />体験入社</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div
+              class="proc-num-wrap"
+              style="background: var(--green); border-color: var(--green)"
+            >
+              🎉
+            </div>
+            <div>
+              <div class="proc-step-title" style="color: var(--green)">
+                本採用決定
+              </div>
+              <div class="proc-step-sub">双方の合意で<br />確定</div>
+            </div>
+          </div>
+        </div>
+        <div class="process-photo fi d3">
+          <img
+            src="./images/process_team.jpg"
+            alt="薬剤師スタッフのチーム写真"
+          />
+        </div>
+        <div class="process-note fi d4">
+          <strong>体験期間終了後、採用を見送ることもできます。</strong
+          >合わないと判断された場合は自動的に契約解除。本採用に至った場合でも、<strong>追加の成功報酬は一切不要</strong>です。
+        </div>
+      </div>
+    </section>
+    <!-- PRICING -->
+    <section id="pricing">
+      <div class="container">
+        <div class="pricing-header fi">
+          <div class="tag">💴 料金体系</div>
+          <h2 class="section-title">シンプルで明確な料金</h2>
+          <p class="section-sub">
+            初期費用・掲載料は一切かかりません。採用が決定した場合のみお支払いいただきます。
+          </p>
+        </div>
+        <div class="pricing-grid">
+          <div class="price-card fi d1">
+            <div class="price-badge badge-blue">初期費用・掲載料</div>
+            <div class="price-amount">¥0</div>
+            <div class="price-unit">完全無料</div>
+            <div class="price-title">掲載から体験決定まで無料</div>
+            <p class="price-desc">
+              求人票の掲載・応募受付・メッセージ機能の利用まで一切費用はかかりません。何人でも掲載・応募受付が可能です。
+            </p>
+          </div>
+          <div class="price-card featured fi d2">
+            <div class="price-badge badge-green">
+              成約手数料（体験決定時のみ）
+            </div>
+            <div class="price-amount">月収 × 40%</div>
+            <div class="price-unit">採用確定時・一括払い</div>
+            <div class="price-title">採用が決まったときだけ</div>
+            <p class="price-desc">
+              採用が決定した場合のみ、体験期間中の月収×40%を手数料として頂戴します。本採用後の追加成功報酬は一切不要です。
+            </p>
+          </div>
+        </div>
+        <div class="price-example fi d3">
+          <span
+            style="
+              font-size: 0.8rem;
+              color: var(--text-light);
+              white-space: nowrap;
+            "
+            >【計算例】月収50万円の薬剤師を採用する場合</span
+          >
+          <div class="pe-box">
+            <div class="pe-label">月収</div>
+            <div class="pe-val">50万円</div>
+          </div>
+          <div class="pe-op">×</div>
+          <div class="pe-box">
+            <div class="pe-label">手数料率</div>
+            <div class="pe-val">40%</div>
+          </div>
+          <div class="pe-op">=</div>
+          <div class="pe-result">
+            <div class="pe-label">手数料はわずか</div>
+            <div class="pe-val">20万円</div>
+          </div>
+        </div>
+        <p class="price-note fi">
+          ※本採用に至った場合でも、追加の成功報酬は一切不要です。<br />初出勤日に薬剤師様がご来局されなかった場合は手数料を全額返金いたします。
+        </p>
+      </div>
+    </section>
+    <!-- QA -->
+    <section id="qa">
+      <div class="container">
+        <div class="qa-header fi">
+          <div class="tag">❓ よくある質問</div>
+          <h2 class="section-title">よくあるご質問</h2>
+          <p class="section-sub">
+            ご不明な点がございましたら、お気軽にお問い合わせください。
+          </p>
+        </div>
+        <div class="qa-list fi d1">
+          <div class="qa-item">
+            <div class="qa-q">
+              <div class="qa-icon">Q</div>
+              <div class="qa-q-text">登録・掲載は無料ですか？</div>
+              <svg
+                class="qa-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="qa-a">
+              はい。実際に薬剤師様と契約が確定するまで完全無料です。求人票の掲載・応募受付・メッセージ機能の利用まで、一切費用はかかりません。
+            </div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <div class="qa-icon">Q</div>
+              <div class="qa-q-text">
+                勤務初日に薬剤師が来なかった場合はどうなりますか？
+              </div>
+              <svg
+                class="qa-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="qa-a">
+              契約確定後、初出勤日に薬剤師様がご来局されなかった場合は手数料を全額返金いたします。加えて、対象の薬剤師様には一定期間ペナルティとしてアカウントを凍結いたします。
+            </div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <div class="qa-icon">Q</div>
+              <div class="qa-q-text">
+                体験期間終了後、採用を見送ることはできますか？
+              </div>
+              <svg
+                class="qa-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="qa-a">
+              はい、可能です。体験期間で合わないと判断された場合は自動的に体験期間終了・契約解除となります。その場合、手数料のお支払いは発生いたしません。
+            </div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <div class="qa-icon">Q</div>
+              <div class="qa-q-text">
+                採用する場合、追加の費用はかかりますか？
+              </div>
+              <svg
+                class="qa-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="qa-a">
+              いいえ。体験期間終了後に採用となった場合でも追加の手数料は頂きません。ご負担いただくのは体験期間分の手数料のみです。
+            </div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <div class="qa-icon">Q</div>
+              <div class="qa-q-text">
+                エージェントはいますか？営業電話はありますか？
+              </div>
+              <svg
+                class="qa-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="qa-a">
+              薬ナビにはエージェントがいません。しつこい営業電話や無理な紹介の心配は一切ありません。体験期間を通じて、本当に合う薬剤師様を見つけていただけます。
+            </div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <div class="qa-icon">Q</div>
+              <div class="qa-q-text">
+                手数料の支払い期限を過ぎてしまった場合は？
+              </div>
+              <svg
+                class="qa-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="qa-a">
+              お気付きの時点でお振込とお問い合わせにて、期限を過ぎた経緯をご連絡ください。アカウント凍結などの措置もあり得ますので、期限を過ぎることのないようご注意ください。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- CTA -->
+    <section id="cta">
+      <div class="container">
+        <div class="cta-inner">
+          <div class="fi">
+            <div
+              class="tag"
+              style="background: rgba(134, 239, 172, 0.15); color: #86efac"
+            >
+              🚀 今すぐ始める
+            </div>
+            <div class="cta-title">
+              採用はギャンブルでは<br />ないはずです。
+            </div>
+            <p class="cta-sub">
+              現場のスタッフが充足し経営が健全化される、そんな「当たり前」の採用を薬ナビで実現しませんか？
+            </p>
+            <div class="cta-btns">
+              <a
+                href="https://yaku-navi.com/auth/register/pharmacy"
+                class="btn btn-white btn-lg"
+                >🏥 採用担当者として無料登録</a
+              >
+              <a href="https://yaku-navi.com/contact" class="btn btn-ghost"
+                >📩 お問い合わせ</a
+              >
+            </div>
+          </div>
+          <div class="fi d2">
+            <div class="cta-card">
+              <div class="cta-card-title">登録でできること</div>
+              <ul class="cta-points">
+                <li>求人票を無制限で作成・掲載（完全無料）</li>
+                <li>薬剤師からのエントリーをリアルタイム確認</li>
+                <li>メッセージ機能で直接面談調整</li>
+                <li>体験期間の設定・管理</li>
+                <li>採用確定まで費用一切なし</li>
+                <li>エージェントなし・営業電話なし</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ENDPOINT -->
+    <section id="endpoint">
+      <div class="container">
+        <div class="endpoint-card fi">
+          <div class="endpoint-emoji">💊</div>
+          <div class="endpoint-title">
+            これまでの採用の悩みを、<br />一人で抱え込まないでください。
+          </div>
+          <p class="endpoint-sub">
+            薬ナビなら、貴局の採用は必ず変わります。<br />まずは無料登録から、お気軽にお試しください。
+          </p>
+          <ul class="endpoint-checklist">
+            <li>自分たちが求める薬剤師と直接出会う喜び</li>
+            <li>採用費を現場環境の改善に使える安心感</li>
+            <li>もう他のサービスを探さなくていい確信</li>
           </ul>
+          <a
+            href="https://yaku-navi.com/auth/register/pharmacy"
+            class="btn btn-green btn-lg"
+            >今すぐ無料登録する →</a
+          >
+          <p class="endpoint-note">
+            登録完了まで約1分 ｜ 完全無料 ｜ 掲載から体験決定まで費用¥0<br />貴局の採用が変わるその日まで、薬ナビが責任を持って寄り添います。
+          </p>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-<!-- ENDPOINT -->
-<section id="endpoint">
-  <div class="container">
-    <div class="endpoint-card fi">
-      <div class="endpoint-emoji">💊</div>
-      <div class="endpoint-title">これまでの採用の悩みを、<br>一人で抱え込まないでください。</div>
-      <p class="endpoint-sub">薬ナビなら、貴局の採用は必ず変わります。<br>まずは無料登録から、お気軽にお試しください。</p>
-      <ul class="endpoint-checklist">
-        <li>自分たちが求める薬剤師と直接出会う喜び</li>
-        <li>採用費を現場環境の改善に使える安心感</li>
-        <li>もう他のサービスを探さなくていい確信</li>
-      </ul>
-      <a href="https://yaku-navi.com/auth/register/pharmacy" class="btn btn-green btn-lg">今すぐ無料登録する →</a>
-      <p class="endpoint-note">登録完了まで約1分 ｜ 完全無料 ｜ 掲載から体験決定まで費用¥0<br>貴局の採用が変わるその日まで、薬ナビが責任を持って寄り添います。</p>
-    </div>
-  </div>
-</section>
-<!-- FOOTER（yaku-navi.com と同一表記） -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="f-brand">
-        <h3>薬ナビ</h3>
-        <p>理想のキャリアを実現する転職支援サービス</p>
+    </section>
+    <!-- FOOTER（yaku-navi.com と同一表記） -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div class="f-brand">
+            <h3>薬ナビ</h3>
+            <p>理想のキャリアを実現する転職支援サービス</p>
+          </div>
+          <div class="f-col">
+            <h4>サービス</h4>
+            <ul>
+              <li><a href="https://yaku-navi.com/">おためし転職</a></li>
+            </ul>
+          </div>
+          <div class="f-col">
+            <h4>薬剤師の方</h4>
+            <ul>
+              <li>
+                <a href="https://yaku-navi.com/auth/register/pharmacist"
+                  >はじめての方は登録</a
+                >
+              </li>
+              <li>
+                <a href="https://yaku-navi.com/pharmacist/login"
+                  >登録済みの方はログイン</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="f-col">
+            <h4>薬局・採用担当者</h4>
+            <ul>
+              <li>
+                <a href="https://yaku-navi.com/auth/register/pharmacy"
+                  >はじめての方は登録</a
+                >
+              </li>
+              <li>
+                <a href="https://yaku-navi.com/pharmacy/login"
+                  >登録済みの方はログイン</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="f-col">
+            <h4>会社情報</h4>
+            <ul>
+              <li><a href="https://yaku-navi.com/about">会社概要</a></li>
+              <li><a href="https://yaku-navi.com/contact">お問い合わせ</a></li>
+              <li><a href="https://yaku-navi.com/terms">利用規約</a></li>
+              <li>
+                <a href="https://yaku-navi.com/privacy">プライバシーポリシー</a>
+              </li>
+              <li>
+                <a href="https://yaku-navi.com/fees"
+                  >有料職業紹介事業における手数料表および返金規定</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 薬ナビ. All rights reserved.</p>
+        </div>
       </div>
-      <div class="f-col">
-        <h4>サービス</h4>
-        <ul>
-          <li><a href="https://yaku-navi.com/">おためし転職</a></li>
-        </ul>
-      </div>
-      <div class="f-col">
-        <h4>薬剤師の方</h4>
-        <ul>
-          <li><a href="https://yaku-navi.com/auth/register/pharmacist">はじめての方は登録</a></li>
-          <li><a href="https://yaku-navi.com/pharmacist/login">登録済みの方はログイン</a></li>
-        </ul>
-      </div>
-      <div class="f-col">
-        <h4>薬局・採用担当者</h4>
-        <ul>
-          <li><a href="https://yaku-navi.com/auth/register/pharmacy">はじめての方は登録</a></li>
-          <li><a href="https://yaku-navi.com/pharmacy/login">登録済みの方はログイン</a></li>
-        </ul>
-      </div>
-      <div class="f-col">
-        <h4>会社情報</h4>
-        <ul>
-          <li><a href="https://yaku-navi.com/about">会社概要</a></li>
-          <li><a href="https://yaku-navi.com/contact">お問い合わせ</a></li>
-          <li><a href="https://yaku-navi.com/terms">利用規約</a></li>
-          <li><a href="https://yaku-navi.com/privacy">プライバシーポリシー</a></li>
-          <li><a href="https://yaku-navi.com/fees">有料職業紹介事業における手数料表および返金規定</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 薬ナビ. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
-<script>
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.fi').forEach(el => obs.observe(el));
-  document.querySelectorAll('.qa-q').forEach(q => {
-    q.addEventListener('click', () => {
-      const item = q.parentElement;
-      const open = item.classList.contains('open');
-      document.querySelectorAll('.qa-item').forEach(i => i.classList.remove('open'));
-      if (!open) item.classList.add('open');
-    });
-  });
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const t = document.querySelector(a.getAttribute('href'));
-      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-    });
-  });
-</script>
-</body>
+    </footer>
+    <script>
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add("on");
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -40px 0px" },
+      );
+      document.querySelectorAll(".fi").forEach((el) => obs.observe(el));
+      document.querySelectorAll(".qa-q").forEach((q) => {
+        q.addEventListener("click", () => {
+          const item = q.parentElement;
+          const open = item.classList.contains("open");
+          document
+            .querySelectorAll(".qa-item")
+            .forEach((i) => i.classList.remove("open"));
+          if (!open) item.classList.add("open");
+        });
+      });
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener("click", (e) => {
+          const t = document.querySelector(a.getAttribute("href"));
+          if (t) {
+            e.preventDefault();
+            t.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
