@@ -46,7 +46,6 @@ export class FavoriteService {
             desiredWorkDays: true,
             dailyWage: true,
             totalCompensation: true,
-            recruitmentDeadline: true,
             status: true,
             pharmacy: {
               select: {

@@ -12,7 +12,6 @@ export interface JobPosting {
   desiredWorkDays?: number;
   workStartPeriodFrom?: string;
   workStartPeriodTo?: string;
-  recruitmentDeadline?: string;
   requirements?: string;
   desiredWorkHours?: string;
   totalCompensation?: number;
@@ -55,7 +54,6 @@ export interface CreateJobPostingInput {
   desiredWorkDays?: number;
   workStartPeriodFrom?: string;
   workStartPeriodTo?: string;
-  recruitmentDeadline?: string;
   requirements?: string;
   desiredWorkHours?: string;
   totalCompensation?: number;

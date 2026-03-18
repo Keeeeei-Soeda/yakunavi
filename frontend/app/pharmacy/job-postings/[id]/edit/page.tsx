@@ -100,7 +100,6 @@ export default function EditJobPostingPage() {
                         desiredWorkDays: jobPosting.desiredWorkDays,
                         workStartPeriodFrom: jobPosting.workStartPeriodFrom,
                         workStartPeriodTo: jobPosting.workStartPeriodTo,
-                        recruitmentDeadline: jobPosting.recruitmentDeadline,
                         requirements: jobPosting.requirements,
                         desiredWorkHours: jobPosting.desiredWorkHours,
                         totalCompensation: jobPosting.totalCompensation,

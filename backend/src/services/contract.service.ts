@@ -173,7 +173,6 @@ export class ContractService {
                     requirements: contract.application.jobPosting.requirements,
                     workStartPeriodFrom: contract.application.jobPosting.workStartPeriodFrom,
                     workStartPeriodTo: contract.application.jobPosting.workStartPeriodTo,
-                    recruitmentDeadline: contract.application.jobPosting.recruitmentDeadline,
                     totalCompensation: contract.application.jobPosting.totalCompensation,
                     platformFee: contract.application.jobPosting.platformFee,
                     status: contract.application.jobPosting.status,

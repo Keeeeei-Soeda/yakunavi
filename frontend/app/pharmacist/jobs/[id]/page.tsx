@@ -375,12 +375,6 @@ export default function JobDetailPage() {
               </div>
             </div>
 
-            <div className="border-t pt-4">
-              <p className="text-sm text-gray-600 mb-1">募集期限</p>
-              <p className="font-medium">
-                {job.recruitmentDeadline ? format(new Date(job.recruitmentDeadline), 'yyyy年MM月dd日（E）', { locale: ja }) : '未設定'}
-              </p>
-            </div>
           </div>
 
           {/* 報酬・勤務条件 */}

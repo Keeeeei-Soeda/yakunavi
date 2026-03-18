@@ -45,13 +45,6 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
     return date.toISOString().split('T')[0];
   };
 
-  // 募集期限のデフォルト値（今日から7日後）
-  const getDefaultRecruitmentDeadline = () => {
-    const date = new Date();
-    date.setDate(date.getDate() + 7);
-    return date.toISOString().split('T')[0];
-  };
-
   const [formData, setFormData] = useState<CreateJobPostingInput>({
     pharmacyId,
     title: initialData?.title || '',
@@ -61,7 +54,6 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
     desiredWorkDays: initialData?.desiredWorkDays || 0,
     workStartPeriodFrom: initialData?.workStartPeriodFrom || getDefaultWorkStartDate(),
     workStartPeriodTo: initialData?.workStartPeriodTo || '',
-    recruitmentDeadline: initialData?.recruitmentDeadline || getDefaultRecruitmentDeadline(),
     requirements: initialData?.requirements || '',
     desiredWorkHours: initialData?.desiredWorkHours || '',
   });
@@ -111,11 +103,6 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
 
     if (!formData.workStartPeriodFrom) {
       alert('希望勤務開始日を入力してください');
-      return;
-    }
-
-    if (!formData.recruitmentDeadline) {
-      alert('掲載終了日を入力してください');
       return;
     }
 
@@ -357,23 +344,6 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
             </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              掲載終了日 *
-            </label>
-            <input
-              type="date"
-              required
-              value={formData.recruitmentDeadline}
-              onChange={(e) =>
-                setFormData({ ...formData, recruitmentDeadline: e.target.value })
-              }
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              求人の掲載を終了する日付（デフォルト：7日後）
-            </p>
-          </div>
         </div>
       </div>
 

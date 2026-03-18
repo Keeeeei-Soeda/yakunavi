@@ -13,7 +13,6 @@ export interface FavoriteJobItem {
     desiredWorkDays: number;
     dailyWage: number;
     totalCompensation: number;
-    recruitmentDeadline: string;
     status: string;
     pharmacy: {
       id: number;

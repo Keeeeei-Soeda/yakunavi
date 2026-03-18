@@ -166,7 +166,6 @@ model JobPosting {
   desiredWorkDays     Int             @map("desired_work_days")
   workStartPeriodFrom DateTime        @map("work_start_period_from") @db.Date
   workStartPeriodTo   DateTime        @map("work_start_period_to") @db.Date
-  recruitmentDeadline DateTime        @map("recruitment_deadline") @db.Date
   requirements        String?
   desiredWorkHours    String?         @map("desired_work_hours")
   dailyWage           Int             @map("daily_wage")
@@ -188,7 +187,6 @@ model JobPosting {
   @@index([pharmacyId], map: "idx_job_postings_pharmacy_id")
   @@index([pharmacyBranchId], map: "idx_job_postings_pharmacy_branch_id")
   @@index([status], map: "idx_job_postings_status")
-  @@index([recruitmentDeadline], map: "idx_job_postings_deadline")
   @@index([publishedAt], map: "idx_job_postings_published_at")
   @@index([status, dailyWage], map: "idx_job_postings_search")
   @@map("job_postings")

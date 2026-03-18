@@ -9,7 +9,6 @@ interface CreateJobPostingInput {
   desiredWorkDays: number;
   workStartPeriodFrom: Date;
   workStartPeriodTo: Date;
-  recruitmentDeadline: Date;
   requirements?: string;
   desiredWorkHours?: string;
   dailyWage: number;
@@ -25,7 +24,6 @@ interface UpdateJobPostingInput {
   desiredWorkDays?: number;
   workStartPeriodFrom?: Date;
   workStartPeriodTo?: Date;
-  recruitmentDeadline?: Date;
   requirements?: string;
   desiredWorkHours?: string;
   dailyWage?: number;
@@ -63,7 +61,6 @@ export class JobPostingService {
         desiredWorkDays: input.desiredWorkDays || 30,
         workStartPeriodFrom: input.workStartPeriodFrom ? new Date(input.workStartPeriodFrom) : new Date(),
         workStartPeriodTo: input.workStartPeriodTo ? new Date(input.workStartPeriodTo) : new Date(),
-        recruitmentDeadline: input.recruitmentDeadline ? new Date(input.recruitmentDeadline) : new Date(),
         requirements: input.requirements || null,
         desiredWorkHours: input.desiredWorkHours || null,
         dailyWage: input.dailyWage || 25000,

@@ -144,15 +144,6 @@ export default function JobPostingDetailPage() {
                                 </div>
                             )}
 
-                            {jobPosting.recruitmentDeadline && (
-                                <div>
-                                    <h3 className="text-sm font-medium text-gray-500 mb-1">募集期限</h3>
-                                    <p className="text-gray-900">
-                                        {format(new Date(jobPosting.recruitmentDeadline), 'yyyy年MM月dd日', { locale: ja })}
-                                    </p>
-                                </div>
-                            )}
-
                             {jobPosting.totalCompensation && (
                                 <div>
                                     <h3 className="text-sm font-medium text-gray-500 mb-1">報酬総額</h3>

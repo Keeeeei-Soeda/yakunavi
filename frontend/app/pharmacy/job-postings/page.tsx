@@ -6,7 +6,7 @@ import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { useAuthStore } from '@/lib/store/authStore';
 import { jobPostingsAPI, JobPosting } from '@/lib/api/jobPostings';
-import { Plus, Edit, Trash2, Send } from 'lucide-react';
+import { Plus, Edit, Trash2, Send, EyeOff } from 'lucide-react';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -46,6 +46,18 @@ export default function JobPostingsPage() {
     }
   };
 
+
+  const handleUnpublish = async (id: number) => {
+    if (!confirm('この求人を非公開にしますか？\n（掲載取り止め後は下書きに戻ります。再公開は可能です。）')) return;
+    try {
+      await jobPostingsAPI.unpublish(id);
+      alert('求人を非公開にしました');
+      fetchJobPostings();
+    } catch (error) {
+      console.error('Failed to unpublish:', error);
+      alert('非公開化に失敗しました');
+    }
+  };
 
   const handleDelete = async (id: number) => {
     if (!confirm('この求人を削除しますか？')) return;
@@ -132,18 +144,27 @@ export default function JobPostingsPage() {
                       <button
                         onClick={() => handlePublish(job.id)}
                         className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                        title="公開"
+                        title="公開する"
                       >
                         <Send size={20} />
                       </button>
                     ) : (
-                      <Link
-                        href={`/pharmacy/job-postings/${job.id}`}
-                        className="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-300 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="詳細を見る"
-                      >
-                        詳細
-                      </Link>
+                      <>
+                        <Link
+                          href={`/pharmacy/job-postings/${job.id}`}
+                          className="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-300 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="詳細を見る"
+                        >
+                          詳細
+                        </Link>
+                        <button
+                          onClick={() => handleUnpublish(job.id)}
+                          className="p-2 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
+                          title="掲載取り止め（非公開にする）"
+                        >
+                          <EyeOff size={20} />
+                        </button>
+                      </>
                     )}
                     <Link
                       href={`/pharmacy/job-postings/${job.id}/edit`}

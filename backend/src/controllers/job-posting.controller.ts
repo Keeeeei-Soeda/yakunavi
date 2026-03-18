@@ -31,7 +31,6 @@ export class JobPostingController {
         desiredWorkDays: req.body.desiredWorkDays,
         workStartPeriodFrom: req.body.workStartPeriodFrom ? new Date(req.body.workStartPeriodFrom) : new Date(),
         workStartPeriodTo: req.body.workStartPeriodTo ? new Date(req.body.workStartPeriodTo) : new Date(),
-        recruitmentDeadline: req.body.recruitmentDeadline ? new Date(req.body.recruitmentDeadline) : new Date(),
         requirements: req.body.requirements,
         desiredWorkHours: req.body.desiredWorkHours,
         dailyWage: req.body.dailyWage,

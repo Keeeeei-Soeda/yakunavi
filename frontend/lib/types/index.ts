@@ -60,7 +60,6 @@ export interface JobPosting {
   desiredWorkDays: number;
   workStartPeriodFrom: string;
   workStartPeriodTo: string;
-  recruitmentDeadline: string;
   dailyWage: number;
   totalCompensation: number;
   status: string;

@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import { ja } from 'date-fns/locale';
-import { MapPin, Calendar, Users, DollarSign } from 'lucide-react';
+import { MapPin, Users, DollarSign } from 'lucide-react';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { pharmacyAPI } from '@/lib/api/pharmacy';
 import { JobPosting } from '@/lib/types';
@@ -106,15 +104,6 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
                 <div className="flex items-center gap-1">
                   <DollarSign size={14} />
                   <span>日給: ¥{job.dailyWage.toLocaleString()}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Calendar size={14} />
-                  <span>
-                    締切:{' '}
-                    {format(new Date(job.recruitmentDeadline), 'MM/dd', {
-                      locale: ja,
-                    })}
-                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Users size={14} />

@@ -106,9 +106,7 @@ export const FavoriteJobs = forwardRef<HTMLDivElement, FavoriteJobsProps>(
         ) : (
           <div className="space-y-3">
             {favorites.map((fav) => {
-              const isExpired =
-                fav.jobPosting.status !== 'published' ||
-                new Date(fav.jobPosting.recruitmentDeadline) < new Date();
+              const isExpired = fav.jobPosting.status !== 'published';
 
               return (
                 <Link
@@ -124,7 +122,7 @@ export const FavoriteJobs = forwardRef<HTMLDivElement, FavoriteJobsProps>(
                         {isExpired && (
                           <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full flex items-center gap-1">
                             <AlertCircle size={12} />
-                            募集終了
+                            募集停止中
                           </span>
                         )}
                         <p className="text-sm font-semibold text-gray-900 truncate">
