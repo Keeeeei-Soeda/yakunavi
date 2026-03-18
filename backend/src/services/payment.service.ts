@@ -16,12 +16,20 @@ export class PaymentService {
 
   /**
    * 支払い報告（薬局側）
+   * 報告完了時に info@yaku-navi.com へ Resend でメール送信する。
    */
   async reportPayment(paymentId: bigint, pharmacyId: bigint, input: ReportPaymentInput) {
     const { paymentDate, transferName, confirmationNote } = input;
 
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
+      include: {
+        contract: {
+          include: {
+            pharmacy: true,
+          },
+        },
+      },
     });
 
     if (!payment) {
@@ -46,6 +54,24 @@ export class PaymentService {
         reportedAt: new Date(),
       },
     });
+
+    // 運営（info@yaku-navi.com）へ支払い報告メールを送信（Resend）
+    const pharmacyName =
+      payment.contract?.pharmacy?.pharmacyName ||
+      payment.contract?.pharmacy?.companyName ||
+      '薬局';
+    const paymentDateStr =
+      typeof paymentDate === 'string' ? paymentDate : (paymentDate as Date).toISOString().slice(0, 10);
+    this.notificationService
+      .notifyPaymentReportedToAdmin({
+        paymentId: Number(paymentId),
+        contractId: Number(payment.contractId),
+        pharmacyName,
+        paymentDate: paymentDateStr,
+        transferName,
+        confirmationNote,
+      })
+      .catch((err: Error) => console.error('Payment report email to admin failed:', err));
 
     return {
       ...updatedPayment,

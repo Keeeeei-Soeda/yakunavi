@@ -273,6 +273,65 @@ export class NotificationService {
     }
 
     /**
+     * 支払い報告時の運営通知（info@yaku-navi.com へ Resend で送信）
+     */
+    async notifyPaymentReportedToAdmin(params: {
+        paymentId: number;
+        contractId: number;
+        pharmacyName: string;
+        paymentDate: string;
+        transferName: string;
+        confirmationNote?: string;
+    }) {
+        const { paymentId, contractId, pharmacyName, paymentDate, transferName, confirmationNote } = params;
+        const adminEmail = process.env.PAYMENT_REPORT_NOTIFY_EMAIL || 'info@yaku-navi.com';
+
+        const bodyRows = [
+            ['請求書ID', String(paymentId)],
+            ['契約ID', String(contractId)],
+            ['薬局名', pharmacyName],
+            ['入金日（支払い日）', paymentDate],
+            ['振込名義', transferName],
+            ...(confirmationNote ? [['確認用メモ', confirmationNote]] : []),
+        ];
+
+        const tableRows = bodyRows
+            .map(
+                ([label, value]) =>
+                    `<tr><td style="padding:8px 12px; border-bottom:1px solid #e5e7eb; font-weight:600; width:140px;">${label}</td><td style="padding:8px 12px; border-bottom:1px solid #e5e7eb;">${value}</td></tr>`
+            )
+            .join('');
+
+        const adminPaymentsUrl = process.env.FRONTEND_URL || 'https://yaku-navi.com';
+        const detailUrl = `${adminPaymentsUrl}/admin/payments/${paymentId}`;
+
+        const html = `
+<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="background-color: #f8f9fa; padding: 24px; border-radius: 8px;">
+    <h1 style="color: #16a34a; font-size: 20px; margin-bottom: 16px;">【薬ナビ】支払い報告がありました</h1>
+    <p style="margin-bottom: 16px;">薬局から手数料の支払い報告が送信されました。入金確認のうえ、管理画面で「支払いを確認」してください。</p>
+    <table style="width:100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+      ${tableRows}
+    </table>
+    <p style="margin-top: 20px; text-align: center;">
+      <a href="${detailUrl}" style="display: inline-block; background-color: #16a34a; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold;">管理画面で確認する</a>
+    </p>
+    <p style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 12px;">このメールは自動送信されています。</p>
+  </div>
+</body>
+</html>`;
+
+        await this.sendEmail({
+            to: adminEmail,
+            subject: `【薬ナビ】支払い報告がありました（${pharmacyName} / 請求書#${paymentId}）`,
+            html,
+        });
+    }
+
+    /**
      * 共通メールHTMLテンプレート
      */
     private buildEmailHtml(params: {
