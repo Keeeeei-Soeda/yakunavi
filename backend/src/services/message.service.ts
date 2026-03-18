@@ -320,19 +320,19 @@ export class MessageService {
             throw new Error('初回出勤日の候補は既に提案済みです。提案は1回のみ可能です。');
         }
 
-        // 掲載日から2週間後以降の日付のみ許可
+        // 掲載日から1週間後以降の日付のみ許可
         const publishedAt = application.jobPosting.publishedAt;
         const minDate = publishedAt
             ? new Date(publishedAt)
             : new Date(application.jobPosting.createdAt);
-        minDate.setDate(minDate.getDate() + 14);
+        minDate.setDate(minDate.getDate() + 7);
         const minDateStr = minDate.toISOString().slice(0, 10);
 
         for (const d of proposedDates) {
             const dateStr = typeof d === 'string' ? d : String(d);
             if (dateStr < minDateStr) {
                 throw new Error(
-                    `初回出勤候補日は掲載日から2週間後以降を選択してください。最早日: ${minDateStr}`
+                    `初回出勤候補日は掲載日から1週間後以降を選択してください。最早日: ${minDateStr}`
                 );
             }
         }

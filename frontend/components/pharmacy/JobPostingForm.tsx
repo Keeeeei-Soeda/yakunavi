@@ -38,10 +38,10 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
     }).catch(() => {});
   }, [pharmacyId]);
 
-  // 勤務開始可能期間のデフォルト値（今日から2週間後）
+  // 勤務開始可能期間のデフォルト値（今日から1週間後）
   const getDefaultWorkStartDate = () => {
     const date = new Date();
-    date.setDate(date.getDate() + 14);
+    date.setDate(date.getDate() + 7);
     return date.toISOString().split('T')[0];
   };
 
@@ -121,11 +121,11 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
     setLoading(true);
 
     try {
-      // workStartPeriodToが空の場合は、workStartPeriodFromの14日後をデフォルトに設定
+      // workStartPeriodToが空の場合は、workStartPeriodFromの7日後をデフォルトに設定
       let workStartPeriodTo = formData.workStartPeriodTo;
       if (!workStartPeriodTo) {
         const startDate = new Date(formData.workStartPeriodFrom);
-        startDate.setDate(startDate.getDate() + 14);
+        startDate.setDate(startDate.getDate() + 7);
         workStartPeriodTo = startDate.toISOString().split('T')[0];
       }
 
@@ -339,7 +339,7 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
               className="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <p className="text-xs text-gray-600 bg-gray-50 p-3 rounded mt-2">
-              ※今日から2週間後以降の日付を選択してください<br />
+              ※今日から1週間後以降の日付を選択してください<br />
               ※薬剤師と相談の上、初回勤務日を決定します
             </p>
           </div>

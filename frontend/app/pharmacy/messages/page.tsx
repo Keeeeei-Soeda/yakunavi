@@ -736,7 +736,7 @@ export default function MessagesPage() {
                                     ⚠️ <strong>提案は1回のみ</strong>可能です。慎重に候補日を選択してください。
                                 </p>
                                 <p className="text-xs text-orange-800">
-                                    ※掲載日から2週間後以降の日付を選択してください
+                                    ※掲載日から1週間後以降の日付を選択してください
                                 </p>
                             </div>
                             <div className="space-y-3 mb-4">
@@ -744,8 +744,8 @@ export default function MessagesPage() {
                                     const selectedConv = conversations.find((c: any) => c.applicationId === selectedConversation);
                                     const publishedAt = selectedConv?.jobPosting?.publishedAt;
                                     const minDate = publishedAt
-                                        ? addDays(new Date(publishedAt), 14)
-                                        : addDays(new Date(), 14);
+                                        ? addDays(new Date(publishedAt), 7)
+                                        : addDays(new Date(), 7);
                                     const minDateStr = format(minDate, 'yyyy-MM-dd');
                                     return (
                                     <div key={index} className="flex gap-2">

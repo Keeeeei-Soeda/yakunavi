@@ -121,7 +121,7 @@ const sections: Section[] = [
           <h4 className="font-semibold text-gray-800 mb-2">求人票の管理</h4>
           <p className="text-sm text-gray-600 mb-2">作成した求人票は一覧から確認・編集できます。「公開中」「下書き」のステータスで管理されます。</p>
           <img src="/guide/pharmacy/job-list.png" alt="求人票一覧画面" className="w-full rounded-xl border border-gray-200 my-4" />
-          <Tip>掲載日から2週間後以降の日付を初回出勤日の候補として設定できます。</Tip>
+          <Tip>掲載日から1週間後以降の日付を初回出勤日の候補として設定できます。</Tip>
         </div>
       </div>
     ),
@@ -185,7 +185,7 @@ const sections: Section[] = [
           <h4 className="font-semibold text-gray-800 mb-2">初回出勤日候補の送付</h4>
           <StepList steps={[
             'メッセージ画面で「初回出勤日の候補を提案」ボタンを押します',
-            '候補日を入力します（掲載日から2週間後以降の日付のみ選択可）',
+            '候補日を入力します（掲載日から1週間後以降の日付のみ選択可）',
             '候補日を選択後「提案する」ボタンを押します',
             '「候補日を提案しますか？」の確認メッセージが表示されるので「OK」を押すと薬剤師に候補日が届きます',
           ]} />
@@ -197,7 +197,7 @@ const sections: Section[] = [
           <img src="/guide/pharmacy/date-proposal-send.png" alt="提案するボタン" className="w-full rounded-xl border border-gray-200 my-4" />
           <p className="text-xs text-gray-500 mt-2 mb-1">④ 確認メッセージ（OKで薬剤師に届く）</p>
           <img src="/guide/pharmacy/date-proposal-confirm.png" alt="候補日提案の確認" className="w-full rounded-xl border border-gray-200 my-4" />
-          <Caution>候補日は掲載日から2週間後以降の日付のみ設定できます。提案は1回のみ可能です。</Caution>
+          <Caution>候補日は掲載日から1週間後以降の日付のみ設定できます。提案は1回のみ可能です。</Caution>
         </div>
         <div>
           <h4 className="font-semibold text-gray-800 mb-2">正式オファーの送信</h4>
