@@ -179,6 +179,40 @@ export default function LaborConditionsNoticePage() {
   return (
     <ProtectedRoute requiredUserType="pharmacist">
       <PharmacistLayout hideSidebar={true}>
+        <style jsx global>{`
+          @media print {
+            /* Chrome/Safari 空白ページ対策：layout wrapper の高さをリセット */
+            html, body, #__next {
+              height: auto !important;
+              min-height: 0 !important;
+              overflow: visible !important;
+            }
+            .min-h-screen {
+              min-height: 0 !important;
+              height: auto !important;
+            }
+            .flex-1 {
+              flex: none !important;
+              height: auto !important;
+              overflow: visible !important;
+            }
+            .overflow-y-auto { overflow: visible !important; }
+
+            /* 表示切り替え */
+            .no-print   { display: none !important; }
+            .print-only { display: block !important; }
+            .screen-only { display: none !important; }
+
+            .no-break { page-break-inside: avoid; }
+            .labor-conditions-content {
+              box-shadow: none !important;
+              border: 1px solid #ddd;
+            }
+          }
+          .print-only {
+            display: none;
+          }
+        `}</style>
         <div className="space-y-6 labor-conditions-container">
           {/* ヘッダー */}
           <div className="flex items-center justify-between no-print">
@@ -203,14 +237,14 @@ export default function LaborConditionsNoticePage() {
           </div>
 
           {/* 印刷用ヘッダー（印刷時のみ表示） */}
-          <div className="hidden print-only mb-6">
+          <div className="print-only mb-6">
             <div className="text-right text-sm text-gray-600 mb-4">
               発行日: {format(new Date(), 'yyyy年MM月dd日', { locale: ja })}
             </div>
           </div>
 
           {/* 労働条件通知書の内容（雛形） */}
-          <div className="bg-white rounded-lg shadow p-8 labor-conditions-content">
+          <div className="bg-white rounded-lg shadow p-8 labor-conditions-content no-break">
             {/* タイトル */}
             <div className="text-center mb-6">
               <h1 className="text-3xl font-bold mb-2">労働条件通知書（雛形）</h1>
