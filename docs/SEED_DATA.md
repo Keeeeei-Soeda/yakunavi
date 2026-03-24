@@ -126,10 +126,91 @@ npm run update:profiles
 
 ---
 
+## テストアカウント一覧（詳細）
+
+シード実行後、以下のアカウントでログインできます。パスワードはすべて **password123** です。
+
+### 薬局アカウント（代表例）
+
+| メール | パスワード | 薬局名 | 代表者 | 所在地 |
+|--------|-----------|--------|--------|--------|
+| pharmacy1@test.com | password123 | 羽曳野薬局 / テスト薬局 新宿店 | 山田 太郎 | 東京都新宿区 |
+| pharmacy2@test.com | password123 | テスト薬局 新宿店 | - | 東京都新宿区 |
+| pharmacy3@test.com | password123 | サンプル薬局 渋谷店 | 佐藤 花子 | 東京都渋谷区 |
+
+### 薬剤師アカウント（代表例）
+
+| メール | パスワード | 氏名 | 証明書 | 備考 |
+|--------|-----------|------|--------|------|
+| pharmacist1@test.com | password123 | 田中 一郎 | ✅ 確認済み | プロフィール充実、応募テスト向け |
+| pharmacist2@test.com | password123 | 鈴木 美咲 | ⏳ 確認中 | 応募時に警告表示あり |
+| pharmacist3@test.com | password123 | 佐藤 健太 | ✅ 確認済み | 在宅医療経験あり |
+
+その他の薬剤師・薬局はシードで自動作成されます。詳細は `prisma/seed.ts` を参照してください。
+
+---
+
+## アカウント確認方法
+
+### Prisma Studio（推奨）
+
+```bash
+cd backend
+npx prisma studio
+```
+
+ブラウザで http://localhost:5555 を開き、`users`・`pharmacists`・`pharmacies` テーブルで確認できます。
+
+### コマンドで確認する場合
+
+プロジェクトルートで以下を実行（要 `ts-node`）:
+
+```bash
+cd backend
+npx ts-node -e "
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+(async () => {
+  const pharmacists = await prisma.pharmacist.findMany({
+    include: { user: { select: { email: true } } },
+    orderBy: { createdAt: 'desc' },
+  });
+  console.log('=== 薬剤師一覧 ===');
+  pharmacists.forEach((p) => console.log(p.id, p.lastName + ' ' + p.firstName, p.user.email));
+  const pharmacies = await prisma.pharmacy.findMany({
+    include: { user: { select: { email: true } } },
+  });
+  console.log('=== 薬局一覧 ===');
+  pharmacies.forEach((p) => console.log(p.id, p.pharmacyName || p.companyName, p.user.email));
+  await prisma.\$disconnect();
+})();
+"
+```
+
+統計のみ確認する場合は `npm run stats` などが利用可能な場合があります（backend/package.json の scripts を確認）。
+
+---
+
+## ダミーアカウントの追加（既存データを残す）
+
+既存データを削除せず、追加で薬局・薬剤師アカウントを作成する場合:
+
+```bash
+cd backend
+npx ts-node scripts/add-dummy-accounts.ts
+```
+
+- **薬局**: 10件（pharmacy.dummy1@test.com ～ pharmacy.dummy10@test.com）
+- **薬剤師**: 10件（pharmacist.dummy1@test.com ～ pharmacist.dummy10@test.com）
+- パスワードはすべて **password123**
+- 本番で実行する場合は、必ずテスト用であることを確認してください
+
+---
+
 ## 注意事項
 
-- シードデータを実行すると、既存のデータがすべて削除されます
-- 本番環境では実行しないでください
+- シードデータ（`npm run prisma:seed`）を実行すると、既存のデータがすべて削除されます
+- 本番環境ではシードを実行しないでください
 - パスワードはすべて `password123` です（テスト用）
 
 ---
@@ -145,5 +226,5 @@ npm run prisma:seed
 
 ---
 
-**最終更新**: 2026年1月28日
+**最終更新**: 2026年3月
 

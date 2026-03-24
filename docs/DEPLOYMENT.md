@@ -238,6 +238,76 @@ kill -9 <PID>
 
 ※ 破棄する変更がリモートにない場合は、先にローカルでコミットするか別ブランチに退避してから実行してください。
 
+### 問題6: PM2のプロセス名が `backend` ではない（`Process or Namespace backend not found`）
+
+本番ではプロセス名が `yaku-navi-backend` / `yaku-navi-frontend` の可能性があります。
+
+```bash
+# プロセス一覧を確認
+pm2 list
+
+# 正しいプロセス名で再起動
+pm2 restart yaku-navi-backend
+pm2 restart yaku-navi-frontend
+# または一括
+pm2 restart all
+
+# 環境変数を更新した場合は --update-env を付与
+pm2 restart all --update-env
+pm2 save
+```
+
+プロセスが存在しない場合は新規起動:
+
+```bash
+cd /root/yaku_navi/backend
+npm run build
+pm2 start npm --name "yaku-navi-backend" -- start
+cd ../frontend
+pm2 start npm --name "yaku-navi-frontend" -- start
+pm2 save
+```
+
+---
+
+## 管理者デプロイ時のチェックリスト
+
+管理者システムをデプロイする場合、以下を確認してください。
+
+### デプロイ前
+- [ ] ローカルで `backend` / `frontend` の `npm run build` が成功する
+- [ ] 環境変数（`JWT_SECRET`、`CORS_ORIGIN`、`FRONTEND_URL`）が本番用に設定されている
+
+### デプロイ後
+- [ ] `curl http://localhost:5001/health` が 200 を返す
+- [ ] `curl -H "Authorization: Bearer <TOKEN>" http://localhost:5001/api/admin/dashboard/stats` が動作する
+- [ ] https://yaku-navi.com/admin/auth/login で管理者ログインできる（admin@yaku-navi.com / Admin@2026!）
+- [ ] ダッシュボード・薬剤師管理・薬局管理・証明書・契約・支払い・ペナルティの各ページが表示・動作する
+
+管理者アカウントが存在しない場合は `docs/ADMIN.md` の「トラブルシューティング」を参照し、`npm run create:admin` で作成してください。
+
+---
+
+## 機能別デプロイ例（労働条件通知書など）
+
+フロントエンドのみの変更（労働条件通知書ページ追加など）の場合も、本番では通常どおりフロントのビルドと PM2 再起動を行います。
+
+```bash
+cd /root/yaku_navi
+git pull origin main
+cd frontend
+npm install
+npm run build
+cd ..
+pm2 restart yaku-navi-frontend
+pm2 status
+```
+
+**確認事項の例（労働条件通知書）**
+- 薬剤師側の契約詳細に「労働条件通知書を表示」が表示される
+- `/pharmacist/contracts/[id]/labor-conditions` が表示・印刷できる
+- 薬局側の請求書画面で印刷/PDF保存が期待どおり動作する
+
 ---
 
 ## デプロイ後の確認
