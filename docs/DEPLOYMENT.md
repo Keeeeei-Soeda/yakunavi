@@ -135,12 +135,16 @@ pm2 status
 ```bash
 cd /root/yaku_navi && \
 git pull origin main && \
+sudo cp -r /root/yaku_navi/LP_page/* /var/www/yakkyoku/ && sudo chown -R www-data:www-data /var/www/yakkyoku && \
+sudo cp -r /root/yaku_navi/LP_page/* /var/www/yakuzaishi/ && sudo chown -R www-data:www-data /var/www/yakuzaishi && \
 cd backend && npm install && npx prisma generate && npx prisma migrate deploy && npm run build && cd .. && \
 cd frontend && npm install && npm run build && cd .. && \
 pm2 restart all && \
 pm2 status && \
 pm2 logs --lines 20 --nostream
 ```
+
+（`yakkyoku` / `yakuzaishi` の静的LPは Nginx が `/var/www/...` を見るため、`git pull` だけでは反映されません。上記 `cp` を必ず含める。）
 
 ### PM2コマンド
 
