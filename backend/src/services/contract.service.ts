@@ -12,6 +12,42 @@ interface CreateContractInput {
     workHours?: string;
 }
 
+const CAMPAIGN_START_JST = 202604010000;
+const CAMPAIGN_END_JST = 202605312359;
+const DEFAULT_PLATFORM_FEE_RATE = 0.4;
+const CAMPAIGN_PLATFORM_FEE_RATE = 0.2;
+
+function getTokyoDateTimeNumber(date: Date): number {
+    const parts = new Intl.DateTimeFormat('ja-JP', {
+        timeZone: 'Asia/Tokyo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+    }).formatToParts(date);
+
+    const value = (type: Intl.DateTimeFormatPartTypes) =>
+        Number(parts.find((part) => part.type === type)?.value ?? '0');
+
+    const year = value('year');
+    const month = value('month');
+    const day = value('day');
+    const hour = value('hour');
+    const minute = value('minute');
+
+    return year * 100000000 + month * 1000000 + day * 10000 + hour * 100 + minute;
+}
+
+function getPlatformFeeRateByNow(now: Date): number {
+    const tokyoDateTime = getTokyoDateTimeNumber(now);
+    if (tokyoDateTime >= CAMPAIGN_START_JST && tokyoDateTime <= CAMPAIGN_END_JST) {
+        return CAMPAIGN_PLATFORM_FEE_RATE;
+    }
+    return DEFAULT_PLATFORM_FEE_RATE;
+}
+
 export class ContractService {
     private pdfService: PDFService;
     private notificationService: NotificationService;
@@ -65,9 +101,10 @@ export class ContractService {
             throw new Error('既にこの応募に対する契約が存在します');
         }
 
-        // 報酬総額とプラットフォーム手数料を計算
+        // 新規契約作成時点の時刻（JST）で手数料率を判定する（既存契約へは遡及しない）
         const totalCompensation = dailyWage * workDays;
-        const platformFee = Math.floor(totalCompensation * 0.4); // 40%
+        const platformFeeRate = getPlatformFeeRateByNow(new Date());
+        const platformFee = Math.floor(totalCompensation * platformFeeRate);
 
         // 支払い期限を計算（初回出勤日の3日前）
         const workDate = typeof initialWorkDate === 'string' ? new Date(initialWorkDate) : initialWorkDate;
@@ -305,7 +342,7 @@ export class ContractService {
             data: { updatedAt: new Date() },
         });
 
-        // 手数料税込額（報酬×40%×1.1）で支払いレコードを作成
+        // 手数料税込額（報酬×手数料率×1.1）で支払いレコードを作成
         const platformFeeTaxInclusive = Math.floor(contract.platformFee * 1.1);
         const payment = await prisma.payment.create({
             data: {

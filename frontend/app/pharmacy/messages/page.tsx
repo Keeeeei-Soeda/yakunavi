@@ -11,6 +11,42 @@ import { format, addDays } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import Link from 'next/link';
 
+const CAMPAIGN_START_JST = 202604010000;
+const CAMPAIGN_END_JST = 202605312359;
+const DEFAULT_PLATFORM_FEE_RATE = 0.4;
+const CAMPAIGN_PLATFORM_FEE_RATE = 0.2;
+
+const getTokyoDateTimeNumber = (date: Date): number => {
+    const parts = new Intl.DateTimeFormat('ja-JP', {
+        timeZone: 'Asia/Tokyo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+    }).formatToParts(date);
+
+    const value = (type: Intl.DateTimeFormatPartTypes) =>
+        Number(parts.find((part) => part.type === type)?.value ?? '0');
+
+    const year = value('year');
+    const month = value('month');
+    const day = value('day');
+    const hour = value('hour');
+    const minute = value('minute');
+
+    return year * 100000000 + month * 1000000 + day * 10000 + hour * 100 + minute;
+};
+
+const getPlatformFeeRateByNow = (): number => {
+    const tokyoDateTime = getTokyoDateTimeNumber(new Date());
+    if (tokyoDateTime >= CAMPAIGN_START_JST && tokyoDateTime <= CAMPAIGN_END_JST) {
+        return CAMPAIGN_PLATFORM_FEE_RATE;
+    }
+    return DEFAULT_PLATFORM_FEE_RATE;
+};
+
 export default function MessagesPage() {
     const user = useAuthStore((state) => state.user);
     const pharmacyId = user?.relatedId || 1;
@@ -154,7 +190,8 @@ export default function MessagesPage() {
         }
 
         const totalCompensation = offerData.dailyWage * offerData.workDays;
-        const platformFee = Math.floor(totalCompensation * 0.4);
+        const platformFeeRate = getPlatformFeeRateByNow();
+        const platformFee = Math.floor(totalCompensation * platformFeeRate);
         const platformFeeTaxInclusive = Math.floor(platformFee * 1.1);
 
         if (!confirm(`以下の内容で正式オファーを送信しますか？\n\n初回出勤日: ${selectedDate}\n勤務日数: ${offerData.workDays}日\n報酬総額: ¥${totalCompensation.toLocaleString()}\nプラットフォーム手数料（税込）: ¥${platformFeeTaxInclusive.toLocaleString()}`)) {
@@ -702,9 +739,19 @@ export default function MessagesPage() {
                                             <p className="text-xs text-gray-500 mt-1">※体験期間終了後に薬剤師へ直接お支払いください</p>
                                         </div>
                                         <div>
-                                            <label className="block text-sm text-gray-600 mb-1">プラットフォーム手数料（40%・税込）</label>
-                                            <p className="font-medium text-lg text-orange-600">¥{Math.floor(Math.floor((offerData.dailyWage * offerData.workDays) * 0.4) * 1.1).toLocaleString()}</p>
-                                            <p className="text-xs text-gray-500 mt-1">※報酬の40%＋消費税10%</p>
+                                            {(() => {
+                                                const totalCompensation = offerData.dailyWage * offerData.workDays;
+                                                const platformFeeRate = getPlatformFeeRateByNow();
+                                                const platformFeeTaxInclusive = Math.floor(Math.floor(totalCompensation * platformFeeRate) * 1.1);
+                                                const ratePercent = Math.round(platformFeeRate * 100);
+                                                return (
+                                                    <>
+                                            <label className="block text-sm text-gray-600 mb-1">プラットフォーム手数料（{ratePercent}%・税込）</label>
+                                            <p className="font-medium text-lg text-orange-600">¥{platformFeeTaxInclusive.toLocaleString()}</p>
+                                            <p className="text-xs text-gray-500 mt-1">※報酬の{ratePercent}%＋消費税10%</p>
+                                                    </>
+                                                );
+                                            })()}
                                         </div>
                                         <div>
                                             <label className="block text-sm text-gray-600 mb-1">勤務時間（目安）</label>

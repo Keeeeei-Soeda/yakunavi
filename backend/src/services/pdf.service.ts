@@ -166,10 +166,14 @@ export class PDFService {
         doc.font(japaneseFont).fontSize(10);
 
         const consumptionTax = Math.floor(data.platformFee * 0.1);
+        const effectiveRate = data.serviceCharge > 0 ? (data.platformFee / data.serviceCharge) * 100 : 0;
+        const effectiveRateLabel = Number.isInteger(effectiveRate)
+            ? `${effectiveRate.toFixed(0)}%`
+            : `${effectiveRate.toFixed(1)}%`;
 
         // プラットフォーム手数料（税抜）
         doc.rect(50, currentY, 495, 25).stroke('#cccccc');
-        doc.text('プラットフォーム手数料（報酬の40%・税抜）', 60, currentY + 8);
+        doc.text(`プラットフォーム手数料（報酬の${effectiveRateLabel}・税抜）`, 60, currentY + 8);
         doc.font('Helvetica').text(this.formatCurrency(data.platformFee), 480, currentY + 8, { width: 55, align: 'right' });
         currentY += 25;
 

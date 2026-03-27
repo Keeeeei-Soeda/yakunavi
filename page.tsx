@@ -28,7 +28,7 @@ export default function Home() {
     {
       image: '/pharmacy_top-page04.jpg',
       title: '給料をもらいながら転職活動',
-      description: 'トライアル期間中も時給が発生。収入を得ながら自分に合う職場を探せます。',
+      description: 'おためし期間中も時給が発生。収入を得ながら自分に合う職場を探せます。',
       imagePosition: 'right'
     }
   ];
@@ -44,7 +44,7 @@ export default function Home() {
     {
       image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop',
       title: '採用コストを大幅削減',
-      description: '紹介手数料不要。トライアル期間の時給のみで、低コストで優秀な人材を採用できます。',
+      description: '紹介手数料不要。おためし期間の時給のみで、低コストで優秀な人材を採用できます。',
       imagePosition: 'right'
     }
   ];
@@ -210,7 +210,7 @@ export default function Home() {
             </div>
             
             <div className="mt-8 text-xs sm:text-sm text-gray-500">
-              登録完了まで約1分 | 完全無料 | トライアル勤務可能
+              登録完了まで約1分 | 登録無料 | トライアル勤務可能
             </div>
           </motion.div>
         </div>
@@ -467,7 +467,7 @@ export default function Home() {
                 <div className="bg-teal-50 rounded-2xl p-6">
                   <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <span className="text-2xl">💰</span>
-                    トライアル期間中
+                    おためし期間中
                   </h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2 text-sm sm:text-base text-gray-700">
