@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { authenticate, requireUserType } from '../middleware/auth';
+import { authenticate, requireUserType, optionalAuthenticate } from '../middleware/auth';
 import { JobPostingController } from '../controllers/job-posting.controller';
 
 const router = Router();
 const jobPostingController = new JobPostingController();
 
-// 求人検索（認証不要）
-router.get('/search', jobPostingController.searchJobPostings);
+// 求人検索（認証任意: ログイン中ならテスト薬局フィルタを適用）
+router.get('/search', optionalAuthenticate, jobPostingController.searchJobPostings);
 
 // 求人詳細取得（認証不要）
 router.get('/:id', jobPostingController.getJobPosting);

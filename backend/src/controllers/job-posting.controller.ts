@@ -202,6 +202,12 @@ export class JobPostingController {
         limit,
       } = req.query;
 
+      // ログイン中の薬剤師IDを取得（未ログインまたは薬局/管理者はundefined）
+      const requestingPharmacistId =
+        req.user?.userType === 'pharmacist' && req.user?.relatedId
+          ? BigInt(req.user.relatedId)
+          : undefined;
+
       const result = await this.jobPostingService.searchJobPostings({
         prefecture: prefecture as string,
         minWage: minWage ? Number(minWage) : undefined,
@@ -210,6 +216,7 @@ export class JobPostingController {
         keyword: keyword as string,
         page: page ? Number(page) : undefined,
         limit: limit ? Number(limit) : undefined,
+        requestingPharmacistId,
       });
 
       return res.status(200).json({

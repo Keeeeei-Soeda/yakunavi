@@ -32,6 +32,9 @@ interface UpdateJobPostingInput {
   status?: string;
 }
 
+// テスト用として求人を閲覧できる薬剤師ID（pharmacistsテーブルのid）
+const TEST_PHARMACIST_IDS = [4n, 15n, 17n];
+
 interface SearchJobPostingsParams {
   prefecture?: string;
   minWage?: number;
@@ -40,6 +43,7 @@ interface SearchJobPostingsParams {
   keyword?: string;
   page?: number;
   limit?: number;
+  requestingPharmacistId?: bigint;
 }
 
 export class JobPostingService {
@@ -258,10 +262,16 @@ export class JobPostingService {
       keyword,
       page = 1,
       limit = 20,
+      requestingPharmacistId,
     } = params;
+
+    // テスト薬局フィルタ: テスト薬剤師以外にはis_test=trueの薬局の求人を非表示
+    const isTestUser = requestingPharmacistId !== undefined &&
+      TEST_PHARMACIST_IDS.includes(requestingPharmacistId);
 
     const where: any = {
       status,
+      ...(!isTestUser && { pharmacy: { isTest: false } }),
     };
 
     // prefectureで検索する場合は、workLocationから都道府県を抽出して検索

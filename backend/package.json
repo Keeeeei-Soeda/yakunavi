@@ -18,7 +18,8 @@
     "list:pharmacies": "ts-node scripts/list-pharmacies.ts",
     "stats": "ts-node scripts/stats.ts",
     "create:admin": "ts-node scripts/create-admin.ts",
-    "seed:invoice:oozora": "ts-node scripts/seed-invoice-oozora.ts"
+    "seed:invoice:oozora": "ts-node scripts/seed-invoice-oozora.ts",
+    "delete:dummy": "ts-node scripts/delete-dummy-data.ts"
   },
   "keywords": [
     "pharmacy",

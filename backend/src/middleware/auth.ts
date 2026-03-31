@@ -71,6 +71,23 @@ export const requireUserType = (...allowedTypes: UserType[]) => {
 // ユーザータイプ認可ミドルウェア（別名エクスポート）
 export const authorizeUserType = requireUserType;
 
+// オプショナル認証（トークンがあれば検証・なくてもOK）
+export const optionalAuthenticate = (req: AuthRequest, _res: Response, next: NextFunction): void => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.substring(7);
+            const jwtSecret = process.env.JWT_SECRET;
+            if (jwtSecret) {
+                req.user = jwt.verify(token, jwtSecret) as JWTPayload;
+            }
+        }
+    } catch {
+        // トークンが無効でも処理を続行
+    }
+    next();
+};
+
 // 管理者認証ミドルウェア
 export const authenticateAdmin = (req: AuthRequest, res: Response, next: NextFunction): void => {
   authenticate(req, res, () => {

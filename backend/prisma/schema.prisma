@@ -54,6 +54,7 @@ model Pharmacy {
   introduction            String?
   strengths               String?
   equipmentSystems        String?           @map("equipment_systems")
+  isTest                  Boolean           @default(false) @map("is_test")
   createdAt               DateTime          @default(now()) @map("created_at")
   updatedAt               DateTime          @updatedAt @map("updated_at")
   branches                PharmacyBranch[]
