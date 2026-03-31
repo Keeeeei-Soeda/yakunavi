@@ -141,6 +141,7 @@ model Pharmacist {
   registrationFileUrl        String?       @map("registration_file_url") @db.VarChar(500)
   verificationStatus         String        @default("pending") @map("verification_status") @db.VarChar(20)
   verifiedAt                 DateTime?     @map("verified_at")
+  isTest                     Boolean       @default(false) @map("is_test")
   createdAt                  DateTime      @default(now()) @map("created_at")
   updatedAt                  DateTime      @updatedAt @map("updated_at")
   applications               Application[]

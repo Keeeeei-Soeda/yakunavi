@@ -28,25 +28,25 @@ export class AdminService {
             pendingCertificates,
             pendingPayments,
         ] = await Promise.all([
-            // 総薬局数
-            prisma.pharmacy.count(),
-            // 総薬剤師数
-            prisma.pharmacist.count(),
-            // アクティブな求人数
+            // 総薬局数（テスト薬局除外）
+            prisma.pharmacy.count({ where: { isTest: false } }),
+            // 総薬剤師数（テスト薬剤師除外）
+            prisma.pharmacist.count({ where: { isTest: false } }),
+            // アクティブな求人数（テスト薬局除外）
             prisma.jobPosting.count({
-                where: { status: 'published' },
+                where: { status: 'published', pharmacy: { isTest: false } },
             }),
-            // 総契約数
+            // 総契約数（テスト薬局・薬剤師除外）
             prisma.contract.count({
-                where: { status: 'active' },
+                where: { status: 'active', pharmacy: { isTest: false }, pharmacist: { isTest: false } },
             }),
-            // 未確認証明書数
+            // 未確認証明書数（テスト薬剤師除外）
             prisma.certificate.count({
-                where: { verificationStatus: 'pending' },
+                where: { verificationStatus: 'pending', pharmacist: { isTest: false } },
             }),
-            // 未確認支払い数
+            // 未確認支払い数（テスト薬局除外）
             prisma.payment.count({
-                where: { paymentStatus: 'reported' },
+                where: { paymentStatus: 'reported', contract: { pharmacy: { isTest: false } } },
             }),
         ]);
 
@@ -67,7 +67,7 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: any = { pharmacist: { isTest: false } };
 
         if (status) {
             where.verificationStatus = status;
@@ -246,7 +246,10 @@ export class AdminService {
         const { page = 1, limit = 20, status, search, startDate, endDate } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: any = {
+            pharmacy: { isTest: false },
+            pharmacist: { isTest: false },
+        };
 
         if (status) {
             where.status = status;
@@ -335,7 +338,7 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: any = { pharmacy: { isTest: false } };
 
         if (status) {
             where.penaltyStatus = status;
@@ -343,6 +346,7 @@ export class AdminService {
 
         if (search) {
             where.pharmacy = {
+                isTest: false,
                 pharmacyName: { contains: search },
             };
         }
@@ -392,7 +396,9 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: any = {
+            contract: { pharmacy: { isTest: false }, pharmacist: { isTest: false } },
+        };
 
         if (status && status !== 'all') {
             where.paymentStatus = status;
@@ -542,7 +548,7 @@ export class AdminService {
         if (startDate) dateFilter.gte = new Date(startDate);
         if (endDate) dateFilter.lte = new Date(endDate);
 
-        const where = startDate || endDate ? { createdAt: dateFilter } : {};
+        const dateWhere = startDate || endDate ? { createdAt: dateFilter } : {};
 
         const [
             newPharmacies,
@@ -552,13 +558,13 @@ export class AdminService {
             newContracts,
             totalRevenue,
         ] = await Promise.all([
-            prisma.pharmacy.count({ where }),
-            prisma.pharmacist.count({ where }),
-            prisma.jobPosting.count({ where }),
-            prisma.application.count({ where }),
-            prisma.contract.count({ where }),
+            prisma.pharmacy.count({ where: { isTest: false, ...dateWhere } }),
+            prisma.pharmacist.count({ where: { isTest: false, ...dateWhere } }),
+            prisma.jobPosting.count({ where: { pharmacy: { isTest: false }, ...dateWhere } }),
+            prisma.application.count({ where: { jobPosting: { pharmacy: { isTest: false } }, pharmacist: { isTest: false }, ...dateWhere } }),
+            prisma.contract.count({ where: { pharmacy: { isTest: false }, pharmacist: { isTest: false }, ...dateWhere } }),
             prisma.payment.aggregate({
-                where: { paymentStatus: 'confirmed', ...where },
+                where: { paymentStatus: 'confirmed', contract: { pharmacy: { isTest: false } }, ...dateWhere },
                 _sum: { amount: true },
             }),
         ]);
@@ -580,7 +586,7 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: any = { pharmacy: { isTest: false } };
 
         if (status) {
             where.status = status;
@@ -644,7 +650,10 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: any = {
+            jobPosting: { pharmacy: { isTest: false } },
+            pharmacist: { isTest: false },
+        };
 
         if (status) {
             where.status = status;
@@ -714,7 +723,7 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: any = { isTest: false };
 
         if (status === 'active') {
             where.user = { isActive: true };
@@ -779,7 +788,7 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = {};
+        const where: any = { isTest: false };
 
         if (status === 'active') {
             where.user = { isActive: true };
