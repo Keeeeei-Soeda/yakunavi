@@ -85,7 +85,7 @@ export default function PharmacistDashboard() {
           </div>
         </div>
 
-        {/* お気に入り求人 */}
+        {/* お気に入りおためし案件 */}
         <div key={`favorites-${refreshKey}`}>
           <FavoriteJobs ref={favoriteRef} refreshKey={refreshKey} />
         </div>

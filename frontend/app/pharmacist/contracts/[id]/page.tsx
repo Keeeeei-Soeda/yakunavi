@@ -210,8 +210,8 @@ export default function ContractDetailPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">契約情報</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-600">求人</p>
-                <p className="font-medium">{contract.jobPosting?.title || '求人情報なし'}</p>
+                <p className="text-sm text-gray-600">おためし案件</p>
+                <p className="font-medium">{contract.jobPosting?.title || 'おためし案件情報なし'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">薬局</p>
@@ -521,8 +521,8 @@ export default function ContractDetailPage() {
                       <h3 className="font-semibold text-gray-900 mb-3">契約情報</h3>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-600">求人</p>
-                          <p className="font-medium">{contract.jobPosting?.title || '求人情報なし'}</p>
+                          <p className="text-gray-600">おためし案件</p>
+                          <p className="font-medium">{contract.jobPosting?.title || 'おためし案件情報なし'}</p>
                         </div>
                         <div>
                           <p className="text-gray-600">初回出勤日</p>

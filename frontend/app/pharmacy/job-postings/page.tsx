@@ -38,7 +38,7 @@ export default function JobPostingsPage() {
   const handlePublish = async (id: number) => {
     try {
       await jobPostingsAPI.publish(id);
-      alert('求人を公開しました');
+      alert('おためし案件を公開しました');
       fetchJobPostings();
     } catch (error) {
       console.error('Failed to publish:', error);
@@ -48,10 +48,10 @@ export default function JobPostingsPage() {
 
 
   const handleUnpublish = async (id: number) => {
-    if (!confirm('この求人を非公開にしますか？\n（掲載取り止め後は下書きに戻ります。再公開は可能です。）')) return;
+    if (!confirm('このおためし案件を非公開にしますか？\n（掲載取り止め後は下書きに戻ります。再公開は可能です。）')) return;
     try {
       await jobPostingsAPI.unpublish(id);
-      alert('求人を非公開にしました');
+      alert('おためし案件を非公開にしました');
       fetchJobPostings();
     } catch (error) {
       console.error('Failed to unpublish:', error);
@@ -60,11 +60,11 @@ export default function JobPostingsPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('この求人を削除しますか？')) return;
+    if (!confirm('このおためし案件を削除しますか？')) return;
 
     try {
       await jobPostingsAPI.delete(id);
-      alert('求人を削除しました');
+      alert('おためし案件を削除しました');
       fetchJobPostings();
     } catch (error) {
       console.error('Failed to delete:', error);
@@ -75,7 +75,7 @@ export default function JobPostingsPage() {
   return (
     <ProtectedRoute requiredUserType="pharmacy">
       <PharmacyLayout
-        title="求人投稿管理"
+        title="おためし案件投稿管理"
         rightAction={
           <Link
             href="/pharmacy/job-postings/new"
@@ -92,13 +92,13 @@ export default function JobPostingsPage() {
           </div>
         ) : jobPostings.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
-            <p className="text-gray-500 mb-4">まだ求人が投稿されていません</p>
+            <p className="text-gray-500 mb-4">まだおためし案件が投稿されていません</p>
             <Link
               href="/pharmacy/job-postings/new"
               className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Plus size={20} />
-              最初の求人を投稿
+              最初のおためし案件を投稿
             </Link>
           </div>
         ) : (

@@ -121,7 +121,7 @@ export default function ApplicationDetailPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">応募情報</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-600">求人</p>
+                <p className="text-sm text-gray-600">おためし案件</p>
                 <p className="font-medium">{application.jobPosting?.title}</p>
               </div>
               <div>

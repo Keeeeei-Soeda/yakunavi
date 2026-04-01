@@ -116,7 +116,7 @@ export default function JobSearchPage() {
 
   return (
     <ProtectedRoute requiredUserType="pharmacist">
-      <PharmacistLayout title="求人検索">
+      <PharmacistLayout title="おためし案件検索">
         {/* 検索フィルター */}
         <div className="bg-white rounded-lg shadow p-4 md:p-6 mb-4 md:mb-6">
           <h2 className="text-lg font-semibold mb-4">検索条件</h2>
@@ -181,7 +181,7 @@ export default function JobSearchPage() {
                 onChange={(e) =>
                   setFilters({ ...filters, keyword: e.target.value })
                 }
-                placeholder="求人タイトル、内容で検索"
+                placeholder="おためし案件タイトル、内容で検索"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
@@ -197,14 +197,14 @@ export default function JobSearchPage() {
           </button>
         </div>
 
-        {/* 求人一覧 */}
+        {/* おためし案件一覧 */}
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-gray-500">読み込み中...</p>
           </div>
         ) : jobPostings.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
-            <p className="text-gray-500">条件に一致する求人が見つかりませんでした</p>
+            <p className="text-gray-500">条件に一致するおためし案件が見つかりませんでした</p>
           </div>
         ) : (
           <div className="space-y-4">

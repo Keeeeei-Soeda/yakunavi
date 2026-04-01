@@ -301,10 +301,10 @@ export default function PharmacyDetailPage() {
         </div>
       </div>
 
-      {/* 今後の拡張: 求人一覧、契約一覧、ペナルティ情報など */}
+      {/* 今後の拡張: おためし案件一覧、契約一覧、ペナルティ情報など */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <p className="text-blue-800 text-sm">
-          💡 今後、求人一覧、契約履歴、ペナルティ情報などの表示機能を追加予定です
+          💡 今後、おためし案件一覧、契約履歴、ペナルティ情報などの表示機能を追加予定です
         </p>
       </div>
     </div>

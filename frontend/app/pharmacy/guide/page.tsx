@@ -83,7 +83,7 @@ const sections: Section[] = [
       <div className="space-y-6">
         <div>
           <h4 className="font-semibold text-gray-800 mb-2">プロフィールの入力</h4>
-          <p className="text-sm text-gray-600 mb-2">プロフィールが未設定の場合、求人票の掲載や応募の受付ができません。ログイン後まず設定してください。</p>
+          <p className="text-sm text-gray-600 mb-2">プロフィールが未設定の場合、おためし案件票の掲載や応募の受付ができません。ログイン後まず設定してください。</p>
           <StepList steps={[
             'サイドバーの「プロフィール管理」をクリックします',
             '薬局名、代表者名、住所、電話番号などを入力します',
@@ -99,28 +99,28 @@ const sections: Section[] = [
     id: 'job-posting',
     step: 2,
     icon: <FileText size={20} />,
-    title: '求人票の作成・掲載',
-    description: '薬剤師が応募できる求人を作成する',
+    title: 'おためし案件票の作成・掲載',
+    description: '薬剤師が応募できるおためし案件を作成する',
     content: (
       <div className="space-y-6">
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">求人票の新規作成</h4>
+          <h4 className="font-semibold text-gray-800 mb-2">おためし案件票の新規作成</h4>
           <StepList steps={[
-            'サイドバーの「求人票」をクリックします',
+            'サイドバーの「おためし案件票」をクリックします',
             '右上の「新規作成」ボタンを押します',
             '勤務日、勤務地、日給、業務内容などを入力します',
             '「下書き保存」または「公開する」を選択します',
           ]} />
           <p className="text-xs text-gray-500 mt-3 mb-1">③ 基本情報・勤務条件の入力画面</p>
-          <img src="/guide/pharmacy/job-create.png" alt="求人票作成画面（基本情報・勤務条件）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <img src="/guide/pharmacy/job-create.png" alt="おためし案件票作成画面（基本情報・勤務条件）" className="w-full rounded-xl border border-gray-200 my-2" />
           <p className="text-xs text-gray-500 mt-3 mb-1">④ 応募条件・資格の入力と公開ボタン</p>
-          <img src="/guide/pharmacy/job-create-publish.png" alt="求人票作成画面（応募条件・公開）" className="w-full rounded-xl border border-gray-200 my-2" />
+          <img src="/guide/pharmacy/job-create-publish.png" alt="おためし案件票作成画面（応募条件・公開）" className="w-full rounded-xl border border-gray-200 my-2" />
           <Caution>「公開する」を選択すると薬剤師側に表示されます。内容を確認してから公開しましょう。</Caution>
         </div>
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">求人票の管理</h4>
-          <p className="text-sm text-gray-600 mb-2">作成した求人票は一覧から確認・編集できます。「公開中」「下書き」のステータスで管理されます。</p>
-          <img src="/guide/pharmacy/job-list.png" alt="求人票一覧画面" className="w-full rounded-xl border border-gray-200 my-4" />
+          <h4 className="font-semibold text-gray-800 mb-2">おためし案件票の管理</h4>
+          <p className="text-sm text-gray-600 mb-2">作成したおためし案件票は一覧から確認・編集できます。「公開中」「下書き」のステータスで管理されます。</p>
+          <img src="/guide/pharmacy/job-list.png" alt="おためし案件票一覧画面" className="w-full rounded-xl border border-gray-200 my-4" />
           <Tip>掲載日から1週間後以降の日付を初回出勤日の候補として設定できます。</Tip>
         </div>
       </div>
@@ -375,7 +375,7 @@ const sections: Section[] = [
           <div className="space-y-3">
             {[
               { q: '応募を却下した後、元に戻せますか？', a: '一度却下した応募は元に戻せません。慎重にご判断ください。' },
-              { q: '求人票を削除したい場合は？', a: '公開中の求人票は非公開に変更できます。完全削除はサポートへご連絡ください。' },
+              { q: 'おためし案件票を削除したい場合は？', a: '公開中のおためし案件票は非公開に変更できます。完全削除はサポートへご連絡ください。' },
               { q: '振込が完了したのに契約が切り替わらない', a: '運営による確認作業があります。確認完了まで1〜2営業日かかる場合があります。お急ぎの場合は info@yaku-navi.com までご連絡ください。' },
             ].map((item, i) => (
               <div key={i} className="p-4 bg-gray-50 rounded-xl">
@@ -416,14 +416,14 @@ export default function PharmacyGuidePage() {
           </div>
           <h1 className="text-2xl font-bold text-gray-900">薬局向け 使い方ガイド</h1>
         </div>
-        <p className="text-gray-500 text-sm ml-13">求人掲載から契約完了まで、薬ナビの使い方をステップで解説します。</p>
+        <p className="text-gray-500 text-sm ml-13">おためし案件掲載から契約完了まで、薬ナビの使い方をステップで解説します。</p>
       </div>
 
       {/* フロー概要 */}
       <div className="bg-blue-50 rounded-2xl p-5 mb-8">
         <h2 className="font-bold text-blue-800 mb-4 text-sm">ご利用の流れ</h2>
         <div className="flex flex-wrap gap-2 items-center">
-          {['プロフィール設定', '求人票作成・公開', '応募確認', 'メッセージ・オファー', '手数料支払い', '契約成立'].map((item, i, arr) => (
+          {['プロフィール設定', 'おためし案件票作成・公開', '応募確認', 'メッセージ・オファー', '手数料支払い', '契約成立'].map((item, i, arr) => (
             <React.Fragment key={item}>
               <div className="flex items-center gap-1.5">
                 <span className="w-5 h-5 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center flex-shrink-0">

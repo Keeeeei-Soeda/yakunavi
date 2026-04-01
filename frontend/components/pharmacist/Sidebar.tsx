@@ -99,7 +99,7 @@ export const PharmacistSidebar: React.FC<PharmacistSidebarProps> = ({
     },
     {
       icon: Search,
-      label: '求人検索',
+      label: 'おためし案件検索',
       href: '/pharmacist/jobs',
     },
     {

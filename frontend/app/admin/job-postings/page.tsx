@@ -105,8 +105,8 @@ export default function JobPostingsPage() {
     <div className="max-w-7xl mx-auto w-full">
       {/* ページタイトル */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">求人管理</h1>
-        <p className="mt-2 text-sm text-gray-600">アクティブな求人の一覧と管理</p>
+        <h1 className="text-3xl font-bold text-gray-900">おためし案件管理</h1>
+        <p className="mt-2 text-sm text-gray-600">アクティブなおためし案件の一覧と管理</p>
       </div>
 
       {/* 検索・フィルター */}
@@ -142,7 +142,7 @@ export default function JobPostingsPage() {
                     fetchJobPostings();
                   }
                 }}
-                placeholder="求人タイトル、薬局名、勤務地で検索..."
+                placeholder="おためし案件タイトル、薬局名、勤務地で検索..."
                 className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -170,7 +170,7 @@ export default function JobPostingsPage() {
         </p>
       </div>
 
-      {/* 求人一覧 */}
+      {/* おためし案件一覧 */}
       {loading ? (
         <div className="flex justify-center items-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -178,7 +178,7 @@ export default function JobPostingsPage() {
       ) : jobPostings.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <Briefcase className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">求人が見つかりません</p>
+          <p className="text-gray-500">おためし案件が見つかりません</p>
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -186,7 +186,7 @@ export default function JobPostingsPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  求人ID
+                  おためし案件ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   タイトル

@@ -31,7 +31,7 @@ export default function EditJobPostingPage() {
             }
         } catch (error) {
             console.error('Failed to fetch job posting:', error);
-            alert('求人の取得に失敗しました');
+            alert('おためし案件の取得に失敗しました');
             router.push('/pharmacy/job-postings');
         } finally {
             setLoading(false);
@@ -51,22 +51,22 @@ export default function EditJobPostingPage() {
                 // 公開状態にする場合は、公開APIも呼び出す（既に公開中の場合は何もしない）
                 if (jobPosting?.status !== 'published') {
                     await jobPostingsAPI.publish(id);
-                    alert('求人を更新して公開しました');
+                    alert('おためし案件を更新して公開しました');
                 } else {
-                    alert('求人を更新しました');
+                    alert('おためし案件を更新しました');
                 }
                 router.push('/pharmacy/job-postings');
             }
         } catch (error: any) {
             console.error('Update error:', error);
-            alert(error.response?.data?.error || '求人の更新に失敗しました');
+            alert(error.response?.data?.error || 'おためし案件の更新に失敗しました');
         }
     };
 
     if (loading) {
         return (
             <ProtectedRoute requiredUserType="pharmacy">
-                <PharmacyLayout title="求人編集">
+                <PharmacyLayout title="おためし案件編集">
                     <div className="flex items-center justify-center py-12">
                         <p className="text-gray-500">読み込み中...</p>
                     </div>
@@ -78,9 +78,9 @@ export default function EditJobPostingPage() {
     if (!jobPosting) {
         return (
             <ProtectedRoute requiredUserType="pharmacy">
-                <PharmacyLayout title="求人編集">
+                <PharmacyLayout title="おためし案件編集">
                     <div className="flex items-center justify-center py-12">
-                        <p className="text-gray-500">求人が見つかりませんでした</p>
+                        <p className="text-gray-500">おためし案件が見つかりませんでした</p>
                     </div>
                 </PharmacyLayout>
             </ProtectedRoute>
@@ -89,7 +89,7 @@ export default function EditJobPostingPage() {
 
     return (
         <ProtectedRoute requiredUserType="pharmacy">
-            <PharmacyLayout title="求人編集">
+            <PharmacyLayout title="おためし案件編集">
                 <JobPostingForm
                     pharmacyId={pharmacyId}
                     initialData={{

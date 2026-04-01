@@ -27,7 +27,7 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
         }
       } catch (err) {
         console.error('Failed to fetch job postings:', err);
-        setError('求人データの取得に失敗しました');
+        setError('おためし案件データの取得に失敗しました');
       } finally {
         setLoading(false);
       }
@@ -39,7 +39,7 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4">募集中の求人</h3>
+        <h3 className="text-lg font-semibold mb-4">募集中のおためし案件</h3>
         <LoadingSpinner className="py-8" />
       </div>
     );
@@ -48,7 +48,7 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
   if (error) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4">募集中の求人</h3>
+        <h3 className="text-lg font-semibold mb-4">募集中のおためし案件</h3>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
           {error}
         </div>
@@ -59,7 +59,7 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">募集中の求人</h3>
+        <h3 className="text-lg font-semibold">募集中のおためし案件</h3>
         <a
           href="/pharmacy/job-postings"
           className="text-sm text-primary-600 hover:text-primary-700 font-medium"
@@ -71,13 +71,13 @@ export const ActiveJobPostings: React.FC<ActiveJobPostingsProps> = ({
       {jobPostings.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500 mb-4">
-            アクティブな求人がありません
+            アクティブなおためし案件がありません
           </p>
           <a
             href="/pharmacy/job-postings/new"
             className="inline-block bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
           >
-            求人を作成
+            おためし案件を作成
           </a>
         </div>
       ) : (

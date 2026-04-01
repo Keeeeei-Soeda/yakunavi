@@ -134,7 +134,7 @@ export default function AdminDashboard() {
                             <Briefcase className="h-6 w-6" />
                         </div>
                         <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-600">アクティブ求人</p>
+                            <p className="text-sm font-medium text-gray-600">アクティブおためし案件</p>
                             <p className="text-2xl font-bold text-gray-900">{stats.activeJobPostings}件</p>
                             <p className="text-xs text-gray-500 mt-1">クリックして確認</p>
                         </div>

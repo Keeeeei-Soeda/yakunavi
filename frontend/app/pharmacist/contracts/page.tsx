@@ -134,7 +134,7 @@ export default function ContractsPage() {
               href="/pharmacist/jobs"
               className="inline-block mt-4 text-blue-600 hover:text-blue-700 font-medium"
             >
-              求人を探す →
+              おためし案件を探す →
             </Link>
           </div>
         ) : (
@@ -148,7 +148,7 @@ export default function ContractsPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        {contract.jobPosting?.title || '求人情報なし'}
+                        {contract.jobPosting?.title || 'おためし案件情報なし'}
                       </h3>
                       <p className="text-sm text-gray-600">
                         {contract.pharmacy?.name || '薬局情報なし'}

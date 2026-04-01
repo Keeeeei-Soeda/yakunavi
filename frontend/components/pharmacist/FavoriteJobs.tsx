@@ -53,7 +53,7 @@ export const FavoriteJobs = forwardRef<HTMLDivElement, FavoriteJobsProps>(
         <div ref={ref} className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Heart size={20} className="text-red-500" />
-            お気に入り求人
+            お気に入りおためし案件
           </h3>
           <LoadingSpinner className="py-8" />
         </div>
@@ -65,7 +65,7 @@ export const FavoriteJobs = forwardRef<HTMLDivElement, FavoriteJobsProps>(
         <div ref={ref} className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Heart size={20} className="text-red-500" />
-            お気に入り求人
+            お気に入りおためし案件
           </h3>
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">
             {error}
@@ -79,7 +79,7 @@ export const FavoriteJobs = forwardRef<HTMLDivElement, FavoriteJobsProps>(
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <Heart size={20} className="text-red-500 fill-red-500" />
-            お気に入り求人
+            お気に入りおためし案件
             <span className="text-sm font-normal text-gray-500">（{favorites.length}件）</span>
           </h3>
           {favorites.length > 0 && (
@@ -87,7 +87,7 @@ export const FavoriteJobs = forwardRef<HTMLDivElement, FavoriteJobsProps>(
               href="/pharmacist/jobs"
               className="text-sm text-green-600 hover:text-green-700 font-medium"
             >
-              求人を探す →
+              おためし案件を探す →
             </Link>
           )}
         </div>
@@ -95,12 +95,12 @@ export const FavoriteJobs = forwardRef<HTMLDivElement, FavoriteJobsProps>(
         {favorites.length === 0 ? (
           <div className="text-center py-8">
             <Heart size={40} className="mx-auto text-gray-300 mb-3" />
-            <p className="text-gray-500 text-sm mb-3">お気に入りに登録した求人がありません</p>
+            <p className="text-gray-500 text-sm mb-3">お気に入りに登録したおためし案件がありません</p>
             <Link
               href="/pharmacist/jobs"
               className="inline-block bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
             >
-              求人を探す
+              おためし案件を探す
             </Link>
           </div>
         ) : (

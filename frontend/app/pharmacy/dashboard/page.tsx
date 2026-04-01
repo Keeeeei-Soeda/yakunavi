@@ -45,7 +45,7 @@ export default function PharmacyDashboard() {
           <DashboardStats pharmacyId={pharmacyId} />
         </div>
 
-        {/* グリッドレイアウト: 最近の応募・募集中の求人・通知 */}
+        {/* グリッドレイアウト: 最近の応募・募集中のおためし案件・通知 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <RecentApplications pharmacyId={pharmacyId} />
           <ActiveJobPostings pharmacyId={pharmacyId} />
@@ -64,7 +64,7 @@ export default function PharmacyDashboard() {
               href="/pharmacy/job-postings/new"
               className="bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-colors text-center font-medium"
             >
-              + 新しい求人を投稿
+              + 新しいおためし案件を投稿
             </a>
             <a
               href="/pharmacy/applications"

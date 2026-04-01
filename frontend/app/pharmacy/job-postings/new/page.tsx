@@ -18,18 +18,18 @@ export default function NewJobPostingPage() {
       // 常に公開状態で作成
       const response = await jobPostingsAPI.create({ ...data, status: 'published' });
       if (response.success) {
-        alert('求人を公開しました');
+        alert('おためし案件を公開しました');
         router.push('/pharmacy/job-postings');
       }
     } catch (error: any) {
       console.error('Create error:', error);
-      alert(error.response?.data?.error || '求人の作成に失敗しました');
+      alert(error.response?.data?.error || 'おためし案件の作成に失敗しました');
     }
   };
 
   return (
     <ProtectedRoute requiredUserType="pharmacy">
-      <PharmacyLayout title="新規求人投稿">
+      <PharmacyLayout title="新規おためし案件投稿">
         <JobPostingForm
           pharmacyId={pharmacyId}
           onSubmit={handleSubmit}

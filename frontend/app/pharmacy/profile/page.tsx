@@ -171,7 +171,7 @@ export default function ProfilePage() {
   const handleDeleteBranch = async (index: number) => {
     const branch = branches[index];
     if (!branch) return;
-    if (!confirm(`「${branch.name}」を削除しますか？\n公開中・下書き中の求人がある場合は削除できません。`)) return;
+    if (!confirm(`「${branch.name}」を削除しますか？\n公開中・下書き中のおためし案件がある場合は削除できません。`)) return;
     try {
       await pharmacyAPI.deleteBranch(pharmacyId, branch.id);
       const updated = branches.filter((_, i) => i !== index);

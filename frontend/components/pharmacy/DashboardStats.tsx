@@ -67,7 +67,7 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatsCard
-        title="募集中の求人"
+        title="募集中のおためし案件"
         value={stats.activeJobPostings}
         icon={Briefcase}
         iconColor="text-blue-600"

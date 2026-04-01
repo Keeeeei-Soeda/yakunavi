@@ -108,9 +108,9 @@ export default function GuidePage() {
                 </div>
 
                 <div className="bg-teal-50 rounded-2xl p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">3. 求人を探す</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">3. おためし案件を探す</h3>
                   <p className="text-gray-700 leading-relaxed">
-                    気になる求人を検索し、詳細を確認します。
+                    気になるおためし案件を検索し、詳細を確認します。
                   </p>
                 </div>
 
@@ -146,9 +146,9 @@ export default function GuidePage() {
                 </div>
 
                 <div className="bg-blue-50 rounded-2xl p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">2. 求人を投稿</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">2. おためし案件を投稿</h3>
                   <p className="text-gray-700 leading-relaxed">
-                    求人情報を投稿します。詳細な条件や職場の雰囲気を記載できます。
+                    おためし案件情報を投稿します。詳細な条件や職場の雰囲気を記載できます。
                   </p>
                 </div>
 

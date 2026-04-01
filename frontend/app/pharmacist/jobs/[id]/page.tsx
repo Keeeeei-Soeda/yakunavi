@@ -188,7 +188,7 @@ export default function JobDetailPage() {
       return;
     }
 
-    if (!confirm('この求人に応募しますか？')) {
+    if (!confirm('このおためし案件に応募しますか？')) {
       return;
     }
 
@@ -273,7 +273,7 @@ export default function JobDetailPage() {
   if (loading) {
     return (
       <ProtectedRoute requiredUserType="pharmacist">
-        <PharmacistLayout title="求人詳細">
+        <PharmacistLayout title="おためし案件詳細">
           <div className="flex items-center justify-center h-64">
             <div className="text-gray-500">読み込み中...</div>
           </div>
@@ -285,9 +285,9 @@ export default function JobDetailPage() {
   if (!job) {
     return (
       <ProtectedRoute requiredUserType="pharmacist">
-        <PharmacistLayout title="求人詳細">
+        <PharmacistLayout title="おためし案件詳細">
           <div className="flex items-center justify-center h-64">
-            <div className="text-gray-500">求人が見つかりません</div>
+            <div className="text-gray-500">おためし案件が見つかりません</div>
           </div>
         </PharmacistLayout>
       </ProtectedRoute>
@@ -361,7 +361,7 @@ export default function JobDetailPage() {
                 <Send className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-blue-900">
-                    この求人には応募済みです
+                    このおためし案件には応募済みです
                   </p>
                   <p className="text-sm text-blue-700 mt-1">
                     応募状況は
@@ -486,7 +486,7 @@ export default function JobDetailPage() {
           {/* 求人詳細 */}
           {job.description && (
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">求人詳細</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">おためし案件詳細</h3>
               <p className="text-gray-800 whitespace-pre-wrap">{job.description}</p>
             </div>
           )}
@@ -530,7 +530,7 @@ export default function JobDetailPage() {
                 className="bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 text-lg"
               >
                 <Send size={24} />
-                この求人に応募する
+                このおためし案件に応募する
               </button>
             )}
           </div>
@@ -574,7 +574,7 @@ export default function JobDetailPage() {
 
                 {/* 求人情報の確認 */}
                 <div className="mb-8 bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">応募先求人</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">応募先おためし案件</h4>
                   <p className="font-medium text-lg">{job.title}</p>
                   <p className="text-sm text-gray-600 mt-1">
                     日給: ¥{job.dailyWage.toLocaleString()} × {job.desiredWorkDays || 0}日 = ¥{(job.dailyWage * (job.desiredWorkDays || 0)).toLocaleString()}
@@ -854,10 +854,10 @@ export default function JobDetailPage() {
 
                     {/* 求人情報 */}
                     <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-semibold text-gray-900 mb-3">求人情報</h3>
+                      <h3 className="font-semibold text-gray-900 mb-3">おためし案件情報</h3>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-600">求人タイトル</p>
+                          <p className="text-gray-600">おためし案件タイトル</p>
                           <p className="font-medium">{job.title}</p>
                         </div>
                         <div>

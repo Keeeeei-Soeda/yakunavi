@@ -58,7 +58,7 @@ export default function Home() {
 
   const steps = [
     { step: '1', title: '無料登録', desc: '1分で完了' },
-    { step: '2', title: '求人応募 / 応募者確認', desc: '気になる求人に応募' },
+    { step: '2', title: 'おためし案件応募 / 応募者確認', desc: '気になるおためし案件に応募' },
     { step: '3', title: 'トライアル勤務開始', desc: '実際に働いてみる' },
     { step: '4', title: '本採用決定', desc: '双方が納得したら' }
   ];
@@ -587,7 +587,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-sm sm:text-base mb-4">サービス</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-gray-400">
-                <li><a href="#" className="hover:text-teal-400 transition-colors">求人検索</a></li>
+                <li><a href="#" className="hover:text-teal-400 transition-colors">おためし案件検索</a></li>
                 <li><a href="#" className="hover:text-teal-400 transition-colors">トライアル勤務</a></li>
                 <li><a href="#" className="hover:text-teal-400 transition-colors">転職ガイド</a></li>
               </ul>

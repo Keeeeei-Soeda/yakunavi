@@ -30,7 +30,7 @@ export default function JobPostingDetailPage() {
             }
         } catch (error) {
             console.error('Failed to fetch job posting:', error);
-            alert('求人の取得に失敗しました');
+            alert('おためし案件の取得に失敗しました');
             router.push('/pharmacy/job-postings');
         } finally {
             setLoading(false);
@@ -49,7 +49,7 @@ export default function JobPostingDetailPage() {
     if (loading) {
         return (
             <ProtectedRoute requiredUserType="pharmacy">
-                <PharmacyLayout title="求人詳細">
+                <PharmacyLayout title="おためし案件詳細">
                     <div className="flex items-center justify-center py-12">
                         <p className="text-gray-500">読み込み中...</p>
                     </div>
@@ -61,9 +61,9 @@ export default function JobPostingDetailPage() {
     if (!jobPosting) {
         return (
             <ProtectedRoute requiredUserType="pharmacy">
-                <PharmacyLayout title="求人詳細">
+                <PharmacyLayout title="おためし案件詳細">
                     <div className="flex items-center justify-center py-12">
-                        <p className="text-gray-500">求人が見つかりませんでした</p>
+                        <p className="text-gray-500">おためし案件が見つかりませんでした</p>
                     </div>
                 </PharmacyLayout>
             </ProtectedRoute>
@@ -74,7 +74,7 @@ export default function JobPostingDetailPage() {
 
     return (
         <ProtectedRoute requiredUserType="pharmacy">
-            <PharmacyLayout title="求人詳細">
+            <PharmacyLayout title="おためし案件詳細">
                 <div className="space-y-6">
                     {/* 戻るボタン */}
                     <button
@@ -101,7 +101,7 @@ export default function JobPostingDetailPage() {
 
                         {jobPosting.description && (
                             <div className="mb-6">
-                                <h3 className="text-lg font-semibold text-gray-700 mb-2">求人詳細</h3>
+                                <h3 className="text-lg font-semibold text-gray-700 mb-2">おためし案件詳細</h3>
                                 <p className="text-gray-600 whitespace-pre-wrap">{jobPosting.description}</p>
                             </div>
                         )}

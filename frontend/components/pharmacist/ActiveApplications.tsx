@@ -107,7 +107,7 @@ export const ActiveApplications: React.FC<ActiveApplicationsProps> = ({
             href="/pharmacist/jobs"
             className="inline-block bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
           >
-            求人を探す
+            おためし案件を探す
           </a>
         </div>
       ) : (

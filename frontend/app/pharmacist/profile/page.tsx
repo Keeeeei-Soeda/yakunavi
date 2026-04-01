@@ -300,7 +300,7 @@ export default function ProfilePage() {
                                 <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                                     <p className="text-sm text-yellow-800">
                                         ⚠️ 薬剤師免許証と保険薬剤師登録票をアップロードしてください。
-                                        運営が確認後、求人への応募が可能になります。
+                                        運営が確認後、おためし案件への応募が可能になります。
                                     </p>
                                     <p className="text-xs text-yellow-700 mt-2">
                                         📎 対応形式: PDF、JPEG、PNG、HEIC、HEIF、WebP（最大10MB）

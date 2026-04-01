@@ -29,7 +29,7 @@ const menuItems = [
     { icon: Bell,        label: '通知',                  href: '/pharmacy/notifications' },
     { icon: Users,       label: '応募確認',              href: '/pharmacy/applications' },
     { icon: MessageSquare, label: 'メッセージ管理',      href: '/pharmacy/messages' },
-    { icon: Briefcase,   label: '求人票',                href: '/pharmacy/job-postings' },
+    { icon: Briefcase,   label: 'おためし案件票',                href: '/pharmacy/job-postings' },
     { icon: FileText,    label: '契約管理',              href: '/pharmacy/contracts' },
     { icon: CreditCard,  label: '請求書管理',            href: '/pharmacy/payments' },
     { icon: User,        label: 'プロフィール管理',      href: '/pharmacy/profile' },

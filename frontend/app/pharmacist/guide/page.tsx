@@ -96,12 +96,12 @@ const sections: Section[] = [
     step: 1,
     icon: <User size={20} />,
     title: 'プロフィール設定・書類提出',
-    description: '求人に応募するための必須設定',
+    description: 'おためし案件に応募するための必須設定',
     content: (
       <div className="space-y-1">
         <SubHeading>プロフィールの入力</SubHeading>
         <p className="text-sm text-gray-600 mb-2">
-          サイドバーの「プロフィール」からプロフィールを設定します。求人への応募前に必ず完成させてください。
+          サイドバーの「プロフィール」からプロフィールを設定します。おためし案件への応募前に必ず完成させてください。
         </p>
         <StepList steps={[
           'サイドバーの「プロフィール」をクリックします',
@@ -117,7 +117,7 @@ const sections: Section[] = [
 
         <SubHeading>資格書類の提出</SubHeading>
         <p className="text-sm text-gray-600 mb-2">
-          求人に応募するには、以下の2種類の書類をアップロードして<strong>管理者の審査・承認</strong>が必要です。
+          おためし案件に応募するには、以下の2種類の書類をアップロードして<strong>管理者の審査・承認</strong>が必要です。
         </p>
         <div className="space-y-2 text-sm my-3">
           {[
@@ -138,7 +138,7 @@ const sections: Section[] = [
           '「薬剤師免許証」のアップロードボタンから画像を選択します',
           '「保険薬剤師登録票」も同様にアップロードします',
           '管理者が審査後、承認メールが届きます',
-          '承認が完了すると求人への応募ができるようになります',
+          '承認が完了するとおためし案件への応募ができるようになります',
         ]} />
         <SubHeading>書類アップロードの操作（細かい手順）</SubHeading>
         <p className="text-sm text-gray-600 mb-2">① プロフィールの「書類提出」セクションを開き、アップロードボタンをタップします。</p>
@@ -153,30 +153,30 @@ const sections: Section[] = [
     id: 'jobs',
     step: 2,
     icon: <Search size={20} />,
-    title: '求人の検索・詳細確認',
-    description: '自分に合った求人を見つける',
+    title: 'おためし案件の検索・詳細確認',
+    description: '自分に合ったおためし案件を見つける',
     content: (
       <div className="space-y-1">
-        <SubHeading>求人一覧の表示</SubHeading>
+        <SubHeading>おためし案件一覧の表示</SubHeading>
         <StepList steps={[
-          'サイドバーの「求人検索」をクリックします',
-          '掲載中の求人一覧が表示されます',
+          'サイドバーの「おためし案件検索」をクリックします',
+          '掲載中のおためし案件一覧が表示されます',
           '条件（地域・勤務形態など）で絞り込みができます',
         ]} />
-        <GuideImage src="/guide/pharmacist/IMG_0176.PNG" alt="求人一覧画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0176.PNG" alt="おためし案件一覧画面" />
 
-        <SubHeading>求人の詳細確認</SubHeading>
+        <SubHeading>おためし案件の詳細確認</SubHeading>
         <StepList steps={[
-          '気になる求人をクリックして詳細を開きます',
+          '気になるおためし案件をクリックして詳細を開きます',
           '勤務条件・日給・業務内容・薬局情報を確認します',
           '「応募する」または「お気に入り」を選択します',
         ]} />
-        <GuideImage src="/guide/pharmacist/IMG_0174.PNG" alt="求人詳細画面" />
+        <GuideImage src="/guide/pharmacist/IMG_0174.PNG" alt="おためし案件詳細画面" />
         <Tip>「お気に入り」ボタン（ハートアイコン）を押すと、ダッシュボードのお気に入り一覧に保存されます。後でまとめて確認できます。</Tip>
 
         <SubHeading>お気に入り機能</SubHeading>
-        <p className="text-sm text-gray-600">気になる求人はお気に入り登録しておきましょう。ダッシュボードの「お気に入り求人」から一覧で確認できます。</p>
-        <GuideImage src="/guide/pharmacist/IMG_0160.PNG" alt="ダッシュボード（お気に入り求人一覧含む）" />
+        <p className="text-sm text-gray-600">気になるおためし案件はお気に入り登録しておきましょう。ダッシュボードの「お気に入りおためし案件」から一覧で確認できます。</p>
+        <GuideImage src="/guide/pharmacist/IMG_0160.PNG" alt="ダッシュボード（お気に入りおためし案件一覧含む）" />
       </div>
     ),
   },
@@ -184,13 +184,13 @@ const sections: Section[] = [
     id: 'apply',
     step: 3,
     icon: <Send size={20} />,
-    title: '求人への応募',
+    title: 'おためし案件への応募',
     description: '応募内容を入力して薬局に送る',
     content: (
       <div className="space-y-1">
         <SubHeading>応募の流れ</SubHeading>
         <StepList steps={[
-          '求人詳細画面の「応募する」ボタンをクリックします',
+          'おためし案件詳細画面の「応募する」ボタンをクリックします',
           '希望の勤務日程・勤務内容を入力します',
           '「応募する」ボタンを押して薬局に送信します',
         ]} />
@@ -203,7 +203,7 @@ const sections: Section[] = [
           {[
             { status: '応募済み', color: 'bg-blue-100 text-blue-800', desc: '薬局側で応募を確認中です' },
             { status: '承認済み', color: 'bg-green-100 text-green-800', desc: '薬局が応募を確認し、次のステップへ進みます' },
-            { status: '却下', color: 'bg-red-100 text-red-800', desc: '今回はご縁がありませんでした。他の求人に応募してみましょう' },
+              { status: '却下', color: 'bg-red-100 text-red-800', desc: '今回はご縁がありませんでした。他のおためし案件に応募してみましょう' },
           ].map((item) => (
             <div key={item.status} className="flex gap-3 items-start p-3 bg-gray-50 rounded-lg">
               <span className={`px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0 ${item.color}`}>{item.status}</span>
@@ -212,7 +212,7 @@ const sections: Section[] = [
           ))}
         </div>
         <GuideImage src="/guide/pharmacist/IMG_0182.PNG" alt="応募管理画面（ステータス：すべて／応募済み／承認済み／却下）" />
-        <Point>複数の求人に同時応募できます。気になる求人には積極的に応募してみましょう。</Point>
+        <Point>複数のおためし案件に同時応募できます。気になるおためし案件には積極的に応募してみましょう。</Point>
       </div>
     ),
   },
@@ -321,9 +321,9 @@ const sections: Section[] = [
         </p>
         <div className="space-y-2 text-sm my-2">
           {[
-            { label: '応募中', desc: '現在応募中の求人数' },
+            { label: '応募中', desc: '現在応募中のおためし案件数' },
             { label: '契約中', desc: '現在進行中の契約数' },
-            { label: 'お気に入り', desc: 'お気に入り登録している求人数' },
+            { label: 'お気に入り', desc: 'お気に入り登録しているおためし案件数' },
             { label: '最近の通知', desc: '未読の通知一覧（最新5件）' },
           ].map((item) => (
             <div key={item.label} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
@@ -383,11 +383,11 @@ const sections: Section[] = [
             },
             {
               q: '複数の薬局に同時に応募できますか？',
-              a: 'はい、複数の求人に同時に応募できます。ただし、すでに契約が成立している期間と重複する勤務日への応募はご遠慮ください。',
+              a: 'はい、複数のおためし案件に同時に応募できます。ただし、すでに契約が成立している期間と重複する勤務日への応募はご遠慮ください。',
             },
             {
               q: 'お気に入り登録の上限はありますか？',
-              a: 'お気に入りの上限はありません。気になる求人をまとめて保存しておけます。',
+              a: 'お気に入りの上限はありません。気になるおためし案件をまとめて保存しておけます。',
             },
             {
               q: 'プロフィールはいつでも更新できますか？',
@@ -445,7 +445,7 @@ export default function PharmacistGuidePage() {
           {[
             'プロフィール設定',
             '書類提出・審査',
-            '求人応募',
+            'おためし案件応募',
             'オファー承諾',
             'お仕事開始',
           ].map((item, i, arr) => (
@@ -465,7 +465,7 @@ export default function PharmacistGuidePage() {
         <div className="mt-3 flex flex-col gap-1">
           <div className="flex items-center gap-2 text-xs text-green-700">
             <CheckCircle size={14} />
-            <span>書類審査が完了するまで求人への応募はできません</span>
+            <span>書類審査が完了するまでおためし案件への応募はできません</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-green-700">
             <CheckCircle size={14} />

@@ -109,7 +109,7 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
     // 公開する場合は、必須項目を追加でチェック
     if (status === 'published') {
       if (!formData.title || formData.title.trim() === '') {
-        alert('求人タイトルを入力してください');
+        alert('おためし案件タイトルを入力してください');
         return;
       }
       if (!formData.requirements || formData.requirements.trim() === '') {
@@ -155,7 +155,7 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
           <h3 className="text-lg font-semibold mb-4">勤務薬局</h3>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              どの薬局の求人ですか？ *
+              どの薬局のおためし案件ですか？ *
             </label>
             <select
               value={selectedBranchId ?? ''}
@@ -182,7 +182,7 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              求人タイトル *
+              おためし案件タイトル *
             </label>
             <input
               type="text"
@@ -198,7 +198,7 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              求人詳細
+              おためし案件詳細
             </label>
             <textarea
               maxLength={2000}
@@ -319,7 +319,7 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
             (formData.desiredWorkDays && formData.desiredWorkDays <= 30 && formData.dailyWage >= 30000) ? (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
               <p className="text-xs text-green-700">
-                💡 長期間（60〜90日）または短期間で高単価の求人は応募が集まりやすい傾向があります
+                💡 長期間（60〜90日）または短期間で高単価のおためし案件は応募が集まりやすい傾向があります
               </p>
             </div>
           ) : null}

@@ -61,7 +61,7 @@ export default function AdminSidebar() {
     },
     {
       id: 'job-postings',
-      label: '求人管理',
+      label: 'おためし案件管理',
       icon: <Briefcase className="w-5 h-5" />,
       path: '/admin/job-postings',
     },

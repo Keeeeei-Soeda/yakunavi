@@ -129,7 +129,7 @@ export default function ApplicationsPage() {
                         </span>
                       </div>
                       <div className="space-y-1 text-sm text-gray-600">
-                        <p>📋 求人: {app.jobPosting?.title}</p>
+                        <p>📋 おためし案件: {app.jobPosting?.title}</p>
                         <p>
                           📅 応募日:{' '}
                           {format(new Date(app.appliedAt), 'yyyy/MM/dd HH:mm', {
