@@ -250,6 +250,14 @@
         align-items: center;
         position: relative;
       }
+      /* ヒーロー先頭：キャッチ＋薬剤師向けリンク（スマホは横並び） */
+      .hero-eyebrow-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 8px 10px;
+        margin-bottom: 20px;
+      }
       .hero-eyebrow {
         display: inline-flex;
         align-items: center;
@@ -261,7 +269,8 @@
         font-weight: 700;
         padding: 6px 14px;
         border-radius: 99px;
-        margin-bottom: 20px;
+        margin-bottom: 0;
+        min-width: 0;
       }
       h1 {
         font-size: clamp(1.9rem, 4vw, 2.85rem);
@@ -299,13 +308,24 @@
         color: var(--green);
         font-weight: 700;
       }
-      .hero-crosslink { margin-top: 16px; }
+      .hero-crosslink {
+        margin-top: 0;
+        justify-self: end;
+      }
       .hero-crosslink-btn {
-        display: inline-flex; align-items: center; gap: 6px;
-        font-size: 0.85rem; font-weight: 600; color: var(--text-mid);
-        text-decoration: none; padding: 8px 16px;
-        border: 1px solid var(--border); border-radius: 99px;
-        background: #fff; transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-mid);
+        text-decoration: none;
+        padding: 8px 16px;
+        border: 1px solid var(--border);
+        border-radius: 99px;
+        background: #fff;
+        transition: all 0.2s;
+        white-space: nowrap;
       }
       .hero-crosslink-btn:hover {
         background: var(--bg-gray); color: var(--text); border-color: var(--text-light);
@@ -1295,6 +1315,20 @@
         .pain-grid {
           grid-template-columns: 1fr;
         }
+        .hero-eyebrow-row {
+          grid-template-columns: 1fr auto;
+          gap: 6px 8px;
+        }
+        .hero-eyebrow {
+          font-size: 0.68rem;
+          padding: 5px 10px;
+          line-height: 1.35;
+        }
+        .hero-crosslink-btn {
+          font-size: 0.7rem;
+          padding: 6px 10px;
+          gap: 4px;
+        }
         .hero-btns {
           flex-direction: column;
         }
@@ -1344,8 +1378,15 @@
       <div class="container">
         <div class="hero-inner">
           <div class="fi">
-            <div class="hero-eyebrow">
-              ✨ 失敗しない採用を実現
+            <div class="hero-eyebrow-row">
+              <div class="hero-eyebrow">
+                ✨ 失敗しない採用を実現
+              </div>
+              <div class="hero-crosslink">
+                <a href="https://yakuzaishi.yaku-navi.com/" class="hero-crosslink-btn">
+                  💊 薬剤師の方はこちら →
+                </a>
+              </div>
             </div>
             <h1>
               採用コストを抑え、<br /><span class="hl">定着率を最大化する</span
@@ -1372,11 +1413,6 @@
               <span>登録完了まで約1分</span>
               <span>完全無料</span>
               <span>本採用時の手数料０円</span>
-            </div>
-            <div class="hero-crosslink">
-              <a href="https://yakuzaishi.yaku-navi.com/" class="hero-crosslink-btn">
-                💊 薬剤師の方はこちら →
-              </a>
             </div>
           </div>
           <div class="fi d2">
