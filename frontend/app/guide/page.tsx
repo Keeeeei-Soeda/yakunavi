@@ -244,6 +244,7 @@ export default function GuidePage() {
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-xs sm:text-sm text-gray-400">
             <p>&copy; 2026 薬ナビ. All rights reserved.</p>
+            <p className="mt-1">有料職業紹介事業 許可番号：27-ユ-305193</p>
           </div>
         </div>
       </footer>
