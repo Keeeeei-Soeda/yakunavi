@@ -102,6 +102,40 @@ export class AuthController {
     };
 
     /**
+     * メールアドレス認証（トークン検証 + 自動ログイン用JWT返却）
+     */
+    verifyEmail = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.body;
+            if (!token) {
+                return res.status(400).json({ success: false, error: 'トークンが指定されていません' });
+            }
+            const result = await this.authService.verifyEmail(token);
+            return res.status(200).json({ success: true, message: 'メール認証が完了しました', data: result });
+        } catch (error: any) {
+            console.error('Verify email error:', error);
+            return res.status(400).json({ success: false, error: error.message || 'メール認証に失敗しました' });
+        }
+    };
+
+    /**
+     * 認証メールを再送
+     */
+    resendVerification = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                return res.status(400).json({ success: false, error: 'メールアドレスは必須です' });
+            }
+            await this.authService.resendVerification(email);
+            return res.status(200).json({ success: true, message: '認証メールを再送しました（登録済みの場合）' });
+        } catch (error: any) {
+            console.error('Resend verification error:', error);
+            return res.status(400).json({ success: false, error: error.message || '再送に失敗しました' });
+        }
+    };
+
+    /**
      * パスワードリセットメール送信
      */
     forgotPassword = async (req: Request, res: Response) => {

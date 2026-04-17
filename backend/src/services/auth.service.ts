@@ -10,7 +10,8 @@ const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@yaku-navi.com';
 const FROM_NAME = process.env.FROM_NAME || '薬ナビ';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://yaku-navi.com';
 
-const RESET_TOKEN_EXPIRES_HOURS = 1; // パスワードリセットトークン有効期限（1時間）
+const RESET_TOKEN_EXPIRES_HOURS = 1;   // パスワードリセットトークン有効期限（1時間）
+const VERIFY_TOKEN_EXPIRES_HOURS = 24; // メール認証トークン有効期限（24時間）
 
 interface RegisterInput {
     email: string;
@@ -83,30 +84,57 @@ export class AuthService {
             relatedId = Number(pharmacist.id);
         }
 
-        // JWTトークンを生成
-        const accessToken = generateAccessToken({
-            id: Number(user.id),
-            email: user.email,
-            userType: user.userType as UserType,
+        // メール認証トークンを生成して保存
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const verificationTokenExpiresAt = new Date(
+            Date.now() + VERIFY_TOKEN_EXPIRES_HOURS * 60 * 60 * 1000,
+        );
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { verificationToken, verificationTokenExpiresAt },
         });
 
-        const refreshToken = generateRefreshToken({
-            id: Number(user.id),
-            email: user.email,
-            userType: user.userType as UserType,
-        });
+        // 認証メールを送信
+        await this.sendVerificationEmail(user.email, verificationToken);
 
+        // 登録完了（JWT は発行しない。メール認証後に自動ログイン）
         return {
-            user: {
-                id: Number(user.id),
-                email: user.email,
-                userType: user.userType,
-                isActive: user.isActive,
-                relatedId, // 薬局IDまたは薬剤師IDを追加
-            },
-            accessToken,
-            refreshToken,
+            email: user.email,
+            userType: user.userType,
+            relatedId,
         };
+    }
+
+    /**
+     * 認証メールを送信（内部共通ヘルパー）
+     */
+    private async sendVerificationEmail(email: string, token: string) {
+        const verifyUrl = `${FRONTEND_URL}/auth/verify-email?token=${token}`;
+
+        if (!resend) {
+            console.warn('[Auth] RESEND_API_KEY 未設定。認証メール送信をスキップします。');
+            console.log(`[Auth] 認証URL（開発用）: ${verifyUrl}`);
+            return;
+        }
+
+        await resend.emails.send({
+            from: `${FROM_NAME} <${FROM_EMAIL}>`,
+            to: email,
+            subject: '【薬ナビ】メールアドレスの認証をお願いします',
+            html: `
+<div style="font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans',Meiryo,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;">
+  <h2 style="color:#2563eb;border-bottom:2px solid #2563eb;padding-bottom:8px;">メールアドレスの認証</h2>
+  <p>薬ナビへのご登録ありがとうございます。</p>
+  <p>以下のボタンをクリックしてメールアドレスを認証してください。<br>認証が完了するとそのままログインできます。</p>
+  <div style="text-align:center;margin:32px 0;">
+    <a href="${verifyUrl}" style="background:#2563eb;color:#fff;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;font-size:16px;">メールアドレスを認証する</a>
+  </div>
+  <p style="font-size:13px;color:#666;">このリンクの有効期限は <strong>${VERIFY_TOKEN_EXPIRES_HOURS}時間</strong> です。</p>
+  <p style="font-size:13px;color:#666;">このメールに心当たりがない場合は、そのまま無視してください。</p>
+  <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
+  <p style="font-size:12px;color:#999;">薬ナビ運営事務局<br>${FRONTEND_URL}</p>
+</div>`,
+        });
     }
 
     /**
@@ -131,6 +159,13 @@ export class AuthService {
         // アカウントが有効かチェック
         if (!user.isActive) {
             throw new Error('アカウントが無効化されています');
+        }
+
+        // メール認証チェック（管理者はスキップ）
+        if (user.userType !== 'admin' && !user.emailVerified) {
+            const err = new Error('メール認証が完了していません。登録時に送信したメールをご確認ください。');
+            (err as any).code = 'EMAIL_NOT_VERIFIED';
+            throw err;
         }
 
         // パスワードを検証
@@ -180,6 +215,83 @@ export class AuthService {
             accessToken,
             refreshToken,
         };
+    }
+
+    /**
+     * メールアドレスを認証し、JWT を返して自動ログイン
+     */
+    async verifyEmail(token: string) {
+        const user = await prisma.user.findFirst({
+            where: {
+                verificationToken: token,
+                verificationTokenExpiresAt: { gt: new Date() },
+            },
+            include: { pharmacy: true, pharmacist: true },
+        });
+
+        if (!user) {
+            throw new Error('認証リンクが無効または期限切れです。認証メールを再送してください。');
+        }
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                emailVerified: true,
+                verificationToken: null,
+                verificationTokenExpiresAt: null,
+            },
+        });
+
+        // 認証完了後そのまま自動ログイン用の JWT を返す
+        const accessToken = generateAccessToken({
+            id: Number(user.id),
+            email: user.email,
+            userType: user.userType as UserType,
+        });
+        const refreshToken = generateRefreshToken({
+            id: Number(user.id),
+            email: user.email,
+            userType: user.userType as UserType,
+        });
+
+        let relatedId = null;
+        if (user.pharmacy) relatedId = Number(user.pharmacy.id);
+        else if (user.pharmacist) relatedId = Number(user.pharmacist.id);
+
+        return {
+            user: {
+                id: Number(user.id),
+                email: user.email,
+                userType: user.userType,
+                isActive: user.isActive,
+                relatedId,
+            },
+            accessToken,
+            refreshToken,
+        };
+    }
+
+    /**
+     * 認証メールを再送
+     */
+    async resendVerification(email: string) {
+        const user = await prisma.user.findUnique({ where: { email } });
+
+        if (!user) return; // セキュリティ上、ユーザー存否を返さない
+
+        if (user.emailVerified) {
+            throw new Error('このメールアドレスは既に認証済みです');
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + VERIFY_TOKEN_EXPIRES_HOURS * 60 * 60 * 1000);
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { verificationToken: token, verificationTokenExpiresAt: expiresAt },
+        });
+
+        await this.sendVerificationEmail(email, token);
     }
 
     /**

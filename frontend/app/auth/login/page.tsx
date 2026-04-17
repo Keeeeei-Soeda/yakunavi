@@ -17,6 +17,7 @@ export default function LoginPage() {
     });
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [emailNotVerified, setEmailNotVerified] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,9 +42,14 @@ export default function LoginPage() {
             }
         } catch (err: any) {
             console.error('Login error:', err);
-            setError(
-                err.response?.data?.error || 'ログインに失敗しました。もう一度お試しください。'
-            );
+            const apiError = err.response?.data?.error || '';
+            if (apiError.includes('メール認証')) {
+                setEmailNotVerified(true);
+                setError(apiError);
+            } else {
+                setEmailNotVerified(false);
+                setError(apiError || 'ログインに失敗しました。もう一度お試しください。');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -64,6 +70,16 @@ export default function LoginPage() {
                 {error && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                         {error}
+                        {emailNotVerified && (
+                            <div className="mt-3">
+                                <Link
+                                    href={`/auth/email-sent?email=${encodeURIComponent(formData.email)}`}
+                                    className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                                >
+                                    認証メールを再送する →
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 )}
 

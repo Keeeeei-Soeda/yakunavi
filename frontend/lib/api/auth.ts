@@ -44,6 +44,16 @@ export const authAPI = {
         return apiClient.get<APIResponse<User>>('/auth/me');
     },
 
+    // メールアドレス認証（トークン検証 → 自動ログイン用JWT取得）
+    verifyEmail: async (token: string) => {
+        return apiClient.post<APIResponse<AuthResponse>>('/auth/verify-email', { token });
+    },
+
+    // 認証メール再送
+    resendVerification: async (email: string) => {
+        return apiClient.post<APIResponse>('/auth/resend-verification', { email });
+    },
+
     // パスワードリセットメール送信（未ログイン）
     forgotPassword: async (email: string) => {
         return apiClient.post<APIResponse>('/auth/forgot-password', { email });

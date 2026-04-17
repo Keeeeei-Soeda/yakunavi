@@ -3,14 +3,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuthStore } from '@/lib/store/authStore';
 import { authAPI } from '@/lib/api/auth';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { TermsModal } from '@/components/common/TermsModal';
 
 export default function PharmacistRegisterPage() {
   const router = useRouter();
-  const login = useAuthStore((state) => state.login);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -57,10 +55,8 @@ export default function PharmacistRegisterPage() {
         firstName: formData.firstName,
       });
 
-      if (response.success && response.data) {
-        const { user, accessToken } = response.data;
-        login(user, accessToken);
-        router.push('/pharmacist/dashboard');
+      if (response.success) {
+        router.push(`/auth/email-sent?email=${encodeURIComponent(formData.email)}`);
       }
     } catch (err: any) {
       console.error('Register error:', err);
