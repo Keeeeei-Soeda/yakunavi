@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { authAPI } from '@/lib/api/auth';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
-export default function EmailSentPage() {
+function EmailSentContent() {
     const searchParams = useSearchParams();
     const email = searchParams.get('email') ?? '';
 
@@ -96,5 +96,13 @@ export default function EmailSentPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function EmailSentPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center"><LoadingSpinner /></div>}>
+            <EmailSentContent />
+        </Suspense>
     );
 }

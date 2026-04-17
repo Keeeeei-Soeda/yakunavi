@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { authAPI } from '@/lib/api/auth';
 import { useAuthStore } from '@/lib/store/authStore';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const token = searchParams.get('token') ?? '';
@@ -113,5 +113,13 @@ export default function VerifyEmailPage() {
 
             </div>
         </div>
+    );
+}
+
+export default function VerifyEmailPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center"><LoadingSpinner /></div>}>
+            <VerifyEmailContent />
+        </Suspense>
     );
 }
