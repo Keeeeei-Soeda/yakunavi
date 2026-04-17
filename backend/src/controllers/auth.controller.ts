@@ -102,6 +102,64 @@ export class AuthController {
     };
 
     /**
+     * パスワードリセットメール送信
+     */
+    forgotPassword = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                return res.status(400).json({ success: false, error: 'メールアドレスは必須です' });
+            }
+            await this.authService.forgotPassword(email);
+            // ユーザーの存否に関わらず同じメッセージを返す（セキュリティ）
+            return res.status(200).json({
+                success: true,
+                message: '入力されたメールアドレスにパスワード再設定のご案内を送信しました（登録済みの場合）',
+            });
+        } catch (error: any) {
+            console.error('Forgot password error:', error);
+            return res.status(500).json({ success: false, error: '送信に失敗しました。しばらくしてお試しください。' });
+        }
+    };
+
+    /**
+     * パスワードリセット（トークン検証 + 新パスワード設定）
+     */
+    resetPassword = async (req: Request, res: Response) => {
+        try {
+            const { token, newPassword } = req.body;
+            if (!token || !newPassword) {
+                return res.status(400).json({ success: false, error: 'トークンと新しいパスワードは必須です' });
+            }
+            await this.authService.resetPassword(token, newPassword);
+            return res.status(200).json({ success: true, message: 'パスワードを再設定しました' });
+        } catch (error: any) {
+            console.error('Reset password error:', error);
+            return res.status(400).json({ success: false, error: error.message || 'パスワードの再設定に失敗しました' });
+        }
+    };
+
+    /**
+     * パスワード変更（ログイン済みユーザーが自分で変更）
+     */
+    changePassword = async (req: AuthRequest, res: Response) => {
+        try {
+            if (!req.user) {
+                return res.status(401).json({ success: false, error: '認証が必要です' });
+            }
+            const { currentPassword, newPassword } = req.body;
+            if (!currentPassword || !newPassword) {
+                return res.status(400).json({ success: false, error: '現在のパスワードと新しいパスワードは必須です' });
+            }
+            await this.authService.changePassword(req.user.id, currentPassword, newPassword);
+            return res.status(200).json({ success: true, message: 'パスワードを変更しました' });
+        } catch (error: any) {
+            console.error('Change password error:', error);
+            return res.status(400).json({ success: false, error: error.message || 'パスワードの変更に失敗しました' });
+        }
+    };
+
+    /**
      * ログアウト（クライアント側でトークンを削除）
      */
     logout = async (_req: Request, res: Response) => {

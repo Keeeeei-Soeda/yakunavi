@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -37,9 +38,12 @@ export default function SettingsPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               パスワード
             </label>
-            <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-              パスワードを変更
-            </button>
+            <Link
+              href="/pharmacy/settings/password"
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              パスワードを変更する →
+            </Link>
           </div>
 
           {/* 通知設定 */}

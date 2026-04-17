@@ -43,5 +43,20 @@ export const authAPI = {
     getCurrentUser: async () => {
         return apiClient.get<APIResponse<User>>('/auth/me');
     },
+
+    // パスワードリセットメール送信（未ログイン）
+    forgotPassword: async (email: string) => {
+        return apiClient.post<APIResponse>('/auth/forgot-password', { email });
+    },
+
+    // パスワードリセット実行（トークン + 新パスワード）
+    resetPassword: async (token: string, newPassword: string) => {
+        return apiClient.post<APIResponse>('/auth/reset-password', { token, newPassword });
+    },
+
+    // パスワード変更（ログイン済み）
+    changePassword: async (currentPassword: string, newPassword: string) => {
+        return apiClient.post<APIResponse>('/auth/change-password', { currentPassword, newPassword });
+    },
 };
 

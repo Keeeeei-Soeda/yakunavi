@@ -1,7 +1,16 @@
+import crypto from 'crypto';
+import { Resend } from 'resend';
 import prisma from '../utils/prisma';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt';
 import { UserType } from '../types';
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@yaku-navi.com';
+const FROM_NAME = process.env.FROM_NAME || '薬ナビ';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://yaku-navi.com';
+
+const RESET_TOKEN_EXPIRES_HOURS = 1; // パスワードリセットトークン有効期限（1時間）
 
 interface RegisterInput {
     email: string;
@@ -171,6 +180,116 @@ export class AuthService {
             accessToken,
             refreshToken,
         };
+    }
+
+    /**
+     * パスワードリセットメールを送信
+     */
+    async forgotPassword(email: string) {
+        const user = await prisma.user.findUnique({ where: { email } });
+
+        // セキュリティ上、ユーザーが存在しない場合も同じレスポンスを返す
+        if (!user) return;
+
+        const token = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRES_HOURS * 60 * 60 * 1000);
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                resetPasswordToken: token,
+                resetPasswordTokenExpiresAt: expiresAt,
+            },
+        });
+
+        const resetUrl = `${FRONTEND_URL}/auth/reset-password?token=${token}`;
+
+        if (!resend) {
+            console.warn('[Auth] RESEND_API_KEY 未設定。メール送信をスキップします。');
+            console.log(`[Auth] リセットURL（開発用）: ${resetUrl}`);
+            return;
+        }
+
+        await resend.emails.send({
+            from: `${FROM_NAME} <${FROM_EMAIL}>`,
+            to: email,
+            subject: '【薬ナビ】パスワード再設定のご案内',
+            html: `
+<div style="font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans',Meiryo,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;">
+  <h2 style="color:#2563eb;border-bottom:2px solid #2563eb;padding-bottom:8px;">パスワード再設定のご案内</h2>
+  <p>薬ナビをご利用いただきありがとうございます。</p>
+  <p>パスワード再設定のリクエストを受け付けました。<br>以下のボタンから新しいパスワードを設定してください。</p>
+  <div style="text-align:center;margin:32px 0;">
+    <a href="${resetUrl}" style="background:#2563eb;color:#fff;padding:14px 32px;border-radius:6px;text-decoration:none;font-weight:bold;font-size:16px;">パスワードを再設定する</a>
+  </div>
+  <p style="font-size:13px;color:#666;">このリンクの有効期限は <strong>${RESET_TOKEN_EXPIRES_HOURS}時間</strong> です。</p>
+  <p style="font-size:13px;color:#666;">このメールに心当たりがない場合は、そのまま無視してください。パスワードは変更されません。</p>
+  <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
+  <p style="font-size:12px;color:#999;">薬ナビ運営事務局<br>${FRONTEND_URL}</p>
+</div>`,
+        });
+    }
+
+    /**
+     * パスワードをリセット（トークン検証後、新パスワードを設定）
+     */
+    async resetPassword(token: string, newPassword: string) {
+        const user = await prisma.user.findFirst({
+            where: {
+                resetPasswordToken: token,
+                resetPasswordTokenExpiresAt: { gt: new Date() },
+            },
+        });
+
+        if (!user) {
+            throw new Error('リセットリンクが無効または期限切れです。もう一度お試しください。');
+        }
+
+        if (newPassword.length < 8) {
+            throw new Error('パスワードは8文字以上で設定してください');
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                password: hashedPassword,
+                resetPasswordToken: null,
+                resetPasswordTokenExpiresAt: null,
+            },
+        });
+    }
+
+    /**
+     * パスワード変更（ログイン済みユーザーが自分で変更）
+     */
+    async changePassword(userId: number, currentPassword: string, newPassword: string) {
+        const user = await prisma.user.findUnique({ where: { id: BigInt(userId) } });
+
+        if (!user) {
+            throw new Error('ユーザーが見つかりません');
+        }
+
+        const isCurrentPasswordValid = await comparePassword(currentPassword, user.password);
+        if (!isCurrentPasswordValid) {
+            throw new Error('現在のパスワードが正しくありません');
+        }
+
+        if (newPassword.length < 8) {
+            throw new Error('新しいパスワードは8文字以上で設定してください');
+        }
+
+        if (currentPassword === newPassword) {
+            throw new Error('新しいパスワードは現在のパスワードと異なるものを設定してください');
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+
+        await prisma.user.update({
+            where: { id: BigInt(userId) },
+            data: { password: hashedPassword },
+        });
     }
 
     /**

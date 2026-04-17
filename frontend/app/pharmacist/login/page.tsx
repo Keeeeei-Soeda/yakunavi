@@ -113,6 +113,14 @@ export default function PharmacistLoginPage() {
                             'ログイン'
                         )}
                     </button>
+                    <div className="text-center">
+                        <Link
+                            href="/auth/forgot-password"
+                            className="text-sm text-blue-600 hover:text-blue-800"
+                        >
+                            パスワードをお忘れの方はこちら
+                        </Link>
+                    </div>
                 </form>
 
                 {/* 登録リンク */}
