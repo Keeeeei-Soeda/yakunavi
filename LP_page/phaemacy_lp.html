@@ -226,13 +226,18 @@
       .campaign-banner {
         width: 100%;
         background: #fff;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+      .campaign-banner-inner {
+        max-width: 1040px;
+        margin: 0 auto;
         line-height: 0;
       }
       .campaign-banner-img {
         width: 100%;
         height: auto;
         display: block;
-        max-width: 100%;
         object-fit: contain;
       }
       /* HERO */
@@ -1388,11 +1393,13 @@
     </header>
     <!-- CAMPAIGN BANNER -->
     <div class="campaign-banner">
-      <img
-        src="images/banner_campaign.png"
-        alt="サービス開始記念キャンペーン開催中！！ 4〜6月中の求人掲載で初回手数料50%キャッシュバック"
-        class="campaign-banner-img"
-      />
+      <div class="campaign-banner-inner">
+        <img
+          src="images/banner_campaign.png"
+          alt="サービス開始記念キャンペーン開催中！！ 4〜6月中の求人掲載で初回手数料50%キャッシュバック"
+          class="campaign-banner-img"
+        />
+      </div>
     </div>
     <!-- HERO -->
     <section id="hero">
