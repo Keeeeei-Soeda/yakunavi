@@ -17,6 +17,17 @@
       gtag('js', new Date());
       gtag('config', 'G-9T7LVD6HVV');
       gtag('config', 'AW-18067084143');
+
+      // お問い合わせ：event_callbackでイベント送信後にページ遷移
+      function gtagContact(url) {
+        gtag('event', 'conversion', {
+          send_to: 'AW-18067084143/Ep6PCLrGt6McEO-mh6dD',
+          event_callback: function() {
+            window.location.href = url;
+          }
+        });
+        return false;
+      }
     </script>
     <style>
       :root {
@@ -1435,7 +1446,7 @@
               <a
                 href="https://yaku-navi.com/contact"
                 class="btn btn-outline btn-lg"
-                onclick="gtag('event','conversion',{send_to:'AW-18067084143/Ep6PCLrGt6McEO-mh6dD'})"
+                onclick="return gtagContact(this.href)"
                 >📩 お問い合わせ</a
               >
             </div>
@@ -2053,7 +2064,7 @@
                 >🏥 採用担当者として無料登録</a
               >
               <a href="https://yaku-navi.com/contact" class="btn btn-ghost"
-                onclick="gtag('event','conversion',{send_to:'AW-18067084143/Ep6PCLrGt6McEO-mh6dD'})"
+                onclick="return gtagContact(this.href)"
                 >📩 お問い合わせ</a
               >
             </div>
@@ -2149,7 +2160,7 @@
             <h4>会社情報</h4>
             <ul>
               <li><a href="https://yaku-navi.com/about">会社概要</a></li>
-              <li><a href="https://yaku-navi.com/contact" onclick="gtag('event','conversion',{send_to:'AW-18067084143/Ep6PCLrGt6McEO-mh6dD'})">お問い合わせ</a></li>
+              <li><a href="https://yaku-navi.com/contact" onclick="return gtagContact(this.href)">お問い合わせ</a></li>
               <li><a href="https://yaku-navi.com/terms">利用規約</a></li>
               <li>
                 <a href="https://yaku-navi.com/privacy">プライバシーポリシー</a>
