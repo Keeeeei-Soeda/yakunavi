@@ -94,4 +94,18 @@ router.delete(
     (req, res) => branchController.deleteBranch(req as any, res)
 );
 
+// 曜日別営業時間取得
+router.get(
+    '/:pharmacyId/branches/:branchId/business-hours',
+    requireUserType('pharmacy'),
+    (req, res) => branchController.getBusinessHours(req as any, res)
+);
+
+// 曜日別営業時間一括更新
+router.put(
+    '/:pharmacyId/branches/:branchId/business-hours',
+    requireUserType('pharmacy'),
+    (req, res) => branchController.updateBusinessHours(req as any, res)
+);
+
 export default router;

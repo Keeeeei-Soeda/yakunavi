@@ -2,7 +2,7 @@ import prisma from '../utils/prisma';
 
 export class PharmacyService {
   /**
-   * 薬局プロフィールを取得
+   * 薬局プロフィールを取得（店舗・曜日別営業時間含む）
    */
   async getProfile(pharmacyId: bigint) {
     const pharmacy = await prisma.pharmacy.findUnique({
@@ -29,6 +29,37 @@ export class PharmacyService {
         introduction: true,
         strengths: true,
         equipmentSystems: true,
+        branches: {
+          orderBy: [{ displayOrder: 'asc' }, { createdAt: 'asc' }],
+          select: {
+            id: true,
+            name: true,
+            phoneNumber: true,
+            faxNumber: true,
+            prefecture: true,
+            address: true,
+            nearestStation: true,
+            minutesFromStation: true,
+            carCommuteAvailable: true,
+            establishedDate: true,
+            dailyPrescriptionCount: true,
+            staffCount: true,
+            introduction: true,
+            strengths: true,
+            equipmentSystems: true,
+            displayOrder: true,
+            businessHours: {
+              orderBy: { dayOfWeek: 'asc' },
+              select: {
+                id: true,
+                dayOfWeek: true,
+                openTime: true,
+                closeTime: true,
+                isClosed: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -40,6 +71,11 @@ export class PharmacyService {
       ...pharmacy,
       id: Number(pharmacy.id),
       userId: Number(pharmacy.userId),
+      branches: pharmacy.branches.map((b) => ({
+        ...b,
+        id: Number(b.id),
+        businessHours: b.businessHours.map((h) => ({ ...h, id: Number(h.id) })),
+      })),
     };
   }
 

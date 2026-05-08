@@ -4,7 +4,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacyLayout } from '@/components/pharmacy/Layout';
 import { useAuthStore } from '@/lib/store/authStore';
-import { pharmacyAPI, PharmacyProfile, PharmacyBranch } from '@/lib/api/pharmacy';
+import {
+  pharmacyAPI,
+  PharmacyProfile,
+  PharmacyBranch,
+  BusinessHour,
+  DayOfWeek,
+  DAY_OF_WEEK_ORDER,
+  DAY_OF_WEEK_LABELS,
+} from '@/lib/api/pharmacy';
 import { Building2, Phone, MapPin, Clock, Users, FileText, Plus, Trash2 } from 'lucide-react';
 
 // =========== 型 ===========
@@ -14,22 +22,22 @@ interface CompanyForm {
   representativeFirstName: string;
 }
 
-type BranchForm = Partial<PharmacyBranch>;
+type BranchForm = Partial<Omit<PharmacyBranch, 'businessHours'>>;
 
-// =========== ヘルパー ===========
-function extractTime(s?: string): string {
-  if (!s) return '';
-  const d = new Date(s);
-  if (!isNaN(d.getTime())) {
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-  }
-  if (/^\d{2}:\d{2}$/.test(s)) return s;
-  return '';
+function buildDefaultHours(): BusinessHour[] {
+  return DAY_OF_WEEK_ORDER.map((day) => ({
+    dayOfWeek: day,
+    openTime: null,
+    closeTime: null,
+    isClosed: false,
+  }));
 }
 
-function formatTime(s?: string): string {
-  if (!s) return '未設定';
-  return extractTime(s) || '未設定';
+function mergeHours(saved: BusinessHour[] | undefined): BusinessHour[] {
+  const map = new Map((saved ?? []).map((h) => [h.dayOfWeek, h]));
+  return DAY_OF_WEEK_ORDER.map((day) =>
+    map.get(day) ?? { dayOfWeek: day, openTime: null, closeTime: null, isClosed: false }
+  );
 }
 
 function formatDate(s?: string): string {
@@ -47,7 +55,6 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // 選択中のタブインデックス（-1 = 法人情報タブ）
   const [activeTab, setActiveTab] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -57,6 +64,7 @@ export default function ProfilePage() {
     representativeFirstName: '',
   });
   const [branchForm, setBranchForm] = useState<BranchForm>({});
+  const [hoursForm, setHoursForm] = useState<BusinessHour[]>(buildDefaultHours());
 
   const fetchData = useCallback(async () => {
     try {
@@ -90,7 +98,6 @@ export default function ProfilePage() {
     fetchData();
   }, [fetchData]);
 
-  // タブ切り替え時にフォームデータを更新
   useEffect(() => {
     if (branches[activeTab]) {
       loadBranchForm(branches[activeTab]);
@@ -99,11 +106,9 @@ export default function ProfilePage() {
   }, [activeTab, branches.length]);
 
   function loadBranchForm(branch: PharmacyBranch) {
-    setBranchForm({
-      ...branch,
-      businessHoursStart: extractTime(branch.businessHoursStart),
-      businessHoursEnd: extractTime(branch.businessHoursEnd),
-    });
+    const { businessHours, ...rest } = branch;
+    setBranchForm(rest);
+    setHoursForm(mergeHours(businessHours));
   }
 
   const handleSaveCompany = async () => {
@@ -126,12 +131,28 @@ export default function ProfilePage() {
   const handleSaveBranch = async () => {
     const branch = branches[activeTab];
     if (!branch) return;
+
+    // 営業時間バリデーション
+    for (const h of hoursForm) {
+      if (!h.isClosed && (!h.openTime || !h.closeTime)) {
+        alert(`${DAY_OF_WEEK_LABELS[h.dayOfWeek]}曜日: 定休日以外は開始・終了時間を入力してください`);
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      const res = await pharmacyAPI.updateBranch(pharmacyId, branch.id, branchForm);
-      if (res.success && res.data) {
+      const [branchRes, hoursRes] = await Promise.all([
+        pharmacyAPI.updateBranch(pharmacyId, branch.id, branchForm),
+        pharmacyAPI.updateBusinessHours(pharmacyId, branch.id, hoursForm),
+      ]);
+      if (branchRes.success && branchRes.data) {
+        const updatedBranch: PharmacyBranch = {
+          ...branchRes.data,
+          businessHours: hoursRes.success ? hoursRes.data : branch.businessHours,
+        };
         const updated = [...branches];
-        updated[activeTab] = res.data;
+        updated[activeTab] = updatedBranch;
         setBranches(updated);
         setIsEditing(false);
         alert('薬局情報を更新しました');
@@ -183,7 +204,6 @@ export default function ProfilePage() {
     }
   };
 
-  // =========== ローディング ===========
   if (loading) {
     return (
       <ProtectedRoute requiredUserType="pharmacy">
@@ -198,7 +218,6 @@ export default function ProfilePage() {
 
   const currentBranch = branches[activeTab] ?? null;
 
-  // =========== 編集ボタンエリア ===========
   const editActions = (
     <div className="flex gap-2">
       {isEditing ? (
@@ -235,7 +254,7 @@ export default function ProfilePage() {
         title={isEditing ? 'プロフィール編集' : 'プロフィール管理'}
         rightAction={editActions}
       >
-        {/* ===== 法人情報（常に上部に表示）===== */}
+        {/* 法人情報 */}
         <div className="bg-white rounded-lg shadow p-6 mb-4">
           <h2 className="text-base font-semibold text-gray-700 mb-3 flex items-center gap-2">
             <Building2 size={18} />
@@ -287,9 +306,8 @@ export default function ProfilePage() {
           )}
         </div>
 
-        {/* ===== 薬局タブ ===== */}
+        {/* 薬局タブ */}
         <div className="bg-white rounded-lg shadow">
-          {/* タブヘッダー */}
           <div className="flex items-center border-b border-gray-200 overflow-x-auto">
             {branches.map((branch, i) => (
               <button
@@ -314,13 +332,14 @@ export default function ProfilePage() {
             </button>
           </div>
 
-          {/* タブコンテンツ */}
           {currentBranch ? (
             <div className="p-6">
               {isEditing ? (
                 <BranchEditForm
                   form={branchForm}
                   onChange={setBranchForm}
+                  hours={hoursForm}
+                  onChangeHours={setHoursForm}
                   branchCount={branches.length}
                   onDelete={() => handleDeleteBranch(activeTab)}
                 />
@@ -361,18 +380,6 @@ function BranchViewPanel({ branch }: { branch: PharmacyBranch }) {
           <Row label="FAX番号" value={branch.faxNumber} />
         </Section>
 
-        <Section icon={<Clock size={16} />} title="営業情報">
-          <Row
-            label="営業時間"
-            value={
-              branch.businessHoursStart && branch.businessHoursEnd
-                ? `${formatTime(branch.businessHoursStart)} - ${formatTime(branch.businessHoursEnd)}`
-                : undefined
-            }
-          />
-          <Row label="設立" value={branch.establishedDate ? formatDate(branch.establishedDate) : undefined} />
-        </Section>
-
         <Section icon={<MapPin size={16} />} title="アクセス">
           <Row label="最寄り駅" value={branch.nearestStation} />
           <Row
@@ -388,12 +395,22 @@ function BranchViewPanel({ branch }: { branch: PharmacyBranch }) {
         </Section>
 
         <Section icon={<Users size={16} />} title="薬局規模">
+          <Row label="設立" value={branch.establishedDate ? formatDate(branch.establishedDate) : undefined} />
           <Row
             label="処方箋枚数"
             value={branch.dailyPrescriptionCount ? `約${branch.dailyPrescriptionCount}枚/日` : undefined}
           />
           <Row label="スタッフ数" value={branch.staffCount ? `${branch.staffCount}名` : undefined} />
         </Section>
+      </div>
+
+      {/* 曜日別営業時間 */}
+      <div className="pt-4 border-t border-gray-100">
+        <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2 text-sm">
+          <Clock size={16} />
+          営業時間
+        </h4>
+        <BusinessHoursDisplay hours={branch.businessHours} />
       </div>
 
       {(branch.introduction || branch.strengths || branch.equipmentSystems) && (
@@ -423,6 +440,35 @@ function BranchViewPanel({ branch }: { branch: PharmacyBranch }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// =========== 営業時間表示 ===========
+function BusinessHoursDisplay({ hours }: { hours?: BusinessHour[] }) {
+  const merged = mergeHours(hours);
+  const hasAny = merged.some((h) => h.isClosed || h.openTime);
+
+  if (!hasAny) {
+    return (
+      <p className="text-sm text-gray-500">営業時間については薬局へお問い合わせください</p>
+    );
+  }
+
+  return (
+    <div className="space-y-1">
+      {merged.map((h) => (
+        <div key={h.dayOfWeek} className="flex items-center gap-3 text-sm">
+          <span className="w-6 text-center font-medium text-gray-700">{DAY_OF_WEEK_LABELS[h.dayOfWeek as DayOfWeek]}</span>
+          {h.isClosed ? (
+            <span className="text-red-500 font-medium">定休日</span>
+          ) : h.openTime && h.closeTime ? (
+            <span className="text-gray-800">{h.openTime} 〜 {h.closeTime}</span>
+          ) : (
+            <span className="text-gray-400">未設定</span>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
@@ -460,19 +506,35 @@ function Row({ label, value }: { label: string; value?: string }) {
 function BranchEditForm({
   form,
   onChange,
+  hours,
+  onChangeHours,
   branchCount,
   onDelete,
 }: {
   form: BranchForm;
   onChange: (f: BranchForm) => void;
+  hours: BusinessHour[];
+  onChangeHours: (h: BusinessHour[]) => void;
   branchCount: number;
   onDelete: () => void;
 }) {
   const set = (key: keyof BranchForm, value: any) => onChange({ ...form, [key]: value });
 
+  const updateHour = (day: DayOfWeek, field: keyof BusinessHour, value: any) => {
+    onChangeHours(
+      hours.map((h) => {
+        if (h.dayOfWeek !== day) return h;
+        if (field === 'isClosed' && value === true) {
+          return { ...h, isClosed: true, openTime: null, closeTime: null };
+        }
+        return { ...h, [field]: value };
+      })
+    );
+  };
+
   return (
     <div className="space-y-8">
-      {/* 薬局名 */}
+      {/* 基本情報 */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -550,31 +612,71 @@ function BranchEditForm({
         </div>
       </div>
 
-      {/* 営業情報 */}
+      {/* 曜日別営業時間 */}
+      <div>
+        <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
+          <Clock size={20} />
+          営業時間（曜日別）
+        </h3>
+        <p className="text-xs text-gray-500 mb-3">
+          定休日の場合は「定休日」にチェックを入れてください。年末年始・お盆・GW・祝日等の特別営業については個別にご案内いたします。
+        </p>
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="grid grid-cols-[3rem_1fr_1fr_5rem] bg-gray-50 text-xs font-medium text-gray-600 px-4 py-2 border-b border-gray-200">
+            <span>曜日</span>
+            <span>開始時間</span>
+            <span>終了時間</span>
+            <span className="text-center">定休日</span>
+          </div>
+          {hours.map((h) => (
+            <div
+              key={h.dayOfWeek}
+              className={`grid grid-cols-[3rem_1fr_1fr_5rem] items-center px-4 py-2 border-b border-gray-100 last:border-b-0 ${
+                h.dayOfWeek === 'SAT' ? 'bg-blue-50' : h.dayOfWeek === 'SUN' ? 'bg-red-50' : ''
+              }`}
+            >
+              <span className={`font-semibold text-sm ${
+                h.dayOfWeek === 'SAT' ? 'text-blue-600' : h.dayOfWeek === 'SUN' ? 'text-red-600' : 'text-gray-700'
+              }`}>
+                {DAY_OF_WEEK_LABELS[h.dayOfWeek as DayOfWeek]}
+              </span>
+              <input
+                type="time"
+                value={h.openTime ?? ''}
+                disabled={h.isClosed}
+                onChange={(e) => updateHour(h.dayOfWeek as DayOfWeek, 'openTime', e.target.value || null)}
+                className="mr-3 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+              />
+              <input
+                type="time"
+                value={h.closeTime ?? ''}
+                disabled={h.isClosed}
+                onChange={(e) => updateHour(h.dayOfWeek as DayOfWeek, 'closeTime', e.target.value || null)}
+                className="mr-3 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+              />
+              <div className="flex justify-center">
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={h.isClosed}
+                    onChange={(e) => updateHour(h.dayOfWeek as DayOfWeek, 'isClosed', e.target.checked)}
+                    className="w-4 h-4 rounded accent-red-500"
+                  />
+                  <span className="text-xs text-gray-600">定休日</span>
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* アクセス・規模 */}
       <div>
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Clock size={20} />
-          営業情報
+          <MapPin size={20} />
+          アクセス・規模
         </h3>
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">営業開始時間</label>
-            <input
-              type="time"
-              value={form.businessHoursStart || ''}
-              onChange={(e) => set('businessHoursStart', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">営業終了時間</label>
-            <input
-              type="time"
-              value={form.businessHoursEnd || ''}
-              onChange={(e) => set('businessHoursEnd', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">最寄り駅</label>
             <input

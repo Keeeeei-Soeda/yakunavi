@@ -6,7 +6,7 @@ import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { PharmacistLayout } from '@/components/pharmacist/Layout';
 import { contractsAPI, Contract } from '@/lib/api/contracts';
 import { documentsAPI } from '@/lib/api/documents';
-import { pharmacyAPI, PharmacyProfile } from '@/lib/api/pharmacy';
+import { pharmacyAPI, PharmacyProfile, BusinessHour, DayOfWeek, DAY_OF_WEEK_ORDER, DAY_OF_WEEK_LABELS } from '@/lib/api/pharmacy';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { ArrowLeft, FileText, Download, CheckCircle, AlertCircle, MessageSquare, Building2, Phone, MapPin, Clock, Users, X, ChevronRight } from 'lucide-react';
@@ -460,28 +460,29 @@ export default function ContractDetailPage() {
                     {/* 営業情報 */}
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-3">営業情報</h3>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-3">
                         <div>
-                          <p className="text-sm text-gray-600">営業時間</p>
-                          <p className="font-medium">
-                            {pharmacyProfile.businessHoursStart && pharmacyProfile.businessHoursEnd
-                              ? `${formatTime(pharmacyProfile.businessHoursStart)} - ${formatTime(pharmacyProfile.businessHoursEnd)}`
-                              : '未設定'}
-                          </p>
+                          <p className="text-sm text-gray-600 mb-2">営業時間</p>
+                          <PharmacyBusinessHours
+                            branches={pharmacyProfile.branches}
+                            branchId={contract?.jobPosting?.pharmacyBranchId ?? null}
+                          />
                         </div>
-                        <div>
-                          <p className="text-sm text-gray-600">1日の処方箋数</p>
-                          <p className="font-medium">
-                            {pharmacyProfile.dailyPrescriptionCount
-                              ? `${pharmacyProfile.dailyPrescriptionCount}件`
-                              : '未記入'}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600">スタッフ数</p>
-                          <p className="font-medium">
-                            {pharmacyProfile.staffCount ? `${pharmacyProfile.staffCount}人` : '未記入'}
-                          </p>
+                        <div className="grid grid-cols-2 gap-4 pt-2">
+                          <div>
+                            <p className="text-sm text-gray-600">1日の処方箋数</p>
+                            <p className="font-medium">
+                              {pharmacyProfile.dailyPrescriptionCount
+                                ? `${pharmacyProfile.dailyPrescriptionCount}件`
+                                : '未記入'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-600">スタッフ数</p>
+                            <p className="font-medium">
+                              {pharmacyProfile.staffCount ? `${pharmacyProfile.staffCount}人` : '未記入'}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -544,6 +545,60 @@ export default function ContractDetailPage() {
         )}
       </PharmacistLayout>
     </ProtectedRoute>
+  );
+}
+
+// =========== 薬局営業時間コンポーネント ===========
+function PharmacyBusinessHours({
+  branches,
+  branchId,
+}: {
+  branches?: import('@/lib/api/pharmacy').PharmacyBranch[];
+  branchId: number | null;
+}) {
+  const branch =
+    branchId != null
+      ? branches?.find((b) => b.id === branchId)
+      : branches?.[0];
+
+  const hours = branch?.businessHours;
+  const hasAny = hours?.some((h) => h.isClosed || h.openTime);
+
+  if (!hasAny) {
+    return (
+      <p className="text-sm text-gray-500">
+        営業時間については薬局へお問い合わせください
+      </p>
+    );
+  }
+
+  const merged = DAY_OF_WEEK_ORDER.map((day) => {
+    const h = hours?.find((x) => x.dayOfWeek === day);
+    return h ?? { dayOfWeek: day, openTime: null, closeTime: null, isClosed: false };
+  });
+
+  return (
+    <div className="space-y-1">
+      {merged.map((h) => (
+        <div key={h.dayOfWeek} className="flex items-center gap-2 text-sm">
+          <span className={`w-5 text-center font-semibold ${
+            h.dayOfWeek === 'SAT' ? 'text-blue-600' : h.dayOfWeek === 'SUN' ? 'text-red-600' : 'text-gray-700'
+          }`}>
+            {DAY_OF_WEEK_LABELS[h.dayOfWeek as DayOfWeek]}
+          </span>
+          {h.isClosed ? (
+            <span className="text-red-500 font-medium">定休日</span>
+          ) : h.openTime && h.closeTime ? (
+            <span className="text-gray-800">{h.openTime} 〜 {h.closeTime}</span>
+          ) : (
+            <span className="text-gray-400">未設定</span>
+          )}
+        </div>
+      ))}
+      <p className="text-xs text-gray-400 mt-1">
+        ※年末年始・お盆・祝日等は変動する場合があります
+      </p>
+    </div>
   );
 }
 

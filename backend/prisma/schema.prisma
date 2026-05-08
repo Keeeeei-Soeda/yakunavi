@@ -71,32 +71,49 @@ model Pharmacy {
 }
 
 model PharmacyBranch {
-  id                     BigInt       @id @default(autoincrement())
-  pharmacyId             BigInt       @map("pharmacy_id")
-  name                   String       @map("name") @db.VarChar(255)
-  phoneNumber            String?      @map("phone_number") @db.VarChar(20)
-  faxNumber              String?      @map("fax_number") @db.VarChar(20)
-  prefecture             String?      @db.VarChar(50)
+  id                     BigInt         @id @default(autoincrement())
+  pharmacyId             BigInt         @map("pharmacy_id")
+  name                   String         @map("name") @db.VarChar(255)
+  phoneNumber            String?        @map("phone_number") @db.VarChar(20)
+  faxNumber              String?        @map("fax_number") @db.VarChar(20)
+  prefecture             String?        @db.VarChar(50)
   address                String?
-  nearestStation         String?      @map("nearest_station") @db.VarChar(255)
-  minutesFromStation     Int?         @map("minutes_from_station")
-  carCommuteAvailable    Boolean?     @map("car_commute_available")
-  establishedDate        DateTime?    @map("established_date") @db.Date
-  dailyPrescriptionCount Int?         @map("daily_prescription_count")
-  staffCount             Int?         @map("staff_count")
-  businessHoursStart     DateTime?    @map("business_hours_start") @db.Time(6)
-  businessHoursEnd       DateTime?    @map("business_hours_end") @db.Time(6)
+  nearestStation         String?        @map("nearest_station") @db.VarChar(255)
+  minutesFromStation     Int?           @map("minutes_from_station")
+  carCommuteAvailable    Boolean?       @map("car_commute_available")
+  establishedDate        DateTime?      @map("established_date") @db.Date
+  dailyPrescriptionCount Int?           @map("daily_prescription_count")
+  staffCount             Int?           @map("staff_count")
+  businessHoursStart     DateTime?      @map("business_hours_start") @db.Time(6)
+  businessHoursEnd       DateTime?      @map("business_hours_end") @db.Time(6)
   introduction           String?
   strengths              String?
-  equipmentSystems       String?      @map("equipment_systems")
-  displayOrder           Int          @default(0) @map("display_order")
-  createdAt              DateTime     @default(now()) @map("created_at")
-  updatedAt              DateTime     @updatedAt @map("updated_at")
-  pharmacy               Pharmacy     @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  equipmentSystems       String?        @map("equipment_systems")
+  displayOrder           Int            @default(0) @map("display_order")
+  createdAt              DateTime       @default(now()) @map("created_at")
+  updatedAt              DateTime       @updatedAt @map("updated_at")
+  businessHours          BusinessHour[]
+  pharmacy               Pharmacy       @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
   jobPostings            JobPosting[]
 
   @@index([pharmacyId], map: "idx_pharmacy_branches_pharmacy_id")
   @@map("pharmacy_branches")
+}
+
+model BusinessHour {
+  id               BigInt         @id @default(autoincrement())
+  pharmacyBranchId BigInt         @map("pharmacy_branch_id")
+  dayOfWeek        String         @map("day_of_week") @db.VarChar(3)
+  openTime         String?        @map("open_time") @db.VarChar(5)
+  closeTime        String?        @map("close_time") @db.VarChar(5)
+  isClosed         Boolean        @default(false) @map("is_closed")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  pharmacyBranch   PharmacyBranch @relation(fields: [pharmacyBranchId], references: [id], onDelete: Cascade)
+
+  @@unique([pharmacyBranchId, dayOfWeek], map: "uq_business_hours_branch_day")
+  @@index([pharmacyBranchId], map: "idx_business_hours_branch_id")
+  @@map("business_hours")
 }
 
 model FavoriteJob {

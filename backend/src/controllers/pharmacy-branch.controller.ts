@@ -60,4 +60,35 @@ export class PharmacyBranchController {
       res.status(400).json({ success: false, error: msg });
     }
   }
+
+  async getBusinessHours(req: AuthRequest, res: Response) {
+    try {
+      const pharmacyId = BigInt(req.params.pharmacyId);
+      const branchId = BigInt(req.params.branchId);
+      const hours = await branchService.getBusinessHours(branchId, pharmacyId);
+      res.json({ success: true, data: hours });
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : '営業時間の取得に失敗しました';
+      res.status(404).json({ success: false, error: msg });
+    }
+  }
+
+  async updateBusinessHours(req: AuthRequest, res: Response) {
+    try {
+      const pharmacyId = BigInt(req.params.pharmacyId);
+      const branchId = BigInt(req.params.branchId);
+      const { hours } = req.body;
+
+      if (!Array.isArray(hours) || hours.length === 0) {
+        res.status(400).json({ success: false, error: '営業時間データが不正です' });
+        return;
+      }
+
+      const result = await branchService.upsertBusinessHours(branchId, pharmacyId, hours);
+      res.json({ success: true, data: result, message: '営業時間を更新しました' });
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : '営業時間の更新に失敗しました';
+      res.status(400).json({ success: false, error: msg });
+    }
+  }
 }

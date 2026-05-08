@@ -22,11 +22,33 @@ export interface PharmacyProfile {
   establishedDate?: string;
   dailyPrescriptionCount?: number;
   staffCount?: number;
-  businessHoursStart?: string;
-  businessHoursEnd?: string;
   introduction?: string;
   strengths?: string;
   equipmentSystems?: string;
+  branches?: PharmacyBranch[];
+}
+
+export type DayOfWeek = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN';
+
+export const DAY_OF_WEEK_LABELS: Record<DayOfWeek, string> = {
+  MON: '月',
+  TUE: '火',
+  WED: '水',
+  THU: '木',
+  FRI: '金',
+  SAT: '土',
+  SUN: '日',
+};
+
+export const DAY_OF_WEEK_ORDER: DayOfWeek[] = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+export interface BusinessHour {
+  id?: number;
+  pharmacyBranchId?: number;
+  dayOfWeek: DayOfWeek;
+  openTime: string | null;
+  closeTime: string | null;
+  isClosed: boolean;
 }
 
 export interface PharmacyBranch {
@@ -43,12 +65,11 @@ export interface PharmacyBranch {
   establishedDate?: string;
   dailyPrescriptionCount?: number;
   staffCount?: number;
-  businessHoursStart?: string;
-  businessHoursEnd?: string;
   introduction?: string;
   strengths?: string;
   equipmentSystems?: string;
   displayOrder?: number;
+  businessHours?: BusinessHour[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -134,6 +155,21 @@ export const pharmacyAPI = {
   deleteBranch: async (pharmacyId: number, branchId: number) => {
     return apiClient.delete<APIResponse>(
       `/pharmacy/${pharmacyId}/branches/${branchId}`
+    );
+  },
+
+  // 曜日別営業時間取得
+  getBusinessHours: async (pharmacyId: number, branchId: number) => {
+    return apiClient.get<APIResponse<BusinessHour[]>>(
+      `/pharmacy/${pharmacyId}/branches/${branchId}/business-hours`
+    );
+  },
+
+  // 曜日別営業時間一括更新
+  updateBusinessHours: async (pharmacyId: number, branchId: number, hours: BusinessHour[]) => {
+    return apiClient.put<APIResponse<BusinessHour[]>>(
+      `/pharmacy/${pharmacyId}/branches/${branchId}/business-hours`,
+      { hours }
     );
   },
 

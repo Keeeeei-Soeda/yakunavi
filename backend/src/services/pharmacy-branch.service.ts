@@ -1,37 +1,126 @@
 import prisma from '../utils/prisma';
 
+export const DAY_OF_WEEK_ORDER = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'] as const;
+export type DayOfWeek = (typeof DAY_OF_WEEK_ORDER)[number];
+
+export interface BusinessHourInput {
+  dayOfWeek: DayOfWeek;
+  openTime: string | null;
+  closeTime: string | null;
+  isClosed: boolean;
+}
+
 export class PharmacyBranchService {
   /**
-   * 法人に紐づく薬局一覧を取得
+   * 法人に紐づく薬局一覧を取得（曜日別営業時間含む）
    */
   async getBranches(pharmacyId: bigint) {
     const branches = await prisma.pharmacyBranch.findMany({
       where: { pharmacyId },
+      include: {
+        businessHours: {
+          orderBy: { dayOfWeek: 'asc' },
+        },
+      },
       orderBy: [{ displayOrder: 'asc' }, { createdAt: 'asc' }],
     });
 
-    return branches.map((b) => ({
-      ...b,
-      id: Number(b.id),
-      pharmacyId: Number(b.pharmacyId),
-    }));
+    return branches.map((b) => this.serializeBranch(b));
   }
 
   /**
-   * 1薬局の詳細を取得
+   * 1薬局の詳細を取得（曜日別営業時間含む）
    */
   async getBranch(branchId: bigint, pharmacyId: bigint) {
     const branch = await prisma.pharmacyBranch.findFirst({
       where: { id: branchId, pharmacyId },
+      include: {
+        businessHours: {
+          orderBy: { dayOfWeek: 'asc' },
+        },
+      },
     });
 
     if (!branch) throw new Error('薬局が見つかりません');
 
-    return {
-      ...branch,
-      id: Number(branch.id),
-      pharmacyId: Number(branch.pharmacyId),
-    };
+    return this.serializeBranch(branch);
+  }
+
+  /**
+   * 曜日別営業時間を取得
+   */
+  async getBusinessHours(branchId: bigint, pharmacyId: bigint) {
+    const branch = await prisma.pharmacyBranch.findFirst({
+      where: { id: branchId, pharmacyId },
+    });
+    if (!branch) throw new Error('薬局が見つかりません');
+
+    const hours = await prisma.businessHour.findMany({
+      where: { pharmacyBranchId: branchId },
+      orderBy: { dayOfWeek: 'asc' },
+    });
+
+    return hours.map((h) => ({
+      ...h,
+      id: Number(h.id),
+      pharmacyBranchId: Number(h.pharmacyBranchId),
+    }));
+  }
+
+  /**
+   * 曜日別営業時間を一括更新（7曜日分をupsert）
+   */
+  async upsertBusinessHours(branchId: bigint, pharmacyId: bigint, hours: BusinessHourInput[]) {
+    const branch = await prisma.pharmacyBranch.findFirst({
+      where: { id: branchId, pharmacyId },
+    });
+    if (!branch) throw new Error('薬局が見つかりません');
+
+    const validDays = new Set(DAY_OF_WEEK_ORDER);
+    for (const h of hours) {
+      if (!validDays.has(h.dayOfWeek)) {
+        throw new Error(`無効な曜日コード: ${h.dayOfWeek}`);
+      }
+      if (!h.isClosed) {
+        if (!h.openTime || !h.closeTime) {
+          throw new Error(`${h.dayOfWeek}: 定休日以外は開始・終了時間を入力してください`);
+        }
+        if (!/^\d{2}:\d{2}$/.test(h.openTime) || !/^\d{2}:\d{2}$/.test(h.closeTime)) {
+          throw new Error(`${h.dayOfWeek}: 時間はHH:MM形式で入力してください`);
+        }
+      }
+    }
+
+    const results = await Promise.all(
+      hours.map((h) =>
+        prisma.businessHour.upsert({
+          where: {
+            pharmacyBranchId_dayOfWeek: {
+              pharmacyBranchId: branchId,
+              dayOfWeek: h.dayOfWeek,
+            },
+          },
+          update: {
+            openTime: h.isClosed ? null : h.openTime,
+            closeTime: h.isClosed ? null : h.closeTime,
+            isClosed: h.isClosed,
+          },
+          create: {
+            pharmacyBranchId: branchId,
+            dayOfWeek: h.dayOfWeek,
+            openTime: h.isClosed ? null : h.openTime,
+            closeTime: h.isClosed ? null : h.closeTime,
+            isClosed: h.isClosed,
+          },
+        })
+      )
+    );
+
+    return results.map((h) => ({
+      ...h,
+      id: Number(h.id),
+      pharmacyBranchId: Number(h.pharmacyBranchId),
+    }));
   }
 
   /**
@@ -146,5 +235,18 @@ export class PharmacyBranchService {
     }
     const d = new Date(value);
     return isNaN(d.getTime()) ? null : d;
+  }
+
+  private serializeBranch(branch: any) {
+    return {
+      ...branch,
+      id: Number(branch.id),
+      pharmacyId: Number(branch.pharmacyId),
+      businessHours: (branch.businessHours ?? []).map((h: any) => ({
+        ...h,
+        id: Number(h.id),
+        pharmacyBranchId: Number(h.pharmacyBranchId),
+      })),
+    };
   }
 }

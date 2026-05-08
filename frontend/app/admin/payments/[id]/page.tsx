@@ -46,8 +46,7 @@ interface PaymentDetail {
     establishedDate: string;
     dailyPrescriptionCount: number;
     staffCount: number;
-    businessHoursStart: string;
-    businessHoursEnd: string;
+
     introduction: string;
     strengths: string;
     equipmentSystems: string;
@@ -356,11 +355,7 @@ export default function PaymentDetailPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">営業時間</label>
-              <p className="text-gray-900">
-                {payment.pharmacy.businessHoursStart && payment.pharmacy.businessHoursEnd
-                  ? `${payment.pharmacy.businessHoursStart} 〜 ${payment.pharmacy.businessHoursEnd}`
-                  : '未設定'}
-              </p>
+              <p className="text-gray-500 text-sm">各店舗の曜日別営業時間を確認ください</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">アカウントステータス</label>
