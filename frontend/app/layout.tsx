@@ -23,13 +23,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Google Analytics ID - 環境変数または直接指定
   const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-9T7LVD6HVV'
+  const awId = 'AW-18067084143'
 
   return (
     <html lang="ja">
       <body className={inter.className}>
-        {/* Google Analytics */}
+        {/* Google Analytics + Google Ads */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
           strategy="afterInteractive"
@@ -40,6 +40,7 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${gaId}');
+            gtag('config', '${awId}');
           `}
         </Script>
         <AuthProvider>

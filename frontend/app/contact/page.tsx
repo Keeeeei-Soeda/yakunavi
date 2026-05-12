@@ -46,6 +46,11 @@ export default function ContactPage() {
       });
 
       setSubmitStatus('success');
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'conversion', {
+          send_to: 'AW-18067084143/Ep6PCLrGt6McEO-mh6dD',
+        });
+      }
       setFormData({
         name: '',
         age: '',
