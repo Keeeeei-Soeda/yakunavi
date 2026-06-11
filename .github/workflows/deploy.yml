@@ -1,0 +1,61 @@
+name: Deploy to XServer
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          timeout: 30s
+          command_timeout: 25m
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            cd "${{ secrets.DEPLOY_PATH }}"
+
+            echo "📥 Fetching latest code..."
+            git fetch origin
+            git reset --hard origin/main
+
+            if [ -d LP_page ]; then
+              echo "📄 Updating static LP files..."
+              sudo cp -r LP_page/* /var/www/yakkyoku/
+              sudo chown -R www-data:www-data /var/www/yakkyoku
+              sudo cp -r LP_page/* /var/www/yakuzaishi/
+              sudo chown -R www-data:www-data /var/www/yakuzaishi
+            fi
+
+            echo "🔧 Building backend..."
+            cd backend
+            npm install
+            npx prisma generate
+            npx prisma migrate deploy
+            npm run build
+            cd ..
+
+            echo "🎨 Building frontend..."
+            cd frontend
+            npm install
+            npm run build
+            cd ..
+
+            echo "🔄 Restarting PM2..."
+            pm2 restart all
+            pm2 status
+
+            echo "✅ Deploy completed"
