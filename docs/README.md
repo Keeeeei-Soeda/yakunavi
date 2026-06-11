@@ -2,6 +2,7 @@
 
 ## 🚀 運用・デプロイ
 
+- **[DEPLOY_REQUIREMENTS.md](./DEPLOY_REQUIREMENTS.md)** - デプロイに必要な情報・不足項目・チェックリスト
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - 本番デプロイ手順、コマンド集、PM2・管理者デプロイチェックリスト、トラブルシューティング
 - **[SETUP.md](./SETUP.md)** - 開発環境のセットアップ・起動（クイックスタート含む）
 - **[DOMAIN_SSL.md](./DOMAIN_SSL.md)** - ドメイン設定、SSL証明書、Nginx設定

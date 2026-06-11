@@ -59,6 +59,65 @@
         line-height: 1.8;
         font-size: 15px;
       }
+      .ico {
+        display: inline-block;
+        width: 1.1em;
+        height: 1.1em;
+        vertical-align: -0.15em;
+        flex-shrink: 0;
+      }
+      .hero-badge .ico {
+        width: 14px;
+        height: 14px;
+      }
+      .btn-primary .ico,
+      .btn-secondary .ico,
+      .btn-contact .ico,
+      .hero-crosslink-btn .ico,
+      .cta-fixed-btn .ico {
+        width: 16px;
+        height: 16px;
+      }
+      .comparison-header .tag .ico {
+        width: 14px;
+        height: 14px;
+      }
+      .comp-th.good-col .ico {
+        width: 14px;
+        height: 14px;
+        vertical-align: -2px;
+        margin-right: 2px;
+      }
+      .badge-x .ico,
+      .badge-ok .ico {
+        width: 10px;
+        height: 10px;
+      }
+      .pain-icon .ico {
+        width: 26px;
+        height: 26px;
+      }
+      .sp-icon .ico {
+        width: 18px;
+        height: 18px;
+      }
+      .pricing-card h3 .ico {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+      }
+      .pi-check .ico,
+      .cb-icon .ico {
+        width: 14px;
+        height: 14px;
+      }
+      .pricing-note .ico {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: var(--gold);
+      }
 
       header {
         position: fixed;
@@ -417,9 +476,11 @@
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
       }
       .pain-icon {
-        font-size: 28px;
         margin-bottom: 10px;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--navy);
       }
       .pain-text {
         font-size: 13px;
@@ -499,9 +560,11 @@
         border-left: 3px solid var(--accent);
       }
       .sp-icon {
-        font-size: 17px;
         flex-shrink: 0;
         margin-top: 1px;
+        display: flex;
+        align-items: center;
+        color: var(--accent);
       }
       .sp-text {
         font-size: 13px;
@@ -530,7 +593,9 @@
         margin-bottom: 48px;
       }
       .comparison-header .tag {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         background: var(--green-pale);
         color: var(--green);
         font-size: 0.78rem;
@@ -577,6 +642,10 @@
         background: var(--green-pale);
         color: var(--green);
         border-left: 2px solid var(--green-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
       }
       .comp-th.bad-col {
         color: var(--red);
@@ -933,6 +1002,9 @@
         margin-bottom: 16px;
         padding-bottom: 12px;
         border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
       .pi {
         display: flex;
@@ -947,9 +1019,10 @@
       }
       .pi-check {
         color: var(--accent);
-        font-size: 14px;
         flex-shrink: 0;
         margin-top: 1px;
+        display: inline-flex;
+        align-items: center;
       }
       .pi-text {
         color: var(--text-dark);
@@ -970,6 +1043,9 @@
         line-height: 2.1;
         font-weight: 300;
         border-left: 3px solid var(--gold);
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
       }
 
       /* FAQ */
@@ -1210,7 +1286,8 @@
       }
       .cb-icon {
         color: var(--accent);
-        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
       }
       .cta-btns {
         display: flex;
@@ -1380,7 +1457,10 @@
         justify-content: center;
       }
       .cta-fixed-bar .cta-fixed-btn {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
         width: 100%;
         padding: 14px 20px;
         background: var(--accent);
@@ -1429,7 +1509,7 @@
     <!-- HERO -->
     <section class="hero" style="padding: 0">
       <div class="hero-left">
-        <div class="hero-badge">✨ おためし転職で失敗しない転職を実現</div>
+        <div class="hero-badge"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.94 2.94 11 6.88l3.94 1.06-3.94 1.06-1.06 3.94-1.06-3.94L5 7.94l3.94-1.06z"/><path d="M18.56 12.44 19.5 15.5l3.06.94-3.06.94-.94 3.06-.94-3.06-3.06-.94 3.06-.94z"/></svg>おためし転職で失敗しない転職を実現</div>
         <p class="hero-eyebrow">Yaku Navi for Pharmacists</p>
         <h1>働いてから<em>決める</em>、<br />新しい転職の<br />カタチ。</h1>
         <p class="hero-sub">
@@ -1455,15 +1535,15 @@
           <a
             href="https://yaku-navi.com/auth/register/pharmacist"
             class="btn-primary"
-            >💊 薬剤師として無料登録</a
+            ><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z"/></svg>薬剤師として無料登録</a
           >
           <a
             href="https://yaku-navi.com/auth/register/pharmacy"
             class="btn-secondary"
-            >🏥 薬局・採用担当の方</a
+            ><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 21V9l6-4 6 4v12"/><path d="M9 21v-4h6v4"/></svg>薬局・採用担当の方</a
           >
           <a href="https://yaku-navi.com/contact" class="btn-contact"
-            >📩 お問い合わせ</a
+            ><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>お問い合わせ</a
           >
         </div>
         <p class="hero-free-note">
@@ -1471,7 +1551,7 @@
         </p>
         <div class="hero-crosslink">
           <a href="https://yakkyoku.yaku-navi.com/" class="hero-crosslink-btn">
-            🏥 薬局担当者の方はこちら →
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 21V9l6-4 6 4v12"/><path d="M9 21v-4h6v4"/></svg>薬局担当者の方はこちら<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
       </div>
@@ -1493,31 +1573,31 @@
         </div>
         <div class="pain-grid">
           <div class="pain-item fade-up">
-            <span class="pain-icon">📞</span>
+            <span class="pain-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
             <div class="pain-text">
               エージェントからしつこく電話がきて、気が乗らないまま選考が進んでしまう
             </div>
           </div>
           <div class="pain-item fade-up">
-            <span class="pain-icon">😰</span>
+            <span class="pain-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
             <div class="pain-text">
               入社してから「思っていた職場と違う」と後悔したことがある・怖い
             </div>
           </div>
           <div class="pain-item fade-up">
-            <span class="pain-icon">🌫</span>
+            <span class="pain-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
             <div class="pain-text">
               職場の人間関係や雰囲気が、面接だけでは全然わからない
             </div>
           </div>
           <div class="pain-item fade-up">
-            <span class="pain-icon">⏰</span>
+            <span class="pain-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
             <div class="pain-text">
               今の仕事をしながら転職活動する時間・体力的な余裕がない
             </div>
           </div>
           <div class="pain-item fade-up">
-            <span class="pain-icon">😔</span>
+            <span class="pain-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 8 5 5"/><path d="m22 8-5 5"/></svg></span>
             <div class="pain-text">
               「また転職するの？」と思われそうで、何度も転職できないプレッシャーがある
             </div>
@@ -1557,21 +1637,21 @@
             </p>
             <div class="solution-points">
               <div class="sp">
-                <div class="sp-icon">💬</div>
+                <div class="sp-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
                 <div class="sp-text">
                   <strong>直接チャットで薬局長と対話</strong
                   >職場のリアルな情報を自分の目で確認できます
                 </div>
               </div>
               <div class="sp">
-                <div class="sp-icon">🔍</div>
+                <div class="sp-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
                 <div class="sp-text">
                   <strong>おためし勤務期間（10〜90日）</strong
                   >実際に働いてから転職先を決定。ミスマッチをゼロに近づけます
                 </div>
               </div>
               <div class="sp">
-                <div class="sp-icon">💴</div>
+                <div class="sp-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg></div>
                 <div class="sp-text">
                   <strong>おためし勤務中も日給が発生</strong
                   >収入を得ながら、自分に合う職場を探せます（例：日給25,000円）
@@ -1587,7 +1667,7 @@
     <section class="comp-section" id="comparison">
       <div class="section-inner">
         <div class="comparison-header fade-up">
-          <div class="tag">📊 徹底比較</div>
+          <div class="tag"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>徹底比較</div>
           <h2 class="section-title">従来の転職との比較</h2>
           <p class="section-sub">
             薬ナビが選ばれる理由が、この比較表からわかります
@@ -1597,54 +1677,54 @@
           <div class="comp-table-head">
             <div class="comp-th">比較項目</div>
             <div class="comp-th bad-col">従来の人材紹介サービス</div>
-            <div class="comp-th good-col">✅ 薬ナビ</div>
+            <div class="comp-th good-col"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>薬ナビ</div>
           </div>
           <div class="comp-row">
             <div class="comp-cell label-cell">マッチング方法</div>
             <div class="comp-cell bad-cell">
-              <span class="badge-x">✗</span
+              <span class="badge-x"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span
               >エージェントによる紹介（バイアスあり）
             </div>
             <div class="comp-cell good-cell">
-              <span class="badge-ok">✓</span
+              <span class="badge-ok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span
               >直接連絡・おためし勤務（バイアスなし）
             </div>
           </div>
           <div class="comp-row">
             <div class="comp-cell label-cell">情報精度</div>
             <div class="comp-cell bad-cell">
-              <span class="badge-x">✗</span>PR用の良い情報に偏りがち
+              <span class="badge-x"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>PR用の良い情報に偏りがち
             </div>
             <div class="comp-cell good-cell">
-              <span class="badge-ok">✓</span>現場のリアルを直接確認可能
+              <span class="badge-ok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>現場のリアルを直接確認可能
             </div>
           </div>
           <div class="comp-row">
             <div class="comp-cell label-cell">転職後の継続率</div>
             <div class="comp-cell bad-cell">
-              <span class="badge-x">✗</span>ミスマッチによる早期離職が頻発
+              <span class="badge-x"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>ミスマッチによる早期離職が頻発
             </div>
             <div class="comp-cell good-cell">
-              <span class="badge-ok">✓</span>納得して入るから、定着率が高い
+              <span class="badge-ok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>納得して入るから、定着率が高い
             </div>
           </div>
           <div class="comp-row">
             <div class="comp-cell label-cell">収入</div>
             <div class="comp-cell bad-cell">
-              <span class="badge-x">✗</span>転職活動中は基本的に収入なし
+              <span class="badge-x"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>転職活動中は基本的に収入なし
             </div>
             <div class="comp-cell good-cell">
-              <span class="badge-ok">✓</span
+              <span class="badge-ok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span
               >おためし勤務中は日給が発生（例：25,000円）
             </div>
           </div>
           <div class="comp-row">
             <div class="comp-cell label-cell">薬局側の負担</div>
             <div class="comp-cell bad-cell">
-              <span class="badge-x">✗</span>年収の30〜40%（非常に重い）
+              <span class="badge-x"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>年収の30〜40%（非常に重い）
             </div>
             <div class="comp-cell good-cell">
-              <span class="badge-ok">✓</span>月収の40%（薬局の負担軽減）
+              <span class="badge-ok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>月収の40%（薬局の負担軽減）
             </div>
           </div>
           <div class="comp-row">
@@ -1653,7 +1733,7 @@
               <span>—</span> 無料が多いが成功時に手数料発生
             </div>
             <div class="comp-cell good-cell">
-              <span class="badge-ok">✓</span>薬剤師は完全無料・薬局も掲載無料
+              <span class="badge-ok"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>薬剤師は完全無料・薬局も掲載無料
             </div>
           </div>
         </div>
@@ -1861,9 +1941,9 @@
         </div>
         <div class="pricing-grid">
           <div class="pricing-card fade-up">
-            <h3>💊 薬剤師の方</h3>
+            <h3><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z"/></svg>薬剤師の方</h3>
             <div class="pi">
-              <span class="pi-check">✓</span>
+              <span class="pi-check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
               <div class="pi-text">
                 登録料：無料<span
                   >会員登録・プロフィール設定まで一切費用なし</span
@@ -1871,7 +1951,7 @@
               </div>
             </div>
             <div class="pi">
-              <span class="pi-check">✓</span>
+              <span class="pi-check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
               <div class="pi-text">
                 おためし案件閲覧・応募：無料<span
                   >すべてのおためし案件を制限なく閲覧・応募できます</span
@@ -1879,7 +1959,7 @@
               </div>
             </div>
             <div class="pi">
-              <span class="pi-check">✓</span>
+              <span class="pi-check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
               <div class="pi-text">
                 メッセージ機能：無料<span
                   >薬局担当者との直接チャットも無料</span
@@ -1887,7 +1967,7 @@
               </div>
             </div>
             <div class="pi">
-              <span class="pi-check">✓</span>
+              <span class="pi-check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
               <div class="pi-text">
                 おためし勤務中の日給：発生<span
                   >体験期間終了後、薬局様から直接支払われます（例：日給25,000円）</span
@@ -1896,15 +1976,15 @@
             </div>
           </div>
           <div class="pricing-card fade-up">
-            <h3>🏥 薬局・病院の方</h3>
+            <h3><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 21V9l6-4 6 4v12"/><path d="M9 21v-4h6v4"/></svg>薬局・病院の方</h3>
             <div class="pi">
-              <span class="pi-check">✓</span>
+              <span class="pi-check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
               <div class="pi-text">
                 掲載料：0円<span>薬局の掲載・求人公開は完全無料</span>
               </div>
             </div>
             <div class="pi">
-              <span class="pi-check">✓</span>
+              <span class="pi-check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
               <div class="pi-text">
                 体験決定時の手数料：<strong
                   style="color: var(--navy); font-size: 15px"
@@ -1915,7 +1995,7 @@
               </div>
             </div>
             <div class="pi">
-              <span class="pi-check">✓</span>
+              <span class="pi-check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
               <div class="pi-text">
                 おためし勤務中の費用：薬剤師様の給与のみ<span
                   >おためし勤務中は薬剤師への日給のみをご負担ください</span
@@ -1923,7 +2003,7 @@
               </div>
             </div>
             <div class="pi">
-              <span class="pi-check">✓</span>
+              <span class="pi-check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
               <div class="pi-text">
                 見送り時のコスト：0円<span
                   >転職決定に至らなかった場合、手数料は発生しません</span
@@ -1933,8 +2013,8 @@
           </div>
         </div>
         <div class="pricing-note fade-up">
-          💡
-          薬剤師の方の個人を特定できる情報は体験決定まで薬局には公開されません。体験期間終了後、違う薬局へ体験することももちろん可能です。色々な店舗を見ていただき、最終的に自分に最も合う薬局を見つけていただくことが薬ナビを使う最大のメリットです。
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+          <span>薬剤師の方の個人を特定できる情報は体験決定まで薬局には公開されません。体験期間終了後、違う薬局へ体験することももちろん可能です。色々な店舗を見ていただき、最終的に自分に最も合う薬局を見つけていただくことが薬ナビを使う最大のメリットです。</span>
         </div>
       </div>
     </section>
@@ -2128,23 +2208,23 @@
           これまでの転職の悩み、もう一人で抱え込まないでください。<br />薬ナビなら、あなたの転職は必ず良くなります。<br /><br />「自分に合う職場に転職できた喜び」「通うたびに仕事が楽しくなる感動」<br />「もう転職で失敗しなくていい安心感」。このすべてを、あなたにお届けします。
         </p>
         <div class="cta-benefits">
-          <div class="cb"><span class="cb-icon">✓</span>完全無料で登録</div>
-          <div class="cb"><span class="cb-icon">✓</span>エージェントなし</div>
+          <div class="cb"><span class="cb-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>完全無料で登録</div>
+          <div class="cb"><span class="cb-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>エージェントなし</div>
           <div class="cb">
-            <span class="cb-icon">✓</span>実際に働いてから決断
+            <span class="cb-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>実際に働いてから決断
           </div>
           <div class="cb">
-            <span class="cb-icon">✓</span>おためし勤務中も日給あり
+            <span class="cb-icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>おためし勤務中も日給あり
           </div>
         </div>
         <div class="cta-btns">
           <a
             href="https://yaku-navi.com/auth/register/pharmacist"
             class="btn-primary"
-            >💊 薬剤師として無料登録</a
+            ><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z"/></svg>薬剤師として無料登録</a
           >
           <a href="https://yaku-navi.com/contact" class="btn-contact"
-            >📩 お問い合わせ</a
+            ><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>お問い合わせ</a
           >
         </div>
         <p class="cta-note">
@@ -2237,7 +2317,7 @@
         <a
           href="https://yaku-navi.com/auth/register/pharmacist"
           class="cta-fixed-btn"
-          >💊 薬剤師として無料登録</a
+          ><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z"/></svg>薬剤師として無料登録</a
         >
       </div>
     </div>
