@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { getJobPostings } from '@/lib/api/admin';
-import { Briefcase, Search, Building2, MapPin, Calendar, Users } from 'lucide-react';
+import { Briefcase, Search, Building2, MapPin, Calendar, Users, Pencil } from 'lucide-react';
 
 interface JobPosting {
   id: number;
@@ -209,6 +210,9 @@ export default function JobPostingsPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   公開日
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  操作
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -252,6 +256,15 @@ export default function JobPostingsPage() {
                     {job.publishedAt
                       ? new Date(job.publishedAt).toLocaleDateString('ja-JP')
                       : '未公開'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <Link
+                      href={`/admin/pharmacies/${job.pharmacyId}/job-postings/${job.id}/edit`}
+                      className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                    >
+                      <Pencil className="h-4 w-4" />
+                      編集
+                    </Link>
                   </td>
                 </tr>
               ))}

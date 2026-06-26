@@ -7,6 +7,14 @@ import path from 'path';
 
 const adminService = new AdminService();
 
+function getClientIp(req: Request): string | undefined {
+    const forwarded = req.headers['x-forwarded-for'];
+    if (typeof forwarded === 'string') {
+        return forwarded.split(',')[0].trim();
+    }
+    return req.socket.remoteAddress ?? undefined;
+}
+
 export class AdminController {
     /**
      * ダッシュボード統計取得
@@ -489,6 +497,247 @@ export class AdminController {
             return res.status(400).json({
                 success: false,
                 error: error.message || 'アカウントステータスの変更に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * 監査ログ一覧取得
+     * GET /api/admin/audit-logs
+     */
+    async getAuditLogs(req: Request, res: Response) {
+        try {
+            const { page, limit, resourceType, pharmacyId, action } = req.query;
+
+            const result = await adminService.getAuditLogs({
+                page: page ? Number(page) : undefined,
+                limit: limit ? Number(limit) : undefined,
+                resourceType: resourceType as string,
+                pharmacyId: pharmacyId ? BigInt(pharmacyId as string) : undefined,
+                action: action as string,
+            });
+
+            return res.status(200).json({
+                success: true,
+                ...result,
+            });
+        } catch (error: any) {
+            console.error('Get audit logs error:', error);
+            return res.status(500).json({
+                success: false,
+                error: error.message || '監査ログの取得に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * 薬局の店舗一覧取得
+     * GET /api/admin/pharmacies/:pharmacyId/branches
+     */
+    async getPharmacyBranches(req: Request, res: Response) {
+        try {
+            const pharmacyId = BigInt(req.params.pharmacyId);
+            const branches = await adminService.getPharmacyBranches(pharmacyId);
+
+            return res.status(200).json({
+                success: true,
+                data: branches,
+            });
+        } catch (error: any) {
+            console.error('Get pharmacy branches error:', error);
+            return res.status(404).json({
+                success: false,
+                error: error.message || '店舗一覧の取得に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * 薬局のおためし案件一覧取得
+     * GET /api/admin/pharmacies/:pharmacyId/job-postings
+     */
+    async getPharmacyJobPostings(req: Request, res: Response) {
+        try {
+            const pharmacyId = BigInt(req.params.pharmacyId);
+            const jobPostings = await adminService.getPharmacyJobPostings(pharmacyId);
+
+            return res.status(200).json({
+                success: true,
+                data: jobPostings,
+            });
+        } catch (error: any) {
+            console.error('Get pharmacy job postings error:', error);
+            return res.status(404).json({
+                success: false,
+                error: error.message || 'おためし案件一覧の取得に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * おためし案件詳細取得
+     * GET /api/admin/job-postings/:id
+     */
+    async getJobPostingById(req: Request, res: Response) {
+        try {
+            const jobPostingId = BigInt(req.params.id);
+            const jobPosting = await adminService.getJobPostingById(jobPostingId);
+
+            return res.status(200).json({
+                success: true,
+                data: jobPosting,
+            });
+        } catch (error: any) {
+            console.error('Get job posting by id error:', error);
+            return res.status(404).json({
+                success: false,
+                error: error.message || 'おためし案件が見つかりません',
+            });
+        }
+    }
+
+    /**
+     * おためし案件代行作成
+     * POST /api/admin/pharmacies/:pharmacyId/job-postings
+     */
+    async createJobPostingForPharmacy(req: AuthRequest, res: Response) {
+        try {
+            const pharmacyId = BigInt(req.params.pharmacyId);
+            const adminUserId = BigInt(req.user!.id);
+
+            const jobPosting = await adminService.createJobPostingForPharmacy(
+                pharmacyId,
+                adminUserId,
+                req.body,
+                getClientIp(req)
+            );
+
+            return res.status(201).json({
+                success: true,
+                message: 'おためし案件を作成しました',
+                data: jobPosting,
+            });
+        } catch (error: any) {
+            console.error('Create job posting for pharmacy error:', error);
+            return res.status(400).json({
+                success: false,
+                error: error.message || 'おためし案件の作成に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * おためし案件代行更新
+     * PUT /api/admin/job-postings/:id
+     */
+    async updateJobPostingForPharmacy(req: AuthRequest, res: Response) {
+        try {
+            const jobPostingId = BigInt(req.params.id);
+            const adminUserId = BigInt(req.user!.id);
+
+            const jobPosting = await adminService.updateJobPostingForPharmacy(
+                jobPostingId,
+                adminUserId,
+                req.body,
+                getClientIp(req)
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'おためし案件を更新しました',
+                data: jobPosting,
+            });
+        } catch (error: any) {
+            console.error('Update job posting for pharmacy error:', error);
+            return res.status(400).json({
+                success: false,
+                error: error.message || 'おためし案件の更新に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * おためし案件代行公開
+     * POST /api/admin/job-postings/:id/publish
+     */
+    async publishJobPostingForPharmacy(req: AuthRequest, res: Response) {
+        try {
+            const jobPostingId = BigInt(req.params.id);
+            const adminUserId = BigInt(req.user!.id);
+
+            const jobPosting = await adminService.publishJobPostingForPharmacy(
+                jobPostingId,
+                adminUserId,
+                getClientIp(req)
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'おためし案件を公開しました',
+                data: jobPosting,
+            });
+        } catch (error: any) {
+            console.error('Publish job posting for pharmacy error:', error);
+            return res.status(400).json({
+                success: false,
+                error: error.message || 'おためし案件の公開に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * おためし案件代行非公開
+     * POST /api/admin/job-postings/:id/unpublish
+     */
+    async unpublishJobPostingForPharmacy(req: AuthRequest, res: Response) {
+        try {
+            const jobPostingId = BigInt(req.params.id);
+            const adminUserId = BigInt(req.user!.id);
+
+            const jobPosting = await adminService.unpublishJobPostingForPharmacy(
+                jobPostingId,
+                adminUserId,
+                getClientIp(req)
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'おためし案件を非公開にしました',
+                data: jobPosting,
+            });
+        } catch (error: any) {
+            console.error('Unpublish job posting for pharmacy error:', error);
+            return res.status(400).json({
+                success: false,
+                error: error.message || 'おためし案件の非公開化に失敗しました',
+            });
+        }
+    }
+
+    /**
+     * おためし案件代行削除
+     * DELETE /api/admin/job-postings/:id
+     */
+    async deleteJobPostingForPharmacy(req: AuthRequest, res: Response) {
+        try {
+            const jobPostingId = BigInt(req.params.id);
+            const adminUserId = BigInt(req.user!.id);
+
+            await adminService.deleteJobPostingForPharmacy(
+                jobPostingId,
+                adminUserId,
+                getClientIp(req)
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'おためし案件を削除しました',
+            });
+        } catch (error: any) {
+            console.error('Delete job posting for pharmacy error:', error);
+            return res.status(400).json({
+                success: false,
+                error: error.message || 'おためし案件の削除に失敗しました',
             });
         }
     }

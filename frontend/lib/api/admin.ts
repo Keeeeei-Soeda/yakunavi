@@ -155,7 +155,66 @@ export const getPharmacies = async (params?: {
 };
 
 export const toggleUserStatus = async (userId: number, isActive: boolean) => {
-    const response = await adminApi.patch(`/users/${userId}/status`, { isActive });
+    const response = await adminApi.post(`/users/${userId}/toggle-status`);
+    return response.data;
+};
+
+// 監査ログ
+export const getAuditLogs = async (params?: {
+    page?: number;
+    limit?: number;
+    resourceType?: string;
+    pharmacyId?: number;
+    action?: string;
+}) => {
+    const response = await adminApi.get('/audit-logs', { params });
+    return response.data;
+};
+
+// おためし案件代行管理
+export const getPharmacyBranches = async (pharmacyId: number) => {
+    const response = await adminApi.get(`/pharmacies/${pharmacyId}/branches`);
+    return response.data;
+};
+
+export const getPharmacyJobPostings = async (pharmacyId: number) => {
+    const response = await adminApi.get(`/pharmacies/${pharmacyId}/job-postings`);
+    return response.data;
+};
+
+export const getJobPostingById = async (jobId: number) => {
+    const response = await adminApi.get(`/job-postings/${jobId}`);
+    return response.data;
+};
+
+export const createJobPostingForPharmacy = async (
+    pharmacyId: number,
+    data: Record<string, unknown>
+) => {
+    const response = await adminApi.post(`/pharmacies/${pharmacyId}/job-postings`, data);
+    return response.data;
+};
+
+export const updateJobPostingForPharmacy = async (
+    jobId: number,
+    data: Record<string, unknown>
+) => {
+    const response = await adminApi.put(`/job-postings/${jobId}`, data);
+    return response.data;
+};
+
+export const publishJobPostingForPharmacy = async (jobId: number) => {
+    const response = await adminApi.post(`/job-postings/${jobId}/publish`);
+    return response.data;
+};
+
+export const unpublishJobPostingForPharmacy = async (jobId: number) => {
+    const response = await adminApi.post(`/job-postings/${jobId}/unpublish`);
+    return response.data;
+};
+
+export const deleteJobPostingForPharmacy = async (jobId: number) => {
+    const response = await adminApi.delete(`/job-postings/${jobId}`);
     return response.data;
 };
 
