@@ -38,6 +38,18 @@ router.get('/statistics', (req, res) => adminController.getStatistics(req, res))
 
 // 求人管理
 router.get('/job-postings', (req, res) => adminController.getJobPostings(req, res));
+router.get('/job-postings/:id', (req, res) => adminController.getJobPostingById(req, res));
+router.put('/job-postings/:id', (req, res) => adminController.updateJobPostingForPharmacy(req, res));
+router.delete('/job-postings/:id', (req, res) => adminController.deleteJobPostingForPharmacy(req, res));
+router.post('/job-postings/:id/publish', (req, res) =>
+    adminController.publishJobPostingForPharmacy(req, res)
+);
+router.post('/job-postings/:id/unpublish', (req, res) =>
+    adminController.unpublishJobPostingForPharmacy(req, res)
+);
+
+// 監査ログ
+router.get('/audit-logs', (req, res) => adminController.getAuditLogs(req, res));
 
 // 応募管理
 router.get('/applications', (req, res) => adminController.getApplications(req, res));
@@ -46,6 +58,15 @@ router.get('/applications', (req, res) => adminController.getApplications(req, r
 router.get('/pharmacists', (req, res) => adminController.getPharmacists(req, res));
 router.get('/pharmacists/:id', (req, res) => adminController.getPharmacistById(req, res));
 router.get('/pharmacies', (req, res) => adminController.getPharmacies(req, res));
+router.get('/pharmacies/:pharmacyId/branches', (req, res) =>
+    adminController.getPharmacyBranches(req, res)
+);
+router.get('/pharmacies/:pharmacyId/job-postings', (req, res) =>
+    adminController.getPharmacyJobPostings(req, res)
+);
+router.post('/pharmacies/:pharmacyId/job-postings', (req, res) =>
+    adminController.createJobPostingForPharmacy(req, res)
+);
 router.get('/pharmacies/:id', (req, res) => adminController.getPharmacyById(req, res));
 router.post('/users/:id/toggle-status', (req, res) => adminController.toggleUserStatus(req, res));
 

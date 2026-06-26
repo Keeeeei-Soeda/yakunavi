@@ -13,6 +13,7 @@ import {
   Briefcase,
   Menu,
   X,
+  ClipboardList,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -64,6 +65,12 @@ export default function AdminSidebar() {
       label: 'おためし案件管理',
       icon: <Briefcase className="w-5 h-5" />,
       path: '/admin/job-postings',
+    },
+    {
+      id: 'audit-logs',
+      label: '監査ログ',
+      icon: <ClipboardList className="w-5 h-5" />,
+      path: '/admin/audit-logs',
     },
     {
       id: 'payments',

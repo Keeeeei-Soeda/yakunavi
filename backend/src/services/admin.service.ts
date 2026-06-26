@@ -1,7 +1,13 @@
 import prisma from '../utils/prisma';
 import { NotificationService } from './notification.service';
+import { JobPostingService } from './job-posting.service';
+import { AuditLogService, AuditAction } from './audit-log.service';
+import { PharmacyBranchService } from './pharmacy-branch.service';
 
 const notificationService = new NotificationService();
+const jobPostingService = new JobPostingService();
+const auditLogService = new AuditLogService();
+const pharmacyBranchService = new PharmacyBranchService();
 
 interface PaginationParams {
     page?: number;
@@ -586,7 +592,7 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = { pharmacy: { isTest: false } };
+        const where: any = {};
 
         if (status) {
             where.status = status;
@@ -788,7 +794,7 @@ export class AdminService {
         const { page = 1, limit = 20, status, search } = params;
         const skip = (page - 1) * limit;
 
-        const where: any = { isTest: false };
+        const where: any = {};
 
         if (status === 'active') {
             where.user = { isActive: true };
@@ -835,6 +841,7 @@ export class AdminService {
                 phoneNumber: pharmacy.phoneNumber,
                 prefecture: pharmacy.prefecture,
                 isActive: pharmacy.user.isActive,
+                isTest: pharmacy.isTest,
                 createdAt: pharmacy.createdAt,
                 jobPostingCount: pharmacy._count.jobPostings,
                 contractCount: pharmacy._count.contracts,
@@ -889,6 +896,7 @@ export class AdminService {
             strengths: pharmacy.strengths,
             equipmentSystems: pharmacy.equipmentSystems,
             isActive: pharmacy.user.isActive,
+            isTest: pharmacy.isTest,
             createdAt: pharmacy.createdAt,
             jobPostingCount: pharmacy._count.jobPostings,
             contractCount: pharmacy._count.contracts,
@@ -958,6 +966,300 @@ export class AdminService {
             email: updatedUser.email,
             isActive: updatedUser.isActive,
         };
+    }
+
+    /**
+     * 薬局の店舗一覧を取得（管理者用・代行登録向け）
+     */
+    async getPharmacyBranches(pharmacyId: bigint) {
+        await this.assertPharmacyExists(pharmacyId);
+        return pharmacyBranchService.getBranches(pharmacyId);
+    }
+
+    /**
+     * 薬局のおためし案件一覧を取得（管理者用）
+     */
+    async getPharmacyJobPostings(pharmacyId: bigint) {
+        await this.assertPharmacyExists(pharmacyId);
+        return jobPostingService.getPharmacyJobPostings(pharmacyId);
+    }
+
+    /**
+     * おためし案件詳細を取得（管理者用）
+     */
+    async getJobPostingById(jobPostingId: bigint) {
+        return jobPostingService.getJobPosting(jobPostingId);
+    }
+
+    /**
+     * おためし案件を代行作成
+     */
+    async createJobPostingForPharmacy(
+        pharmacyId: bigint,
+        adminUserId: bigint,
+        input: {
+            pharmacyBranchId?: number | null;
+            title: string;
+            workLocation: string;
+            description?: string;
+            desiredWorkDays?: number;
+            workStartPeriodFrom?: string | Date;
+            workStartPeriodTo?: string | Date;
+            requirements?: string;
+            desiredWorkHours?: string;
+            dailyWage?: number;
+            totalCompensation?: number;
+            platformFee?: number;
+            status?: 'draft' | 'published';
+        },
+        ipAddress?: string
+    ) {
+        await this.assertPharmacyExists(pharmacyId);
+
+        const jobPosting = await jobPostingService.createJobPosting({
+            pharmacyId,
+            pharmacyBranchId: input.pharmacyBranchId ? BigInt(input.pharmacyBranchId) : null,
+            title: input.title,
+            workLocation: input.workLocation,
+            description: input.description,
+            desiredWorkDays: input.desiredWorkDays ?? 30,
+            workStartPeriodFrom: input.workStartPeriodFrom
+                ? new Date(input.workStartPeriodFrom)
+                : new Date(),
+            workStartPeriodTo: input.workStartPeriodTo
+                ? new Date(input.workStartPeriodTo)
+                : new Date(),
+            requirements: input.requirements,
+            desiredWorkHours: input.desiredWorkHours,
+            dailyWage: input.dailyWage ?? 25000,
+            totalCompensation: input.totalCompensation ?? 0,
+            platformFee: input.platformFee ?? 0,
+            status: input.status === 'published' ? 'published' : 'draft',
+        });
+
+        await this.logJobPostingAction({
+            userId: adminUserId,
+            action: 'job_posting.create',
+            resourceId: BigInt(jobPosting.id),
+            pharmacyId,
+            details: { title: input.title, status: jobPosting.status },
+            ipAddress,
+        });
+
+        if (input.status === 'published' && jobPosting.status === 'published') {
+            await this.logJobPostingAction({
+                userId: adminUserId,
+                action: 'job_posting.publish',
+                resourceId: BigInt(jobPosting.id),
+                pharmacyId,
+                details: { title: input.title },
+                ipAddress,
+            });
+        }
+
+        return jobPosting;
+    }
+
+    /**
+     * おためし案件を代行更新
+     */
+    async updateJobPostingForPharmacy(
+        jobPostingId: bigint,
+        adminUserId: bigint,
+        input: Record<string, unknown>,
+        ipAddress?: string
+    ) {
+        const existing = await prisma.jobPosting.findUnique({
+            where: { id: jobPostingId },
+            select: { id: true, pharmacyId: true, title: true, status: true },
+        });
+
+        if (!existing) {
+            throw new Error('求人が見つかりません');
+        }
+
+        const updateData: Record<string, unknown> = {};
+        const fields = [
+            'title',
+            'workLocation',
+            'description',
+            'desiredWorkDays',
+            'requirements',
+            'desiredWorkHours',
+            'dailyWage',
+            'totalCompensation',
+            'platformFee',
+            'status',
+        ] as const;
+
+        for (const field of fields) {
+            if (input[field] !== undefined) {
+                updateData[field] = input[field];
+            }
+        }
+
+        if (input.workStartPeriodFrom) {
+            updateData.workStartPeriodFrom = new Date(input.workStartPeriodFrom as string);
+        }
+        if (input.workStartPeriodTo) {
+            updateData.workStartPeriodTo = new Date(input.workStartPeriodTo as string);
+        }
+        if (input.pharmacyBranchId !== undefined) {
+            updateData.pharmacyBranchId = input.pharmacyBranchId
+                ? BigInt(input.pharmacyBranchId as number)
+                : null;
+        }
+
+        const jobPosting = await jobPostingService.updateJobPosting(jobPostingId, updateData);
+
+        await this.logJobPostingAction({
+            userId: adminUserId,
+            action: 'job_posting.update',
+            resourceId: jobPostingId,
+            pharmacyId: existing.pharmacyId,
+            details: {
+                title: (input.title as string) ?? existing.title,
+                previousStatus: existing.status,
+                newStatus: jobPosting.status,
+            },
+            ipAddress,
+        });
+
+        return jobPosting;
+    }
+
+    /**
+     * おためし案件を代行公開
+     */
+    async publishJobPostingForPharmacy(
+        jobPostingId: bigint,
+        adminUserId: bigint,
+        ipAddress?: string
+    ) {
+        const existing = await prisma.jobPosting.findUnique({
+            where: { id: jobPostingId },
+            select: { id: true, pharmacyId: true, title: true },
+        });
+
+        if (!existing) {
+            throw new Error('求人が見つかりません');
+        }
+
+        const jobPosting = await jobPostingService.publishJobPosting(jobPostingId);
+
+        await this.logJobPostingAction({
+            userId: adminUserId,
+            action: 'job_posting.publish',
+            resourceId: jobPostingId,
+            pharmacyId: existing.pharmacyId,
+            details: { title: existing.title },
+            ipAddress,
+        });
+
+        return jobPosting;
+    }
+
+    /**
+     * おためし案件を代行非公開
+     */
+    async unpublishJobPostingForPharmacy(
+        jobPostingId: bigint,
+        adminUserId: bigint,
+        ipAddress?: string
+    ) {
+        const existing = await prisma.jobPosting.findUnique({
+            where: { id: jobPostingId },
+            select: { id: true, pharmacyId: true, title: true },
+        });
+
+        if (!existing) {
+            throw new Error('求人が見つかりません');
+        }
+
+        const jobPosting = await jobPostingService.unpublishJobPosting(jobPostingId);
+
+        await this.logJobPostingAction({
+            userId: adminUserId,
+            action: 'job_posting.unpublish',
+            resourceId: jobPostingId,
+            pharmacyId: existing.pharmacyId,
+            details: { title: existing.title },
+            ipAddress,
+        });
+
+        return jobPosting;
+    }
+
+    /**
+     * おためし案件を代行削除
+     */
+    async deleteJobPostingForPharmacy(
+        jobPostingId: bigint,
+        adminUserId: bigint,
+        ipAddress?: string
+    ) {
+        const existing = await prisma.jobPosting.findUnique({
+            where: { id: jobPostingId },
+            select: { id: true, pharmacyId: true, title: true },
+        });
+
+        if (!existing) {
+            throw new Error('求人が見つかりません');
+        }
+
+        await jobPostingService.deleteJobPosting(jobPostingId);
+
+        await this.logJobPostingAction({
+            userId: adminUserId,
+            action: 'job_posting.delete',
+            resourceId: jobPostingId,
+            pharmacyId: existing.pharmacyId,
+            details: { title: existing.title },
+            ipAddress,
+        });
+    }
+
+    /**
+     * 監査ログ一覧を取得
+     */
+    async getAuditLogs(params: {
+        page?: number;
+        limit?: number;
+        resourceType?: string;
+        pharmacyId?: bigint;
+        action?: string;
+    }) {
+        return auditLogService.getAuditLogs(params);
+    }
+
+    private async assertPharmacyExists(pharmacyId: bigint) {
+        const pharmacy = await prisma.pharmacy.findUnique({
+            where: { id: pharmacyId },
+            select: { id: true },
+        });
+
+        if (!pharmacy) {
+            throw new Error('薬局が見つかりません');
+        }
+    }
+
+    private async logJobPostingAction(params: {
+        userId: bigint;
+        action: AuditAction;
+        resourceId: bigint;
+        pharmacyId: bigint;
+        details?: Record<string, unknown>;
+        ipAddress?: string;
+    }) {
+        await auditLogService.log({
+            userId: params.userId,
+            action: params.action,
+            resourceType: 'job_posting',
+            resourceId: params.resourceId,
+            pharmacyId: params.pharmacyId,
+            details: params.details,
+            ipAddress: params.ipAddress,
+        });
     }
 }
 

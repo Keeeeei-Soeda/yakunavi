@@ -11,6 +11,7 @@ interface JobPostingFormProps {
   pharmacyId: number;
   onSubmit: (data: CreateJobPostingInput, status: 'draft' | 'published') => Promise<void>;
   submitLabel?: string;
+  branchLoader?: (pharmacyId: number) => Promise<PharmacyBranch[]>;
 }
 
 export const JobPostingForm: React.FC<JobPostingFormProps> = ({
@@ -18,6 +19,7 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
   pharmacyId,
   onSubmit,
   submitLabel = '登録',
+  branchLoader,
 }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -27,16 +29,19 @@ export const JobPostingForm: React.FC<JobPostingFormProps> = ({
   );
 
   useEffect(() => {
-    pharmacyAPI.getBranches(pharmacyId).then((res) => {
-      if (res.success && res.data) {
-        setBranches(res.data);
-        // 初期値未設定かつ1件以上ある場合は最初のbranchを選択
-        if (!initialData?.pharmacyBranchId && res.data.length > 0) {
-          setSelectedBranchId(res.data[0].id);
+    const loadBranches = branchLoader
+      ? branchLoader(pharmacyId)
+      : pharmacyAPI.getBranches(pharmacyId).then((res) => (res.success && res.data ? res.data : []));
+
+    loadBranches
+      .then((data) => {
+        setBranches(data);
+        if (!initialData?.pharmacyBranchId && data.length > 0) {
+          setSelectedBranchId(data[0].id);
         }
-      }
-    }).catch(() => {});
-  }, [pharmacyId]);
+      })
+      .catch(() => {});
+  }, [pharmacyId, branchLoader, initialData?.pharmacyBranchId]);
 
   // 勤務開始可能期間のデフォルト値（今日から1週間後）
   const getDefaultWorkStartDate = () => {

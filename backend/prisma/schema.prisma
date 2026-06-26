@@ -22,6 +22,7 @@ model User {
   createdAt                   DateTime       @default(now()) @map("created_at")
   updatedAt                   DateTime       @updatedAt @map("updated_at")
   notifications               Notification[]
+  auditLogs                   AuditLog[]
   pharmacy                    Pharmacy?
   pharmacist                  Pharmacist?
 
@@ -386,6 +387,25 @@ model Certificate {
   @@index([certificateType], map: "idx_certificates_certificate_type")
   @@index([verificationStatus], map: "idx_certificates_verification_status")
   @@map("certificates")
+}
+
+model AuditLog {
+  id           BigInt   @id @default(autoincrement())
+  userId       BigInt   @map("user_id")
+  action       String   @db.VarChar(50)
+  resourceType String   @map("resource_type") @db.VarChar(50)
+  resourceId   BigInt?  @map("resource_id")
+  pharmacyId   BigInt?  @map("pharmacy_id")
+  details      Json?
+  ipAddress    String?  @map("ip_address") @db.VarChar(45)
+  createdAt    DateTime @default(now()) @map("created_at")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_audit_logs_user_id")
+  @@index([resourceType, resourceId], map: "idx_audit_logs_resource")
+  @@index([pharmacyId], map: "idx_audit_logs_pharmacy_id")
+  @@index([createdAt], map: "idx_audit_logs_created_at")
+  @@map("audit_logs")
 }
 
 model Notification {

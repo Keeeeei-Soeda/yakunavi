@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, Building2, Mail, Phone, MapPin, Calendar, Users, FileText } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowLeft, Building2, Mail, Phone, MapPin, Calendar, Users, FileText, Briefcase, Plus, Pencil } from 'lucide-react';
+import { getPharmacyJobPostings } from '@/lib/api/admin';
 
 interface Pharmacy {
   id: number;
@@ -25,6 +27,17 @@ interface Pharmacy {
   strengths: string;
   equipmentSystems: string;
   isActive: boolean;
+  isTest?: boolean;
+  createdAt: string;
+}
+
+interface PharmacyJobPosting {
+  id: number;
+  title: string;
+  workLocation: string;
+  dailyWage: number;
+  status: string;
+  publishedAt?: string;
   createdAt: string;
 }
 
@@ -34,6 +47,7 @@ export default function PharmacyDetailPage() {
   const pharmacyId = params.id;
 
   const [pharmacy, setPharmacy] = useState<Pharmacy | null>(null);
+  const [jobPostings, setJobPostings] = useState<PharmacyJobPosting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,6 +75,11 @@ export default function PharmacyDetailPage() {
 
       const data = await response.json();
       setPharmacy(data.data);
+
+      const jobsResponse = await getPharmacyJobPostings(Number(pharmacyId));
+      if (jobsResponse.success) {
+        setJobPostings(jobsResponse.data ?? []);
+      }
     } catch (err: any) {
       console.error('Failed to fetch pharmacy detail:', err);
       setError(err.message || '薬局情報の取得に失敗しました');
@@ -139,6 +158,11 @@ export default function PharmacyDetailPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">薬局詳細</h1>
           <div className="flex items-center gap-2">
+            {pharmacy.isTest && (
+              <span className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                テスト薬局
+              </span>
+            )}
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 pharmacy.isActive
@@ -296,11 +320,69 @@ export default function PharmacyDetailPage() {
         </div>
       </div>
 
-      {/* 今後の拡張: おためし案件一覧、契約一覧、ペナルティ情報など */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <p className="text-blue-800 text-sm">
-          💡 今後、おためし案件一覧、契約履歴、ペナルティ情報などの表示機能を追加予定です
-        </p>
+      {/* おためし案件一覧 */}
+      <div className="bg-white rounded-lg shadow mb-6">
+        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+            <Briefcase className="h-5 w-5 mr-2" />
+            おためし案件
+          </h2>
+          <Link
+            href={`/admin/pharmacies/${pharmacy.id}/job-postings/new`}
+            className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
+          >
+            <Plus className="h-4 w-4" />
+            代行登録
+          </Link>
+        </div>
+        <div className="px-6 py-4">
+          {jobPostings.length === 0 ? (
+            <p className="text-gray-500 text-sm">おためし案件はまだありません</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">タイトル</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">勤務地</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">ステータス</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {jobPostings.map((job) => (
+                    <tr key={job.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-sm text-gray-500">#{job.id}</td>
+                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{job.title}</td>
+                      <td className="px-4 py-3 text-sm text-gray-500">{job.workLocation}</td>
+                      <td className="px-4 py-3 text-sm">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            job.status === 'published'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
+                          {job.status === 'published' ? '公開中' : job.status === 'draft' ? '下書き' : job.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <Link
+                          href={`/admin/pharmacies/${pharmacy.id}/job-postings/${job.id}/edit`}
+                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                        >
+                          <Pencil className="h-4 w-4" />
+                          編集
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
