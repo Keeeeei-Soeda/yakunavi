@@ -1,43 +1,29 @@
 #!/bin/bash
+set -euo pipefail
 
-# デプロイスクリプト
-# サーバー上で実行してください
+# サーバー上で実行する静的LPの公開スクリプト
 
-echo "🚀 デプロイを開始します..."
+echo "Deploying static LP..."
 
-# プロジェクトディレクトリに移動
 cd ~/yaku_navi
 
-# 最新のコードを取得
-echo "📥 最新のコードを取得中..."
+echo "Fetching latest code..."
 git pull origin main
 
-# バックエンドの更新
-echo "🔧 バックエンドを更新中..."
-cd backend
-npm install
-npm run build
-cd ..
+echo "Publishing files..."
+sudo mkdir -p /var/www/yaku-navi
+sudo cp index.html /var/www/yaku-navi/index.html
+sudo chown -R www-data:www-data /var/www/yaku-navi
 
-# フロントエンドの更新
-echo "🎨 フロントエンドを更新中..."
-cd frontend
-npm install
-npm run build
-cd ..
+echo "Updating Nginx..."
+sudo cp nginx-yaku-navi.conf /etc/nginx/sites-available/yaku-navi
+sudo nginx -t
+sudo systemctl reload nginx
 
-# PM2でアプリケーションを再起動
-echo "🔄 アプリケーションを再起動中..."
-pm2 restart yaku-navi-backend
-pm2 restart yaku-navi-frontend
+echo "Stopping old Node apps..."
+pm2 stop yaku-navi-backend yaku-navi-frontend || true
+pm2 delete yaku-navi-backend yaku-navi-frontend || true
+pm2 save || true
 
-# ステータス確認
-echo "📊 ステータス確認..."
-pm2 status
-
-# ログ確認
-echo "📋 ログ確認（最新50行）..."
-pm2 logs --lines 50
-
-echo "✅ デプロイが完了しました！"
-
+echo "Deploy completed."
+echo "Check: https://yaku-navi.com"
