@@ -12,7 +12,7 @@ git pull origin main
 
 echo "Publishing files..."
 sudo mkdir -p /var/www/yaku-navi
-sudo cp index.html /var/www/yaku-navi/index.html
+sudo cp index.html styles.css /var/www/yaku-navi/
 sudo chown -R www-data:www-data /var/www/yaku-navi
 
 echo "Updating Nginx..."
